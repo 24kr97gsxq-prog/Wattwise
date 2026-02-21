@@ -1,1022 +1,1227 @@
-import { useState, useEffect, useRef } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WattWise Gratuity — Free Texas Electricity Savings Finder</title>
+<meta name="description" content="Andy's free tool to find the best electricity rates in Texas. Compare 54+ plans across all TDU territories. Always free — tip only if you want to.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS RESET & ROOT VARIABLES
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #00DC82;
+  --green-dark: #00b368;
+  --yellow: #FACC15;
+  --blue: #38BDF8;
+  --red: #ff6b6b;
+  --pink: #F472B6;
+  --purple: #A78BFA;
+  --bg-primary: #0a0a12;
+  --bg-card: rgba(255,255,255,0.02);
+  --border: rgba(255,255,255,0.06);
+  --text-primary: #fff;
+  --text-secondary: #c8c8d0;
+  --text-muted: #888;
+  --text-dim: #555;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-body: 'Source Serif 4', Georgia, serif;
+}
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  background: linear-gradient(165deg, #0a0a12 0%, #0d0d1a 40%, #0a1a12 100%);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,220,130,0.2); border-radius: 3px; }
+button { font-family: inherit; }
 
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes confettiFall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes barGrow {
+  from { width: 0; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,220,130,0.1); }
+  50% { box-shadow: 0 0 40px rgba(0,220,130,0.25); }
+}
+.fade-up { animation: fadeUp 0.6s ease-out both; }
+.fade-up-1 { animation-delay: 0.06s; }
+.fade-up-2 { animation-delay: 0.12s; }
+.fade-up-3 { animation-delay: 0.18s; }
+.fade-up-4 { animation-delay: 0.24s; }
+.fade-up-5 { animation-delay: 0.30s; }
+.fade-up-6 { animation-delay: 0.36s; }
+.fade-up-7 { animation-delay: 0.42s; }
+.fade-up-8 { animation-delay: 0.48s; }
+.fade-up-9 { animation-delay: 0.54s; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+.label {
+  display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: #666; font-family: var(--font-mono); margin-bottom: 6px; text-align: left;
+}
+.label-green { color: var(--green); }
+.label-yellow { color: var(--yellow); }
+.label-blue { color: var(--blue); }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; color: #0a0a0a;
+}
+.logo-text { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: #fff; line-height: 1; }
+.logo-sub { font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--green); font-family: var(--font-mono); }
+.header-btns { display: flex; gap: 8px; align-items: center; }
+.btn-ghost {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  color: #a0a0b0; border-radius: 8px; padding: 7px 12px; font-size: 11px;
+  cursor: pointer; font-family: var(--font-mono); transition: all 0.2s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.btn-tip {
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  border: none; color: #0a0a0a; border-radius: 8px; padding: 7px 12px; font-size: 11px;
+  cursor: pointer; font-weight: 700; font-family: var(--font-mono);
+  animation: float 3s ease-in-out infinite; display: none;
+}
+.btn-tip.visible { display: inline-block; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero { padding: 56px 20px 36px; text-align: center; }
+.hero-tag {
+  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--green); font-family: var(--font-mono); margin-bottom: 18px;
+}
+.hero h1 {
+  font-family: var(--font-display); font-size: clamp(30px, 6vw, 50px);
+  font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 18px;
+}
+.hero h1 .gradient {
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: 16px; line-height: 1.7; color: var(--text-muted);
+  max-width: 460px; margin: 0 auto 32px;
+}
+.hero p .hl { color: var(--green); }
+
+/* ============================================================
+   SEARCH FORM
+   ============================================================ */
+.search-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px; max-width: 480px; margin: 0 auto;
+}
+.search-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.search-row .field { flex: 1; }
+.search-row .field-sm { width: 130px; }
+.input {
+  width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 13px 15px; color: #fff; font-size: 17px;
+  font-family: var(--font-mono); outline: none; letter-spacing: 2px;
+  transition: border-color 0.2s;
+}
+.input:focus { border-color: rgba(0,220,130,0.4); }
+.input-usage { letter-spacing: 0; }
+.btn-search {
+  width: 100%; padding: 15px 0;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: #0a0a0a; border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.5px; font-family: var(--font-mono);
+  transition: opacity 0.2s;
+}
+.btn-search:hover { opacity: 0.9; }
+.btn-search:disabled { background: rgba(0,220,130,0.3); cursor: default; }
+.search-meta {
+  margin-top: 12px; font-size: 10px; color: #444;
+  font-family: var(--font-mono); text-align: center;
+}
+.error-msg {
+  margin-top: 12px; padding: 10px 14px; background: rgba(255,80,80,0.08);
+  border: 1px solid rgba(255,80,80,0.2); border-radius: 8px; font-size: 12px; color: #ff8888;
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+.results { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
+.results.hidden { display: none; }
+
+/* Territory bar */
+.territory-bar {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 18px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 10px;
+}
+.territory-bar .name { font-size: 15px; color: #fff; font-weight: 600; margin-top: 2px; }
+.territory-bar .region { font-size: 12px; color: #777; }
+.polr-rate { font-size: 20px; color: var(--red); font-weight: 700; font-family: var(--font-mono); }
+
+/* Savings cards */
+.savings-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px; margin-bottom: 22px;
+}
+.savings-card {
+  border-radius: 14px; padding: 18px 16px;
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+.savings-card.green {
+  background: linear-gradient(135deg, rgba(0,220,130,0.08), rgba(0,220,130,0.02));
+  border: 1px solid rgba(0,220,130,0.2);
+}
+.savings-card.yellow {
+  background: rgba(250,204,21,0.04); border: 1px solid rgba(250,204,21,0.15);
+}
+.savings-card.blue {
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.15);
+}
+.savings-card .big {
+  font-size: 32px; font-weight: 700; font-family: var(--font-mono); margin-top: 6px;
+}
+.savings-card .sub { font-size: 12px; color: var(--text-muted); }
+
+/* Cost comparison */
+.cost-compare {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; margin-bottom: 22px;
+}
+.bar-row { margin-bottom: 12px; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-header { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 4px; }
+.bar-header .cost { font-family: var(--font-mono); font-weight: 600; }
+.bar-track { height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; animation: barGrow 0.8s ease-out both; }
+
+/* Plan table */
+.plan-table {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 22px;
+}
+.plan-table-header {
+  padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.04); flex-wrap: wrap; gap: 10px;
+}
+.plan-table-header h3 { font-size: 16px; font-weight: 600; color: #fff; }
+.plan-table-header .sub { font-size: 11px; color: #666; }
+.sort-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+.sort-btn {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  color: #777; border-radius: 6px; padding: 4px 9px;
+  font-size: 9px; cursor: pointer; font-family: var(--font-mono);
+  text-transform: uppercase; letter-spacing: 1px; transition: all 0.15s;
+}
+.sort-btn.active { background: rgba(0,220,130,0.15); border-color: rgba(0,220,130,0.3); color: var(--green); }
+.plan-row {
+  padding: 15px 18px; border-bottom: 1px solid rgba(255,255,255,0.03);
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;
+  transition: background 0.15s;
+}
+.plan-row:hover { background: rgba(255,255,255,0.015); }
+.plan-row.best { background: rgba(0,220,130,0.03); }
+.plan-info { flex: 1; min-width: 200px; }
+.plan-provider { font-size: 14px; font-weight: 600; color: #fff; display: inline; }
+.plan-badges { display: inline-flex; gap: 5px; margin-left: 8px; vertical-align: middle; }
+.badge {
+  font-size: 8px; padding: 2px 7px; border-radius: 4px;
+  font-family: var(--font-mono); letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
+}
+.badge-best { background: rgba(0,220,130,0.15); color: var(--green); }
+.badge-green { background: rgba(56,189,248,0.1); color: var(--blue); }
+.plan-name { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.plan-meta { margin-top: 4px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--text-dim); }
+.stars { display: inline-flex; gap: 1px; align-items: center; }
+.star { font-size: 11px; }
+.star.on { color: var(--yellow); }
+.star.half { color: var(--yellow); opacity: 0.5; }
+.star.off { color: #3a3a3a; opacity: 0.3; }
+.star-num { font-size: 10px; color: var(--text-muted); margin-left: 3px; }
+.plan-pricing { text-align: right; min-width: 110px; }
+.plan-rate { font-size: 22px; font-weight: 700; font-family: var(--font-mono); color: #fff; }
+.plan-rate.best-rate { color: var(--green); }
+.plan-monthly { font-size: 11px; color: #777; }
+.plan-saving { font-size: 11px; color: var(--green); font-weight: 600; margin-top: 2px; }
+.btn-show-all {
+  width: 100%; padding: 13px 0; background: rgba(255,255,255,0.02);
+  border: none; color: var(--green); font-size: 12px; cursor: pointer;
+  font-family: var(--font-mono); border-top: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+.btn-show-all:hover { background: rgba(255,255,255,0.04); }
+
+/* Tip CTA */
+.tip-cta {
+  background: linear-gradient(135deg, rgba(0,220,130,0.06), rgba(250,204,21,0.04));
+  border: 1px solid rgba(0,220,130,0.15); border-radius: 16px; padding: 28px 22px;
+  text-align: center; margin-bottom: 20px;
+}
+.tip-cta .emoji { font-size: 32px; margin-bottom: 10px; }
+.tip-cta h3 { font-family: var(--font-display); font-size: 21px; color: #fff; margin-bottom: 8px; }
+.tip-cta h3 .hl { color: var(--green); }
+.tip-cta p { font-size: 13px; color: var(--text-muted); line-height: 1.6; max-width: 400px; margin: 0 auto 18px; }
+.btn-cta {
+  background: linear-gradient(135deg, var(--green), var(--green-dark)); color: #0a0a0a;
+  border: none; border-radius: 12px; padding: 13px 36px; font-size: 15px;
+  font-weight: 700; cursor: pointer; font-family: var(--font-mono);
+  transition: opacity 0.2s;
+}
+.btn-cta:hover { opacity: 0.9; }
+
+/* Share section */
+.share-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; margin-bottom: 22px;
+}
+.share-box p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+.share-text {
+  background: rgba(0,0,0,0.3); border-radius: 10px; padding: 14px;
+  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+  border: 1px solid rgba(255,255,255,0.04); position: relative;
+}
+.btn-copy {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(0,220,130,0.15); border: 1px solid rgba(0,220,130,0.3);
+  color: var(--green); border-radius: 6px; padding: 4px 10px; font-size: 10px;
+  cursor: pointer; font-family: var(--font-mono); transition: all 0.15s;
+}
+.btn-copy:hover { background: rgba(0,220,130,0.25); }
+
+/* ============================================================
+   MODALS (Overlays)
+   ============================================================ */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.overlay.open { display: flex; }
+.modal {
+  background: linear-gradient(165deg, #1a1a2e 0%, #0f0f1a 50%, #1a0f2e 100%);
+  border: 1px solid rgba(0,220,130,0.2); border-radius: 20px;
+  max-height: 85vh; overflow: auto; box-shadow: 0 25px 80px rgba(0,220,130,0.15);
+}
+.modal-close {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: #aaa; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* Story modal */
+.story-modal { max-width: 660px; width: 100%; padding: 36px 32px; }
+.story-modal h2 {
+  font-family: var(--font-display); font-size: 30px; color: #fff; line-height: 1.2; margin: 0 0 22px;
+}
+.story-modal h2 .hl { color: var(--green); }
+.story-body { font-family: var(--font-body); font-size: 15px; line-height: 1.85; color: #c8c8d0; }
+.story-body p { margin-bottom: 18px; }
+.story-body .highlight-yellow { color: var(--yellow); }
+.story-body strong { color: #fff; }
+.story-quote {
+  border-left: 3px solid var(--green); padding-left: 18px; margin: 24px 0;
+  font-style: italic; color: #e0e0e0; font-size: 16px;
+}
+.story-philosophy {
+  background: rgba(0,220,130,0.06); border: 1px solid rgba(0,220,130,0.15);
+  border-radius: 14px; padding: 22px 18px; margin: 24px 0;
+}
+.story-philosophy .title {
+  font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 8px;
+  font-family: var(--font-mono);
+}
+.story-philosophy p { margin: 0; color: #e8e8f0; }
+
+/* Tip modal */
+.tip-modal { max-width: 460px; width: 100%; padding: 32px 26px; }
+.tip-modal h3 { font-family: var(--font-display); font-size: 22px; color: #fff; margin: 0; line-height: 1.2; }
+.tip-savings-note {
+  background: rgba(0,220,130,0.06); border: 1px solid rgba(0,220,130,0.12);
+  border-radius: 10px; padding: 11px 14px; margin: 18px 0; font-size: 13px; color: #a8a8b8;
+}
+.tip-savings-note strong { color: var(--green); }
+.tip-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 18px 0; }
+.tip-option {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 16px 8px; cursor: pointer; text-align: center;
+  transition: all 0.2s;
+}
+.tip-option:hover { background: rgba(255,255,255,0.05); }
+.tip-option.selected { background: rgba(0,220,130,0.15); border-color: rgba(0,220,130,0.5); }
+.tip-option .emoji { font-size: 26px; margin-bottom: 4px; }
+.tip-option .amount { font-size: 19px; font-weight: 700; color: #fff; font-family: var(--font-mono); }
+.tip-option .label { font-size: 10px; color: var(--green); font-weight: 600; margin-top: 3px; }
+.tip-option .desc { font-size: 9px; color: #777; margin-top: 1px; }
+.tip-divider {
+  display: flex; align-items: center; gap: 10px; margin: 14px 0;
+  font-size: 11px; color: var(--text-dim);
+}
+.tip-divider::before, .tip-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+.tip-custom-row { display: flex; gap: 10px; }
+.tip-custom-wrap { position: relative; flex: 1; }
+.tip-custom-dollar {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #666; font-size: 16px;
+}
+.tip-custom-input {
+  width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 12px 14px 12px 28px; color: #fff; font-size: 16px;
+  font-family: var(--font-mono); outline: none;
+}
+.tip-custom-input:focus { border-color: rgba(0,220,130,0.4); }
+.tip-custom-input.selected { border-color: rgba(0,220,130,0.5); }
+.btn-tip-send {
+  width: 100%; margin-top: 18px; padding: 13px 0;
+  background: rgba(255,255,255,0.05); color: var(--text-dim);
+  border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
+  cursor: default; transition: all 0.3s; letter-spacing: 0.5px;
+}
+.btn-tip-send.active {
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: #0a0a0a; cursor: pointer;
+}
+.tip-footer { text-align: center; font-size: 10px; color: var(--text-dim); margin-top: 12px; }
+
+/* Tip thank you */
+.tip-thanks { text-align: center; max-width: 420px; padding: 44px 32px; }
+.tip-thanks .emoji { font-size: 52px; margin-bottom: 14px; }
+.tip-thanks h3 { font-family: var(--font-display); font-size: 24px; color: #fff; margin: 0 0 10px; }
+.tip-thanks p { color: #a0a0b0; font-size: 14px; line-height: 1.6; margin-bottom: 22px; }
+.tip-thanks strong { color: var(--green); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  padding: 36px 20px; border-top: 1px solid var(--border);
+  text-align: center; max-width: 640px; margin: 0 auto;
+}
+.site-footer p { font-size: 12px; color: #444; line-height: 1.8; }
+.site-footer .story-link {
+  background: none; border: none; color: var(--green); cursor: pointer;
+  font-size: 12px; text-decoration: underline; margin-top: 8px; display: inline-block;
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+.confetti-piece {
+  position: fixed; top: -20px; z-index: 9999; pointer-events: none;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 480px) {
+  .search-row { flex-direction: column; }
+  .search-row .field-sm { width: 100%; }
+  .savings-grid { grid-template-columns: 1fr; }
+  .plan-row { flex-direction: column; }
+  .plan-pricing { text-align: left; margin-top: 8px; }
+  .territory-bar { flex-direction: column; text-align: left; }
+  .territory-bar > div:last-child { text-align: left; }
+  .tip-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .tip-option { padding: 12px 4px; }
+  .story-modal { padding: 24px 20px; }
+  .story-modal h2 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div>
+      <div class="logo-text">WattWise</div>
+      <div class="logo-sub">GRATUITY</div>
+    </div>
+  </div>
+  <div class="header-btns">
+    <button class="btn-ghost" onclick="openStory()">Andy's Story</button>
+    <button class="btn-tip" id="headerTipBtn" onclick="openTipJar()">☕ Tip Andy</button>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-tag">FREE TEXAS ENERGY COMPARISON ENGINE</div>
+  <h1>Stop Overpaying<br>for <span class="gradient">Texas Electricity</span></h1>
+  <p>
+    Real rates from <span id="totalPlans">54</span> plans across <span id="totalZips">300</span>+ ZIP codes.
+    Andy built this so his friends and family would never overpay again.
+    <span class="hl">Always free. Tip only if you want to.</span>
+  </p>
+
+  <!-- Search Form -->
+  <div class="search-box">
+    <div class="search-row">
+      <div class="field">
+        <label class="label">Texas ZIP Code</label>
+        <input type="text" id="zipInput" class="input" placeholder="e.g. 75201" maxlength="5">
+      </div>
+      <div class="field-sm">
+        <label class="label">Monthly kWh</label>
+        <input type="number" id="usageInput" class="input input-usage" value="1000" min="100">
+      </div>
+    </div>
+    <button class="btn-search" id="searchBtn" onclick="handleSearch()">Find My Best Rate</button>
+    <div id="errorMsg" class="error-msg" style="display:none;"></div>
+    <div class="search-meta">Database: <span id="dbPlanCount">54</span> plans · Updated February 20, 2026 · Source: PowerToChoose.org</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     RESULTS (hidden until search)
+     ============================================================ -->
+<section class="results hidden" id="resultsSection">
+
+  <!-- Territory Info -->
+  <div class="territory-bar fade-up" id="territoryBar">
+    <div>
+      <div class="label">Your Service Territory</div>
+      <div class="name" id="tduName"></div>
+      <div class="region" id="tduRegion"></div>
+    </div>
+    <div style="text-align:right">
+      <div class="label">Default Rate (POLR)</div>
+      <div class="polr-rate" id="polrRate"></div>
+    </div>
+  </div>
+
+  <!-- Savings Cards -->
+  <div class="savings-grid">
+    <div class="savings-card green fade-up fade-up-1">
+      <div class="label label-green">Best Available Rate</div>
+      <div class="big" style="color:var(--green)" id="bestRate"></div>
+      <div class="sub" id="bestProvider"></div>
+    </div>
+    <div class="savings-card yellow fade-up fade-up-2">
+      <div class="label label-yellow">Monthly Savings</div>
+      <div class="big" style="color:var(--yellow)" id="monthlySavings"></div>
+      <div class="sub">vs default TDU rate</div>
+    </div>
+    <div class="savings-card blue fade-up fade-up-3">
+      <div class="label label-blue">Annual Savings</div>
+      <div class="big" style="color:var(--blue)" id="annualSavings"></div>
+      <div class="sub">that's real money back</div>
+    </div>
+  </div>
+
+  <!-- Cost Comparison Bars -->
+  <div class="cost-compare fade-up fade-up-4">
+    <div class="label" style="margin-bottom:14px">Monthly Cost Comparison at <span id="usageLabel">1000</span> kWh</div>
+    <div class="bar-row" id="barPolr"></div>
+    <div class="bar-row" id="barAvg"></div>
+    <div class="bar-row" id="barBest"></div>
+  </div>
+
+  <!-- Plan Table -->
+  <div class="plan-table fade-up fade-up-5">
+    <div class="plan-table-header">
+      <div>
+        <h3 id="planTableTitle">Top 5 Plans</h3>
+        <div class="sub" id="planTableSub">Sorted by rate · 1000 kWh/mo</div>
+      </div>
+      <div class="sort-btns">
+        <button class="sort-btn active" data-sort="rate" onclick="setSort('rate',this)">Rate</button>
+        <button class="sort-btn" data-sort="rating" onclick="setSort('rating',this)">Rating</button>
+        <button class="sort-btn" data-sort="renewable" onclick="setSort('renewable',this)">Renewable</button>
+        <button class="sort-btn" data-sort="provider" onclick="setSort('provider',this)">Provider</button>
+      </div>
+    </div>
+    <div id="planList"></div>
+    <button class="btn-show-all" id="showAllBtn" onclick="toggleShowAll()" style="display:none;">
+      Show all plans ↓
+    </button>
+  </div>
+
+  <!-- Tip CTA -->
+  <div class="tip-cta fade-up fade-up-6">
+    <div class="emoji">☕</div>
+    <h3>Andy just saved you <span class="hl" id="ctaSavings">$0</span>/year</h3>
+    <p>This tool is always free. If you found it helpful, consider buying Andy a coffee. Every tip helps keep this service running for fellow Texans.</p>
+    <button class="btn-cta" onclick="openTipJar()">Buy Andy a Coffee ☕</button>
+  </div>
+
+  <!-- Share -->
+  <div class="share-box fade-up fade-up-7">
+    <div class="label" style="margin-bottom:10px">Share with Friends & Neighbors</div>
+    <p>Know someone in Texas who might be overpaying? Here's a ready-to-share message:</p>
+    <div class="share-text" id="shareText">
+      <button class="btn-copy" onclick="copyShare()">Copy</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <p>Rates sourced from PowerToChoose.org & public PUCT filings. Updated February 20, 2026.</p>
+  <p>Not affiliated with any REP. No affiliate links. No commissions.</p>
+  <p style="margin-top:8px">Built with 💚 by Andy for his friends, family, and every Texan who deserves a fair rate.</p>
+  <button class="story-link" onclick="openStory()">Read Andy's Story →</button>
+</footer>
+
+<!-- ============================================================
+     STORY MODAL
+     ============================================================ -->
+<div class="overlay" id="storyOverlay" onclick="closeIfOverlay(event,'storyOverlay')">
+  <div class="modal story-modal">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+      <div class="label label-green" style="margin-bottom:0">The Origin Story</div>
+      <button class="modal-close" onclick="closeStory()">×</button>
+    </div>
+    <h2>How Andy Turned a <span class="hl">Kitchen Table Gripe</span> Into a Movement</h2>
+    <div class="story-body">
+      <p>It started the way most good ideas do in Texas — over cold beer and a too-high electric bill.</p>
+      <p>Andy had just gotten his August bill from one of the big-name retail electric providers. <span class="highlight-yellow">$387 for a modest three-bedroom in the DFW suburbs.</span> He knew the deregulated market meant he had options, but the PowerToChoose website felt like comparing airline tickets — hundreds of plans, confusing "energy facts" labels, and rates that looked great until you read the fine print about TDU delivery charges and usage thresholds.</p>
+      <p>So Andy did what he always does: he dove in. Nights after putting the kids to bed, he built spreadsheets. He reverse-engineered the PUCT's EFL (Electricity Facts Label) format. He mapped every ZIP code to its TDU territory. He scraped every licensed REP's current offering and normalized the rates to a true apples-to-apples cost per kWh at 500, 1,000, and 2,000 kWh usage tiers.</p>
+      <div class="story-quote">
+        "I saved $1,140 the first year just by switching. And I thought — if I can do this for myself, why not make it dead simple for everyone I know?"
+      </div>
+      <p>Andy started texting his neighbors. Then posting in his Nextdoor group. Then his kids' school parent chat. The message was always the same: <strong>"Send me your ZIP code. I'll send you the best rate. Totally free."</strong></p>
+      <p>No affiliate links. No commissions. No catch. Just a guy with a spreadsheet and a conviction that <span style="color:var(--green)">Texans were overpaying by billions every year</span> simply because the comparison process was designed to be confusing.</p>
+      <p>Within three months, Andy had personally helped <strong>47 families</strong> switch to better plans, saving them a collective <strong class="highlight-yellow">$62,000 annually</strong>. Word spread to his office. Then to his church. Then to three different Facebook groups.</p>
+      <p>People kept asking: "Andy, can I pay you for this?" His answer was always the same — <em>"Nah, just buy me a coffee if you feel like it."</em> That line became the philosophy behind everything you see here.</p>
+      <div class="story-philosophy">
+        <div class="title">THE WATTSWISE PHILOSOPHY</div>
+        <p>Give value first. Give it freely. Give it publicly. The people who benefit will <em>want</em> to support you — not because they have to, but because they've seen the receipts. A voluntary tip after a real savings reveal is worth more than any hard sell. Andy calls it <strong>"The Gratitude Economy."</strong></p>
+      </div>
+      <p>WattWise Gratuity is the tool Andy wished existed when he started. It pulls real rates, compares them against your current TDU's default pricing, shows you exactly how much you'd save, and then — only after you've seen your savings — gives you the option to say thanks with a small tip. No pressure. No guilt. Just gratitude between neighbors.</p>
+      <p>Andy's mission hasn't changed since that first kitchen table session: <strong style="color:var(--green)">help every Texan in a deregulated zone get the best possible electricity rate, for free.</strong> The tips? They keep the servers running, the data fresh, and Andy caffeinated enough to keep fighting for fair energy prices.</p>
+      <p style="color:#888;font-size:13px">— The WattWise Team, February 2026</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TIP JAR MODAL
+     ============================================================ -->
+<div class="overlay" id="tipOverlay" onclick="closeIfOverlay(event,'tipOverlay')">
+  <!-- Selection View -->
+  <div class="modal tip-modal" id="tipSelectView">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div>
+        <div class="label label-green" style="margin-bottom:6px">Andy's Coffee Fund</div>
+        <h3>Feeling Generous?</h3>
+      </div>
+      <button class="modal-close" onclick="closeTipJar()">×</button>
+    </div>
+    <div class="tip-savings-note" id="tipSavingsNote" style="display:none">
+      You're saving <strong id="tipSavingsAmt">$0/year</strong> — this service is always free. Tips are optional and appreciated.
+    </div>
+    <div class="tip-grid">
+      <div class="tip-option" onclick="selectTip(3,this)">
+        <div class="emoji">☕</div>
+        <div class="amount">$3</div>
+        <div class="label">Small Drip</div>
+        <div class="desc">A quick thanks</div>
+      </div>
+      <div class="tip-option" onclick="selectTip(7,this)">
+        <div class="emoji">🥐</div>
+        <div class="amount">$7</div>
+        <div class="label">Coffee & Pastry</div>
+        <div class="desc">Andy eats today</div>
+      </div>
+      <div class="tip-option" onclick="selectTip(15,this)">
+        <div class="emoji">⚡</div>
+        <div class="amount">$15</div>
+        <div class="label">Energy Hero</div>
+        <div class="desc">Keep the lights on</div>
+      </div>
+    </div>
+    <div class="tip-divider">or custom amount</div>
+    <div class="tip-custom-row">
+      <div class="tip-custom-wrap">
+        <span class="tip-custom-dollar">$</span>
+        <input type="number" id="customTipInput" class="tip-custom-input" placeholder="5.00"
+               oninput="selectCustomTip()" onfocus="selectCustomTip()">
+      </div>
+    </div>
+    <button class="btn-tip-send" id="tipSendBtn" onclick="sendTip()">Select an Amount</button>
+    <div class="tip-footer">100% goes to keeping WattWise free. No middlemen. No corporate sponsors.</div>
+  </div>
+
+  <!-- Thank You View -->
+  <div class="modal tip-thanks" id="tipThanksView" style="display:none">
+    <div class="emoji">💚</div>
+    <h3>You're Amazing!</h3>
+    <p>Your <span id="tipAmountThanks">$0</span> tip helps Andy keep WattWise free for every Texan.
+       You're saving <strong id="tipSavingsThanks">$0/year</strong> and paying it forward.</p>
+    <button class="btn-cta" onclick="closeTipJar()">Close</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     CONFETTI CONTAINER
+     ============================================================ -->
+<div id="confettiContainer"></div>
+
+<!-- ============================================================
+     JAVASCRIPT — Database + Logic
+     ============================================================ -->
+<script>
 // ============================================================
-// TEXAS ENERGY PRICE DATABASE - Real rates sourced from
-// PowerToChoose.org & public Texas utility filings (Feb 2026)
-// Organized by TDU service territory
+// TEXAS ENERGY PRICE DATABASE
+// Real rates sourced from PowerToChoose.org & public PUCT filings
 // ============================================================
-const TEXAS_ENERGY_DB = {
-  tdu_territories: {
+const DB = {
+  tdu: {
     ONCOR: { name: "Oncor Electric Delivery", region: "Dallas/Fort Worth, Waco, Midland" },
     CENTPT: { name: "CenterPoint Energy", region: "Houston Metro" },
     TNMP: { name: "Texas-New Mexico Power", region: "Various TX cities" },
     AEP_TCC: { name: "AEP Texas Central", region: "Corpus Christi, Victoria" },
-    AEP_TNC: { name: "AEP Texas North", region: "Abilene, San Angelo" },
+    AEP_TNC: { name: "AEP Texas North", region: "Abilene, San Angelo, El Paso" }
   },
-  // ZIP → TDU mapping (comprehensive sampling)
-  zip_to_tdu: {
-    "75001": "ONCOR", "75002": "ONCOR", "75006": "ONCOR", "75007": "ONCOR",
-    "75019": "ONCOR", "75024": "ONCOR", "75025": "ONCOR", "75034": "ONCOR",
-    "75035": "ONCOR", "75040": "ONCOR", "75041": "ONCOR", "75042": "ONCOR",
-    "75043": "ONCOR", "75044": "ONCOR", "75048": "ONCOR", "75050": "ONCOR",
-    "75051": "ONCOR", "75052": "ONCOR", "75060": "ONCOR", "75061": "ONCOR",
-    "75062": "ONCOR", "75063": "ONCOR", "75070": "ONCOR", "75071": "ONCOR",
-    "75074": "ONCOR", "75075": "ONCOR", "75080": "ONCOR", "75081": "ONCOR",
-    "75082": "ONCOR", "75087": "ONCOR", "75089": "ONCOR", "75093": "ONCOR",
-    "75094": "ONCOR", "75098": "ONCOR", "75104": "ONCOR", "75115": "ONCOR",
-    "75116": "ONCOR", "75134": "ONCOR", "75137": "ONCOR", "75141": "ONCOR",
-    "75146": "ONCOR", "75149": "ONCOR", "75150": "ONCOR", "75154": "ONCOR",
-    "75159": "ONCOR", "75166": "ONCOR", "75172": "ONCOR", "75180": "ONCOR",
-    "75181": "ONCOR", "75182": "ONCOR", "75189": "ONCOR", "75201": "ONCOR",
-    "75202": "ONCOR", "75203": "ONCOR", "75204": "ONCOR", "75205": "ONCOR",
-    "75206": "ONCOR", "75207": "ONCOR", "75208": "ONCOR", "75209": "ONCOR",
-    "75210": "ONCOR", "75211": "ONCOR", "75212": "ONCOR", "75214": "ONCOR",
-    "75215": "ONCOR", "75216": "ONCOR", "75217": "ONCOR", "75218": "ONCOR",
-    "75219": "ONCOR", "75220": "ONCOR", "75223": "ONCOR", "75224": "ONCOR",
-    "75225": "ONCOR", "75226": "ONCOR", "75227": "ONCOR", "75228": "ONCOR",
-    "75229": "ONCOR", "75230": "ONCOR", "75231": "ONCOR", "75232": "ONCOR",
-    "75233": "ONCOR", "75234": "ONCOR", "75235": "ONCOR", "75236": "ONCOR",
-    "75237": "ONCOR", "75238": "ONCOR", "75240": "ONCOR", "75241": "ONCOR",
-    "75243": "ONCOR", "75244": "ONCOR", "75246": "ONCOR", "75247": "ONCOR",
-    "75248": "ONCOR", "75249": "ONCOR", "75251": "ONCOR", "75252": "ONCOR",
-    "75253": "ONCOR", "75254": "ONCOR", "76001": "ONCOR", "76002": "ONCOR",
-    "76006": "ONCOR", "76010": "ONCOR", "76011": "ONCOR", "76012": "ONCOR",
-    "76013": "ONCOR", "76014": "ONCOR", "76015": "ONCOR", "76016": "ONCOR",
-    "76017": "ONCOR", "76018": "ONCOR", "76034": "ONCOR", "76039": "ONCOR",
-    "76040": "ONCOR", "76051": "ONCOR", "76052": "ONCOR", "76053": "ONCOR",
-    "76054": "ONCOR", "76060": "ONCOR", "76063": "ONCOR", "76092": "ONCOR",
-    "76101": "ONCOR", "76102": "ONCOR", "76103": "ONCOR", "76104": "ONCOR",
-    "76105": "ONCOR", "76106": "ONCOR", "76107": "ONCOR", "76108": "ONCOR",
-    "76109": "ONCOR", "76110": "ONCOR", "76111": "ONCOR", "76112": "ONCOR",
-    "76116": "ONCOR", "76117": "ONCOR", "76118": "ONCOR", "76119": "ONCOR",
-    "76120": "ONCOR", "76123": "ONCOR", "76126": "ONCOR", "76127": "ONCOR",
-    "76131": "ONCOR", "76132": "ONCOR", "76133": "ONCOR", "76134": "ONCOR",
-    "76135": "ONCOR", "76137": "ONCOR", "76140": "ONCOR", "76148": "ONCOR",
-    "76155": "ONCOR", "76164": "ONCOR", "76177": "ONCOR", "76179": "ONCOR",
-    "76180": "ONCOR", "76182": "ONCOR", "76244": "ONCOR", "76248": "ONCOR",
-    "76262": "ONCOR",
-    "77001": "CENTPT", "77002": "CENTPT", "77003": "CENTPT", "77004": "CENTPT",
-    "77005": "CENTPT", "77006": "CENTPT", "77007": "CENTPT", "77008": "CENTPT",
-    "77009": "CENTPT", "77010": "CENTPT", "77011": "CENTPT", "77012": "CENTPT",
-    "77013": "CENTPT", "77014": "CENTPT", "77015": "CENTPT", "77016": "CENTPT",
-    "77017": "CENTPT", "77018": "CENTPT", "77019": "CENTPT", "77020": "CENTPT",
-    "77021": "CENTPT", "77022": "CENTPT", "77023": "CENTPT", "77024": "CENTPT",
-    "77025": "CENTPT", "77026": "CENTPT", "77027": "CENTPT", "77028": "CENTPT",
-    "77029": "CENTPT", "77030": "CENTPT", "77031": "CENTPT", "77032": "CENTPT",
-    "77033": "CENTPT", "77034": "CENTPT", "77035": "CENTPT", "77036": "CENTPT",
-    "77037": "CENTPT", "77038": "CENTPT", "77039": "CENTPT", "77040": "CENTPT",
-    "77041": "CENTPT", "77042": "CENTPT", "77043": "CENTPT", "77044": "CENTPT",
-    "77045": "CENTPT", "77046": "CENTPT", "77047": "CENTPT", "77048": "CENTPT",
-    "77049": "CENTPT", "77050": "CENTPT", "77051": "CENTPT", "77053": "CENTPT",
-    "77054": "CENTPT", "77055": "CENTPT", "77056": "CENTPT", "77057": "CENTPT",
-    "77058": "CENTPT", "77059": "CENTPT", "77060": "CENTPT", "77061": "CENTPT",
-    "77062": "CENTPT", "77063": "CENTPT", "77064": "CENTPT", "77065": "CENTPT",
-    "77066": "CENTPT", "77067": "CENTPT", "77068": "CENTPT", "77069": "CENTPT",
-    "77070": "CENTPT", "77071": "CENTPT", "77072": "CENTPT", "77073": "CENTPT",
-    "77074": "CENTPT", "77075": "CENTPT", "77076": "CENTPT", "77077": "CENTPT",
-    "77078": "CENTPT", "77079": "CENTPT", "77080": "CENTPT", "77081": "CENTPT",
-    "77082": "CENTPT", "77083": "CENTPT", "77084": "CENTPT", "77085": "CENTPT",
-    "77086": "CENTPT", "77087": "CENTPT", "77088": "CENTPT", "77089": "CENTPT",
-    "77090": "CENTPT", "77091": "CENTPT", "77092": "CENTPT", "77093": "CENTPT",
-    "77094": "CENTPT", "77095": "CENTPT", "77096": "CENTPT", "77098": "CENTPT",
-    "77099": "CENTPT",
-    "77301": "CENTPT", "77302": "CENTPT", "77303": "CENTPT", "77304": "CENTPT",
-    "77316": "CENTPT", "77339": "CENTPT", "77345": "CENTPT", "77346": "CENTPT",
-    "77354": "CENTPT", "77355": "CENTPT", "77356": "CENTPT", "77362": "CENTPT",
-    "77365": "CENTPT", "77373": "CENTPT", "77375": "CENTPT", "77377": "CENTPT",
-    "77378": "CENTPT", "77379": "CENTPT", "77380": "CENTPT", "77381": "CENTPT",
-    "77382": "CENTPT", "77384": "CENTPT", "77385": "CENTPT", "77386": "CENTPT",
-    "77388": "CENTPT", "77389": "CENTPT",
-    "77401": "CENTPT", "77406": "CENTPT", "77407": "CENTPT", "77429": "CENTPT",
-    "77433": "CENTPT", "77449": "CENTPT", "77450": "CENTPT", "77459": "CENTPT",
-    "77469": "CENTPT", "77471": "CENTPT", "77477": "CENTPT", "77478": "CENTPT",
-    "77479": "CENTPT", "77489": "CENTPT", "77494": "CENTPT", "77498": "CENTPT",
-    "77504": "CENTPT", "77505": "CENTPT", "77506": "CENTPT", "77507": "CENTPT",
-    "77520": "CENTPT", "77521": "CENTPT", "77530": "CENTPT", "77532": "CENTPT",
-    "77536": "CENTPT", "77539": "CENTPT", "77546": "CENTPT", "77550": "CENTPT",
-    "77551": "CENTPT", "77563": "CENTPT", "77565": "CENTPT", "77571": "CENTPT",
-    "77573": "CENTPT", "77581": "CENTPT", "77583": "CENTPT", "77584": "CENTPT",
-    "77586": "CENTPT", "77587": "CENTPT", "77590": "CENTPT", "77591": "CENTPT",
-    "75459": "TNMP", "75490": "TNMP", "76028": "TNMP", "76031": "TNMP",
-    "76033": "TNMP", "76044": "TNMP", "76048": "TNMP", "76049": "TNMP",
-    "76058": "TNMP", "76059": "TNMP", "76065": "TNMP", "76066": "TNMP",
-    "76070": "TNMP", "76084": "TNMP", "76093": "TNMP", "76433": "TNMP",
-    "76446": "TNMP", "76457": "TNMP", "76462": "TNMP",
-    "78373": "AEP_TCC", "78401": "AEP_TCC", "78402": "AEP_TCC", "78404": "AEP_TCC",
-    "78405": "AEP_TCC", "78407": "AEP_TCC", "78408": "AEP_TCC", "78409": "AEP_TCC",
-    "78410": "AEP_TCC", "78411": "AEP_TCC", "78412": "AEP_TCC", "78413": "AEP_TCC",
-    "78414": "AEP_TCC", "78415": "AEP_TCC", "78416": "AEP_TCC", "78417": "AEP_TCC",
-    "78418": "AEP_TCC", "78380": "AEP_TCC", "78102": "AEP_TCC", "77901": "AEP_TCC",
-    "77904": "AEP_TCC", "77905": "AEP_TCC",
-    "79601": "AEP_TNC", "79602": "AEP_TNC", "79603": "AEP_TNC", "79605": "AEP_TNC",
-    "79606": "AEP_TNC", "79607": "AEP_TNC", "76821": "AEP_TNC", "76901": "AEP_TNC",
-    "76903": "AEP_TNC", "76904": "AEP_TNC", "76905": "AEP_TNC",
-    "76701": "ONCOR", "76702": "ONCOR", "76704": "ONCOR", "76705": "ONCOR",
-    "76706": "ONCOR", "76707": "ONCOR", "76708": "ONCOR", "76710": "ONCOR",
-    "76711": "ONCOR", "76712": "ONCOR", "76798": "ONCOR",
-    "79901": "AEP_TNC", "79902": "AEP_TNC", "79903": "AEP_TNC", "79904": "AEP_TNC",
-    "79905": "AEP_TNC", "79907": "AEP_TNC", "79911": "AEP_TNC", "79912": "AEP_TNC",
-    "79915": "AEP_TNC", "79924": "AEP_TNC", "79925": "AEP_TNC", "79927": "AEP_TNC",
-    "79928": "AEP_TNC", "79930": "AEP_TNC", "79932": "AEP_TNC", "79934": "AEP_TNC",
-    "79935": "AEP_TNC", "79936": "AEP_TNC", "79938": "AEP_TNC",
+  zip_tdu: {
+    // ONCOR — Dallas/Fort Worth/Waco
+    "75001":"ONCOR","75002":"ONCOR","75006":"ONCOR","75007":"ONCOR","75019":"ONCOR",
+    "75024":"ONCOR","75025":"ONCOR","75034":"ONCOR","75035":"ONCOR","75040":"ONCOR",
+    "75041":"ONCOR","75042":"ONCOR","75043":"ONCOR","75044":"ONCOR","75048":"ONCOR",
+    "75050":"ONCOR","75051":"ONCOR","75052":"ONCOR","75060":"ONCOR","75061":"ONCOR",
+    "75062":"ONCOR","75063":"ONCOR","75070":"ONCOR","75071":"ONCOR","75074":"ONCOR",
+    "75075":"ONCOR","75080":"ONCOR","75081":"ONCOR","75082":"ONCOR","75087":"ONCOR",
+    "75089":"ONCOR","75093":"ONCOR","75094":"ONCOR","75098":"ONCOR","75104":"ONCOR",
+    "75115":"ONCOR","75116":"ONCOR","75134":"ONCOR","75137":"ONCOR","75141":"ONCOR",
+    "75146":"ONCOR","75149":"ONCOR","75150":"ONCOR","75154":"ONCOR","75159":"ONCOR",
+    "75166":"ONCOR","75172":"ONCOR","75180":"ONCOR","75181":"ONCOR","75182":"ONCOR",
+    "75189":"ONCOR","75201":"ONCOR","75202":"ONCOR","75203":"ONCOR","75204":"ONCOR",
+    "75205":"ONCOR","75206":"ONCOR","75207":"ONCOR","75208":"ONCOR","75209":"ONCOR",
+    "75210":"ONCOR","75211":"ONCOR","75212":"ONCOR","75214":"ONCOR","75215":"ONCOR",
+    "75216":"ONCOR","75217":"ONCOR","75218":"ONCOR","75219":"ONCOR","75220":"ONCOR",
+    "75223":"ONCOR","75224":"ONCOR","75225":"ONCOR","75226":"ONCOR","75227":"ONCOR",
+    "75228":"ONCOR","75229":"ONCOR","75230":"ONCOR","75231":"ONCOR","75232":"ONCOR",
+    "75233":"ONCOR","75234":"ONCOR","75235":"ONCOR","75236":"ONCOR","75237":"ONCOR",
+    "75238":"ONCOR","75240":"ONCOR","75241":"ONCOR","75243":"ONCOR","75244":"ONCOR",
+    "75246":"ONCOR","75247":"ONCOR","75248":"ONCOR","75249":"ONCOR","75251":"ONCOR",
+    "75252":"ONCOR","75253":"ONCOR","75254":"ONCOR",
+    "76001":"ONCOR","76002":"ONCOR","76006":"ONCOR","76010":"ONCOR","76011":"ONCOR",
+    "76012":"ONCOR","76013":"ONCOR","76014":"ONCOR","76015":"ONCOR","76016":"ONCOR",
+    "76017":"ONCOR","76018":"ONCOR","76034":"ONCOR","76039":"ONCOR","76040":"ONCOR",
+    "76051":"ONCOR","76052":"ONCOR","76053":"ONCOR","76054":"ONCOR","76060":"ONCOR",
+    "76063":"ONCOR","76092":"ONCOR","76101":"ONCOR","76102":"ONCOR","76103":"ONCOR",
+    "76104":"ONCOR","76105":"ONCOR","76106":"ONCOR","76107":"ONCOR","76108":"ONCOR",
+    "76109":"ONCOR","76110":"ONCOR","76111":"ONCOR","76112":"ONCOR","76116":"ONCOR",
+    "76117":"ONCOR","76118":"ONCOR","76119":"ONCOR","76120":"ONCOR","76123":"ONCOR",
+    "76126":"ONCOR","76127":"ONCOR","76131":"ONCOR","76132":"ONCOR","76133":"ONCOR",
+    "76134":"ONCOR","76135":"ONCOR","76137":"ONCOR","76140":"ONCOR","76148":"ONCOR",
+    "76155":"ONCOR","76164":"ONCOR","76177":"ONCOR","76179":"ONCOR","76180":"ONCOR",
+    "76182":"ONCOR","76244":"ONCOR","76248":"ONCOR","76262":"ONCOR",
+    "76701":"ONCOR","76702":"ONCOR","76704":"ONCOR","76705":"ONCOR","76706":"ONCOR",
+    "76707":"ONCOR","76708":"ONCOR","76710":"ONCOR","76711":"ONCOR","76712":"ONCOR",
+    "76798":"ONCOR",
+    // Rockwall area
+    "75032":"ONCOR","75087":"ONCOR","75189":"ONCOR",
+    // CENTERPOINT — Houston
+    "77001":"CENTPT","77002":"CENTPT","77003":"CENTPT","77004":"CENTPT","77005":"CENTPT",
+    "77006":"CENTPT","77007":"CENTPT","77008":"CENTPT","77009":"CENTPT","77010":"CENTPT",
+    "77011":"CENTPT","77012":"CENTPT","77013":"CENTPT","77014":"CENTPT","77015":"CENTPT",
+    "77016":"CENTPT","77017":"CENTPT","77018":"CENTPT","77019":"CENTPT","77020":"CENTPT",
+    "77021":"CENTPT","77022":"CENTPT","77023":"CENTPT","77024":"CENTPT","77025":"CENTPT",
+    "77026":"CENTPT","77027":"CENTPT","77028":"CENTPT","77029":"CENTPT","77030":"CENTPT",
+    "77031":"CENTPT","77032":"CENTPT","77033":"CENTPT","77034":"CENTPT","77035":"CENTPT",
+    "77036":"CENTPT","77037":"CENTPT","77038":"CENTPT","77039":"CENTPT","77040":"CENTPT",
+    "77041":"CENTPT","77042":"CENTPT","77043":"CENTPT","77044":"CENTPT","77045":"CENTPT",
+    "77046":"CENTPT","77047":"CENTPT","77048":"CENTPT","77049":"CENTPT","77050":"CENTPT",
+    "77051":"CENTPT","77053":"CENTPT","77054":"CENTPT","77055":"CENTPT","77056":"CENTPT",
+    "77057":"CENTPT","77058":"CENTPT","77059":"CENTPT","77060":"CENTPT","77061":"CENTPT",
+    "77062":"CENTPT","77063":"CENTPT","77064":"CENTPT","77065":"CENTPT","77066":"CENTPT",
+    "77067":"CENTPT","77068":"CENTPT","77069":"CENTPT","77070":"CENTPT","77071":"CENTPT",
+    "77072":"CENTPT","77073":"CENTPT","77074":"CENTPT","77075":"CENTPT","77076":"CENTPT",
+    "77077":"CENTPT","77078":"CENTPT","77079":"CENTPT","77080":"CENTPT","77081":"CENTPT",
+    "77082":"CENTPT","77083":"CENTPT","77084":"CENTPT","77085":"CENTPT","77086":"CENTPT",
+    "77087":"CENTPT","77088":"CENTPT","77089":"CENTPT","77090":"CENTPT","77091":"CENTPT",
+    "77092":"CENTPT","77093":"CENTPT","77094":"CENTPT","77095":"CENTPT","77096":"CENTPT",
+    "77098":"CENTPT","77099":"CENTPT",
+    "77301":"CENTPT","77302":"CENTPT","77303":"CENTPT","77304":"CENTPT","77316":"CENTPT",
+    "77339":"CENTPT","77345":"CENTPT","77346":"CENTPT","77354":"CENTPT","77355":"CENTPT",
+    "77356":"CENTPT","77362":"CENTPT","77365":"CENTPT","77373":"CENTPT","77375":"CENTPT",
+    "77377":"CENTPT","77378":"CENTPT","77379":"CENTPT","77380":"CENTPT","77381":"CENTPT",
+    "77382":"CENTPT","77384":"CENTPT","77385":"CENTPT","77386":"CENTPT","77388":"CENTPT",
+    "77389":"CENTPT","77401":"CENTPT","77406":"CENTPT","77407":"CENTPT","77429":"CENTPT",
+    "77433":"CENTPT","77449":"CENTPT","77450":"CENTPT","77459":"CENTPT","77469":"CENTPT",
+    "77471":"CENTPT","77477":"CENTPT","77478":"CENTPT","77479":"CENTPT","77489":"CENTPT",
+    "77494":"CENTPT","77498":"CENTPT","77504":"CENTPT","77505":"CENTPT","77506":"CENTPT",
+    "77507":"CENTPT","77520":"CENTPT","77521":"CENTPT","77530":"CENTPT","77532":"CENTPT",
+    "77536":"CENTPT","77539":"CENTPT","77546":"CENTPT","77550":"CENTPT","77551":"CENTPT",
+    "77563":"CENTPT","77565":"CENTPT","77571":"CENTPT","77573":"CENTPT","77581":"CENTPT",
+    "77583":"CENTPT","77584":"CENTPT","77586":"CENTPT","77587":"CENTPT","77590":"CENTPT",
+    "77591":"CENTPT",
+    // TNMP
+    "75459":"TNMP","75490":"TNMP","76028":"TNMP","76031":"TNMP","76033":"TNMP",
+    "76044":"TNMP","76048":"TNMP","76049":"TNMP","76058":"TNMP","76059":"TNMP",
+    "76065":"TNMP","76066":"TNMP","76070":"TNMP","76084":"TNMP","76093":"TNMP",
+    "76433":"TNMP","76446":"TNMP","76457":"TNMP","76462":"TNMP",
+    // AEP Texas Central — Corpus Christi
+    "78373":"AEP_TCC","78401":"AEP_TCC","78402":"AEP_TCC","78404":"AEP_TCC",
+    "78405":"AEP_TCC","78407":"AEP_TCC","78408":"AEP_TCC","78409":"AEP_TCC",
+    "78410":"AEP_TCC","78411":"AEP_TCC","78412":"AEP_TCC","78413":"AEP_TCC",
+    "78414":"AEP_TCC","78415":"AEP_TCC","78416":"AEP_TCC","78417":"AEP_TCC",
+    "78418":"AEP_TCC","78380":"AEP_TCC","78102":"AEP_TCC","77901":"AEP_TCC",
+    "77904":"AEP_TCC","77905":"AEP_TCC",
+    // AEP Texas North — Abilene, San Angelo, El Paso
+    "79601":"AEP_TNC","79602":"AEP_TNC","79603":"AEP_TNC","79605":"AEP_TNC",
+    "79606":"AEP_TNC","79607":"AEP_TNC","76821":"AEP_TNC","76901":"AEP_TNC",
+    "76903":"AEP_TNC","76904":"AEP_TNC","76905":"AEP_TNC",
+    "79901":"AEP_TNC","79902":"AEP_TNC","79903":"AEP_TNC","79904":"AEP_TNC",
+    "79905":"AEP_TNC","79907":"AEP_TNC","79911":"AEP_TNC","79912":"AEP_TNC",
+    "79915":"AEP_TNC","79924":"AEP_TNC","79925":"AEP_TNC","79927":"AEP_TNC",
+    "79928":"AEP_TNC","79930":"AEP_TNC","79932":"AEP_TNC","79934":"AEP_TNC",
+    "79935":"AEP_TNC","79936":"AEP_TNC","79938":"AEP_TNC"
   },
-
-  // ============================================================
-  // LIVE PLAN DATABASE - Real rates from PowerToChoose.org
-  // Updated: February 2026 | Based on 1000 kWh/mo usage
-  // ============================================================
+  // Plans by TDU — rates in ¢/kWh at 1000 kWh usage
   plans: {
     ONCOR: [
-      { provider: "TXU Energy", plan: "Simple Rate 12", rate: 11.9, term: 12, type: "Fixed", renewable: 6, rating: 4.2, cancel_fee: 150 },
-      { provider: "TXU Energy", plan: "Free Nights", rate: 14.3, term: 12, type: "Fixed", renewable: 0, rating: 3.8, cancel_fee: 150 },
-      { provider: "Reliant Energy", plan: "Secure Advantage 12", rate: 11.5, term: 12, type: "Fixed", renewable: 0, rating: 4.0, cancel_fee: 150 },
-      { provider: "Reliant Energy", plan: "Truly Free Weekends 12", rate: 13.8, term: 12, type: "Fixed", renewable: 27, rating: 3.9, cancel_fee: 150 },
-      { provider: "Gexa Energy", plan: "Gexa Saver Deluxe 12", rate: 10.8, term: 12, type: "Fixed", renewable: 0, rating: 3.5, cancel_fee: 150 },
-      { provider: "Gexa Energy", plan: "Gexa Green 12", rate: 11.4, term: 12, type: "Fixed", renewable: 100, rating: 3.6, cancel_fee: 150 },
-      { provider: "Green Mountain", plan: "Pollution Free e-Plus 12", rate: 12.1, term: 12, type: "Fixed", renewable: 100, rating: 4.5, cancel_fee: 150 },
-      { provider: "Constellation", plan: "12 Month Home Power Plan", rate: 10.5, term: 12, type: "Fixed", renewable: 0, rating: 3.7, cancel_fee: 175 },
-      { provider: "Constellation", plan: "Green Home Power 12", rate: 11.2, term: 12, type: "Fixed", renewable: 100, rating: 3.8, cancel_fee: 175 },
-      { provider: "4Change Energy", plan: "Maxx Saver 12", rate: 10.2, term: 12, type: "Fixed", renewable: 0, rating: 3.3, cancel_fee: 150 },
-      { provider: "4Change Energy", plan: "Earth Day Every Day 12", rate: 10.9, term: 12, type: "Fixed", renewable: 100, rating: 3.4, cancel_fee: 150 },
-      { provider: "Frontier Utilities", plan: "Super Value 12", rate: 10.6, term: 12, type: "Fixed", renewable: 0, rating: 3.2, cancel_fee: 175 },
-      { provider: "Chariot Energy", plan: "Solar 12", rate: 11.7, term: 12, type: "Fixed", renewable: 100, rating: 4.1, cancel_fee: 150 },
-      { provider: "Pulse Power", plan: "Texas Fixed 12", rate: 10.4, term: 12, type: "Fixed", renewable: 4, rating: 3.1, cancel_fee: 150 },
-      { provider: "Rhythm Energy", plan: "Fixed 12", rate: 11.1, term: 12, type: "Fixed", renewable: 100, rating: 4.3, cancel_fee: 0 },
-      { provider: "Express Energy", plan: "Flash 12", rate: 10.1, term: 12, type: "Fixed", renewable: 0, rating: 2.9, cancel_fee: 200 },
-      { provider: "Discount Power", plan: "Saver 12 Plan", rate: 10.0, term: 12, type: "Fixed", renewable: 0, rating: 2.8, cancel_fee: 175 },
-      { provider: "Veteran Energy", plan: "Salute 12", rate: 11.6, term: 12, type: "Fixed", renewable: 10, rating: 3.9, cancel_fee: 150 },
-      { provider: "TriEagle Energy", plan: "Eagle 12", rate: 10.7, term: 12, type: "Fixed", renewable: 0, rating: 3.0, cancel_fee: 199 },
+      {p:"TXU Energy",n:"Simple Rate 12",r:11.9,t:12,re:6,s:4.2,cf:150},
+      {p:"TXU Energy",n:"Free Nights",r:14.3,t:12,re:0,s:3.8,cf:150},
+      {p:"Reliant Energy",n:"Secure Advantage 12",r:11.5,t:12,re:0,s:4.0,cf:150},
+      {p:"Reliant Energy",n:"Truly Free Weekends 12",r:13.8,t:12,re:27,s:3.9,cf:150},
+      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:10.8,t:12,re:0,s:3.5,cf:150},
+      {p:"Gexa Energy",n:"Gexa Green 12",r:11.4,t:12,re:100,s:3.6,cf:150},
+      {p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.1,t:12,re:100,s:4.5,cf:150},
+      {p:"Constellation",n:"12 Month Home Power Plan",r:10.5,t:12,re:0,s:3.7,cf:175},
+      {p:"Constellation",n:"Green Home Power 12",r:11.2,t:12,re:100,s:3.8,cf:175},
+      {p:"4Change Energy",n:"Maxx Saver 12",r:10.2,t:12,re:0,s:3.3,cf:150},
+      {p:"4Change Energy",n:"Earth Day Every Day 12",r:10.9,t:12,re:100,s:3.4,cf:150},
+      {p:"Frontier Utilities",n:"Super Value 12",r:10.6,t:12,re:0,s:3.2,cf:175},
+      {p:"Chariot Energy",n:"Solar 12",r:11.7,t:12,re:100,s:4.1,cf:150},
+      {p:"Pulse Power",n:"Texas Fixed 12",r:10.4,t:12,re:4,s:3.1,cf:150},
+      {p:"Rhythm Energy",n:"Fixed 12",r:11.1,t:12,re:100,s:4.3,cf:0},
+      {p:"Express Energy",n:"Flash 12",r:10.1,t:12,re:0,s:2.9,cf:200},
+      {p:"Discount Power",n:"Saver 12 Plan",r:10.0,t:12,re:0,s:2.8,cf:175},
+      {p:"Veteran Energy",n:"Salute 12",r:11.6,t:12,re:10,s:3.9,cf:150},
+      {p:"TriEagle Energy",n:"Eagle 12",r:10.7,t:12,re:0,s:3.0,cf:199}
     ],
     CENTPT: [
-      { provider: "TXU Energy", plan: "Simple Rate 12", rate: 12.4, term: 12, type: "Fixed", renewable: 6, rating: 4.2, cancel_fee: 150 },
-      { provider: "TXU Energy", plan: "Free Nights", rate: 14.8, term: 12, type: "Fixed", renewable: 0, rating: 3.8, cancel_fee: 150 },
-      { provider: "Reliant Energy", plan: "Secure Advantage 12", rate: 12.0, term: 12, type: "Fixed", renewable: 0, rating: 4.0, cancel_fee: 150 },
-      { provider: "Reliant Energy", plan: "Conservation 12", rate: 12.6, term: 12, type: "Fixed", renewable: 30, rating: 4.1, cancel_fee: 150 },
-      { provider: "Gexa Energy", plan: "Gexa Saver Deluxe 12", rate: 11.3, term: 12, type: "Fixed", renewable: 0, rating: 3.5, cancel_fee: 150 },
-      { provider: "Gexa Energy", plan: "Gexa Green 12", rate: 11.9, term: 12, type: "Fixed", renewable: 100, rating: 3.6, cancel_fee: 150 },
-      { provider: "Green Mountain", plan: "Pollution Free e-Plus 12", rate: 12.7, term: 12, type: "Fixed", renewable: 100, rating: 4.5, cancel_fee: 150 },
-      { provider: "Constellation", plan: "12 Month Home Power Plan", rate: 11.0, term: 12, type: "Fixed", renewable: 0, rating: 3.7, cancel_fee: 175 },
-      { provider: "4Change Energy", plan: "Maxx Saver 12", rate: 10.7, term: 12, type: "Fixed", renewable: 0, rating: 3.3, cancel_fee: 150 },
-      { provider: "Frontier Utilities", plan: "Super Value 12", rate: 11.1, term: 12, type: "Fixed", renewable: 0, rating: 3.2, cancel_fee: 175 },
-      { provider: "Chariot Energy", plan: "Solar 12", rate: 12.2, term: 12, type: "Fixed", renewable: 100, rating: 4.1, cancel_fee: 150 },
-      { provider: "Pulse Power", plan: "Texas Fixed 12", rate: 10.9, term: 12, type: "Fixed", renewable: 4, rating: 3.1, cancel_fee: 150 },
-      { provider: "Rhythm Energy", plan: "Fixed 12", rate: 11.6, term: 12, type: "Fixed", renewable: 100, rating: 4.3, cancel_fee: 0 },
-      { provider: "Express Energy", plan: "Flash 12", rate: 10.6, term: 12, type: "Fixed", renewable: 0, rating: 2.9, cancel_fee: 200 },
-      { provider: "Discount Power", plan: "Saver 12 Plan", rate: 10.5, term: 12, type: "Fixed", renewable: 0, rating: 2.8, cancel_fee: 175 },
-      { provider: "Cirro Energy", plan: "Sure Savings 12", rate: 11.4, term: 12, type: "Fixed", renewable: 8, rating: 3.4, cancel_fee: 150 },
+      {p:"TXU Energy",n:"Simple Rate 12",r:12.4,t:12,re:6,s:4.2,cf:150},
+      {p:"TXU Energy",n:"Free Nights",r:14.8,t:12,re:0,s:3.8,cf:150},
+      {p:"Reliant Energy",n:"Secure Advantage 12",r:12.0,t:12,re:0,s:4.0,cf:150},
+      {p:"Reliant Energy",n:"Conservation 12",r:12.6,t:12,re:30,s:4.1,cf:150},
+      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:11.3,t:12,re:0,s:3.5,cf:150},
+      {p:"Gexa Energy",n:"Gexa Green 12",r:11.9,t:12,re:100,s:3.6,cf:150},
+      {p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.7,t:12,re:100,s:4.5,cf:150},
+      {p:"Constellation",n:"12 Month Home Power Plan",r:11.0,t:12,re:0,s:3.7,cf:175},
+      {p:"4Change Energy",n:"Maxx Saver 12",r:10.7,t:12,re:0,s:3.3,cf:150},
+      {p:"Frontier Utilities",n:"Super Value 12",r:11.1,t:12,re:0,s:3.2,cf:175},
+      {p:"Chariot Energy",n:"Solar 12",r:12.2,t:12,re:100,s:4.1,cf:150},
+      {p:"Pulse Power",n:"Texas Fixed 12",r:10.9,t:12,re:4,s:3.1,cf:150},
+      {p:"Rhythm Energy",n:"Fixed 12",r:11.6,t:12,re:100,s:4.3,cf:0},
+      {p:"Express Energy",n:"Flash 12",r:10.6,t:12,re:0,s:2.9,cf:200},
+      {p:"Discount Power",n:"Saver 12 Plan",r:10.5,t:12,re:0,s:2.8,cf:175},
+      {p:"Cirro Energy",n:"Sure Savings 12",r:11.4,t:12,re:8,s:3.4,cf:150}
     ],
     TNMP: [
-      { provider: "TXU Energy", plan: "Simple Rate 12", rate: 12.8, term: 12, type: "Fixed", renewable: 6, rating: 4.2, cancel_fee: 150 },
-      { provider: "Reliant Energy", plan: "Secure Advantage 12", rate: 12.3, term: 12, type: "Fixed", renewable: 0, rating: 4.0, cancel_fee: 150 },
-      { provider: "Gexa Energy", plan: "Gexa Saver Deluxe 12", rate: 11.7, term: 12, type: "Fixed", renewable: 0, rating: 3.5, cancel_fee: 150 },
-      { provider: "Constellation", plan: "12 Month Home Power Plan", rate: 11.4, term: 12, type: "Fixed", renewable: 0, rating: 3.7, cancel_fee: 175 },
-      { provider: "4Change Energy", plan: "Maxx Saver 12", rate: 11.1, term: 12, type: "Fixed", renewable: 0, rating: 3.3, cancel_fee: 150 },
-      { provider: "Frontier Utilities", plan: "Super Value 12", rate: 11.5, term: 12, type: "Fixed", renewable: 0, rating: 3.2, cancel_fee: 175 },
-      { provider: "Rhythm Energy", plan: "Fixed 12", rate: 12.0, term: 12, type: "Fixed", renewable: 100, rating: 4.3, cancel_fee: 0 },
-      { provider: "Pulse Power", plan: "Texas Fixed 12", rate: 11.2, term: 12, type: "Fixed", renewable: 4, rating: 3.1, cancel_fee: 150 },
+      {p:"TXU Energy",n:"Simple Rate 12",r:12.8,t:12,re:6,s:4.2,cf:150},
+      {p:"Reliant Energy",n:"Secure Advantage 12",r:12.3,t:12,re:0,s:4.0,cf:150},
+      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:11.7,t:12,re:0,s:3.5,cf:150},
+      {p:"Constellation",n:"12 Month Home Power Plan",r:11.4,t:12,re:0,s:3.7,cf:175},
+      {p:"4Change Energy",n:"Maxx Saver 12",r:11.1,t:12,re:0,s:3.3,cf:150},
+      {p:"Frontier Utilities",n:"Super Value 12",r:11.5,t:12,re:0,s:3.2,cf:175},
+      {p:"Rhythm Energy",n:"Fixed 12",r:12.0,t:12,re:100,s:4.3,cf:0},
+      {p:"Pulse Power",n:"Texas Fixed 12",r:11.2,t:12,re:4,s:3.1,cf:150}
     ],
     AEP_TCC: [
-      { provider: "TXU Energy", plan: "Simple Rate 12", rate: 13.1, term: 12, type: "Fixed", renewable: 6, rating: 4.2, cancel_fee: 150 },
-      { provider: "Reliant Energy", plan: "Secure Advantage 12", rate: 12.7, term: 12, type: "Fixed", renewable: 0, rating: 4.0, cancel_fee: 150 },
-      { provider: "Gexa Energy", plan: "Gexa Saver Deluxe 12", rate: 12.0, term: 12, type: "Fixed", renewable: 0, rating: 3.5, cancel_fee: 150 },
-      { provider: "Constellation", plan: "12 Month Home Power Plan", rate: 11.8, term: 12, type: "Fixed", renewable: 0, rating: 3.7, cancel_fee: 175 },
-      { provider: "4Change Energy", plan: "Maxx Saver 12", rate: 11.4, term: 12, type: "Fixed", renewable: 0, rating: 3.3, cancel_fee: 150 },
-      { provider: "Frontier Utilities", plan: "Super Value 12", rate: 11.9, term: 12, type: "Fixed", renewable: 0, rating: 3.2, cancel_fee: 175 },
+      {p:"TXU Energy",n:"Simple Rate 12",r:13.1,t:12,re:6,s:4.2,cf:150},
+      {p:"Reliant Energy",n:"Secure Advantage 12",r:12.7,t:12,re:0,s:4.0,cf:150},
+      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.0,t:12,re:0,s:3.5,cf:150},
+      {p:"Constellation",n:"12 Month Home Power Plan",r:11.8,t:12,re:0,s:3.7,cf:175},
+      {p:"4Change Energy",n:"Maxx Saver 12",r:11.4,t:12,re:0,s:3.3,cf:150},
+      {p:"Frontier Utilities",n:"Super Value 12",r:11.9,t:12,re:0,s:3.2,cf:175}
     ],
     AEP_TNC: [
-      { provider: "TXU Energy", plan: "Simple Rate 12", rate: 13.4, term: 12, type: "Fixed", renewable: 6, rating: 4.2, cancel_fee: 150 },
-      { provider: "Reliant Energy", plan: "Secure Advantage 12", rate: 13.0, term: 12, type: "Fixed", renewable: 0, rating: 4.0, cancel_fee: 150 },
-      { provider: "Gexa Energy", plan: "Gexa Saver Deluxe 12", rate: 12.3, term: 12, type: "Fixed", renewable: 0, rating: 3.5, cancel_fee: 150 },
-      { provider: "Constellation", plan: "12 Month Home Power Plan", rate: 12.1, term: 12, type: "Fixed", renewable: 0, rating: 3.7, cancel_fee: 175 },
-      { provider: "4Change Energy", plan: "Maxx Saver 12", rate: 11.7, term: 12, type: "Fixed", renewable: 0, rating: 3.3, cancel_fee: 150 },
-    ],
+      {p:"TXU Energy",n:"Simple Rate 12",r:13.4,t:12,re:6,s:4.2,cf:150},
+      {p:"Reliant Energy",n:"Secure Advantage 12",r:13.0,t:12,re:0,s:4.0,cf:150},
+      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.3,t:12,re:0,s:3.5,cf:150},
+      {p:"Constellation",n:"12 Month Home Power Plan",r:12.1,t:12,re:0,s:3.7,cf:175},
+      {p:"4Change Energy",n:"Maxx Saver 12",r:11.7,t:12,re:0,s:3.3,cf:150}
+    ]
   },
-
-  // POLR (Provider of Last Resort) default rates by TDU - what you pay without shopping
-  polr_rates: {
-    ONCOR: 17.8,
-    CENTPT: 18.2,
-    TNMP: 18.5,
-    AEP_TCC: 19.1,
-    AEP_TNC: 19.4,
-  },
-
-  // Texas average residential rate (EIA data, Jan 2026)
-  state_average: 14.6,
+  polr: { ONCOR:17.8, CENTPT:18.2, TNMP:18.5, AEP_TCC:19.1, AEP_TNC:19.4 },
+  stateAvg: 14.6
 };
 
 // ============================================================
-// SAVINGS ENGINE
+// STATE
 // ============================================================
-function calculateSavings(zip, monthlyUsage = 1000) {
-  const tdu = TEXAS_ENERGY_DB.zip_to_tdu[zip];
-  if (!tdu) return null;
+let currentResults = null;
+let currentSort = "rate";
+let showAll = false;
+let selectedTipAmount = null;
 
-  const plans = TEXAS_ENERGY_DB.plans[tdu];
-  const polr = TEXAS_ENERGY_DB.polr_rates[tdu];
-  const stateAvg = TEXAS_ENERGY_DB.state_average;
-  const territory = TEXAS_ENERGY_DB.tdu_territories[tdu];
+// Count stats
+const totalPlans = Object.values(DB.plans).reduce((s,p) => s + p.length, 0);
+const totalZips = Object.keys(DB.zip_tdu).length;
+document.getElementById('totalPlans').textContent = totalPlans;
+document.getElementById('totalZips').textContent = totalZips;
+document.getElementById('dbPlanCount').textContent = totalPlans;
 
-  const sorted = [...plans].sort((a, b) => a.rate - b.rate);
-  const best = sorted[0];
-  const top5 = sorted.slice(0, 5);
+// Enter key support
+document.getElementById('zipInput').addEventListener('keydown', e => { if(e.key==='Enter') handleSearch(); });
 
-  const savingsVsPolr = ((polr - best.rate) / 100) * monthlyUsage;
-  const savingsVsAvg = ((stateAvg - best.rate) / 100) * monthlyUsage;
-  const annualSavingsVsPolr = savingsVsPolr * 12;
-  const annualSavingsVsAvg = savingsVsAvg * 12;
+// ============================================================
+// SEARCH & SAVINGS ENGINE
+// ============================================================
+function handleSearch() {
+  const zip = document.getElementById('zipInput').value.trim();
+  const usage = parseInt(document.getElementById('usageInput').value) || 1000;
+  const errEl = document.getElementById('errorMsg');
+  const btn = document.getElementById('searchBtn');
 
-  return {
-    tdu, territory, polr, stateAvg, best, top5, sorted,
-    monthlyUsage,
-    monthlyCostBest: (best.rate / 100) * monthlyUsage,
-    monthlyCostPolr: (polr / 100) * monthlyUsage,
-    monthlyCostAvg: (stateAvg / 100) * monthlyUsage,
-    savingsVsPolr, savingsVsAvg,
-    annualSavingsVsPolr, annualSavingsVsAvg,
-    allPlans: sorted,
-  };
+  errEl.style.display = 'none';
+  document.getElementById('resultsSection').classList.add('hidden');
+  showAll = false;
+
+  if (!zip || zip.length !== 5 || !/^\d{5}$/.test(zip)) {
+    errEl.textContent = "Please enter a valid 5-digit Texas ZIP code";
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "⚡ Scanning Database...";
+
+  setTimeout(() => {
+    const tdu = DB.zip_tdu[zip];
+    if (!tdu) {
+      errEl.textContent = "This ZIP code isn't in our Texas deregulated market database. Try a ZIP in DFW (75xxx), Houston (77xxx), or other deregulated areas.";
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = "Find My Best Rate";
+      return;
+    }
+
+    const plans = DB.plans[tdu];
+    const polr = DB.polr[tdu];
+    const territory = DB.tdu[tdu];
+    const sorted = [...plans].sort((a,b) => a.r - b.r);
+    const best = sorted[0];
+
+    const monthlyCostBest = (best.r / 100) * usage;
+    const monthlyCostPolr = (polr / 100) * usage;
+    const monthlyCostAvg = (DB.stateAvg / 100) * usage;
+    const savingsVsPolr = monthlyCostPolr - monthlyCostBest;
+    const annualSavings = savingsVsPolr * 12;
+
+    currentResults = {
+      tdu, territory, polr, best, sorted, usage,
+      monthlyCostBest, monthlyCostPolr, monthlyCostAvg,
+      savingsVsPolr, annualSavings
+    };
+
+    renderResults();
+    btn.disabled = false;
+    btn.textContent = "Find My Best Rate";
+    document.getElementById('headerTipBtn').classList.add('visible');
+    fireConfetti();
+    setTimeout(() => {
+      document.getElementById('resultsSection').scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 100);
+  }, 1100);
+}
+
+function renderResults() {
+  const r = currentResults;
+  document.getElementById('resultsSection').classList.remove('hidden');
+
+  // Territory
+  document.getElementById('tduName').textContent = r.territory.name;
+  document.getElementById('tduRegion').textContent = r.territory.region;
+  document.getElementById('polrRate').textContent = r.polr + '¢/kWh';
+
+  // Savings cards
+  document.getElementById('bestRate').textContent = r.best.r + '¢';
+  document.getElementById('bestProvider').textContent = 'per kWh · ' + r.best.p;
+  document.getElementById('monthlySavings').textContent = '$' + r.savingsVsPolr.toFixed(0);
+  document.getElementById('annualSavings').textContent = '$' + r.annualSavings.toFixed(0);
+  document.getElementById('usageLabel').textContent = r.usage;
+
+  // Cost bars
+  const bars = [
+    { id:'barPolr', label:'TDU Default', rate:r.polr, cost:r.monthlyCostPolr, color:'var(--red)' },
+    { id:'barAvg', label:'Texas Average', rate:DB.stateAvg, cost:r.monthlyCostAvg, color:'var(--yellow)' },
+    { id:'barBest', label:'Best Rate ('+r.best.p+')', rate:r.best.r, cost:r.monthlyCostBest, color:'var(--green)' }
+  ];
+  bars.forEach(b => {
+    const pct = (b.cost / r.monthlyCostPolr * 100);
+    document.getElementById(b.id).innerHTML = `
+      <div class="bar-header">
+        <span>${b.label} (${b.rate}¢/kWh)</span>
+        <span class="cost" style="color:${b.color}">$${b.cost.toFixed(2)}/mo</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${b.color}"></div></div>
+    `;
+  });
+
+  // CTA
+  document.getElementById('ctaSavings').textContent = '$' + r.annualSavings.toFixed(0);
+
+  // Share text
+  document.getElementById('shareText').innerHTML = `
+    <button class="btn-copy" onclick="copyShare()">Copy</button>
+    Hey! I just used WattWise to compare electricity rates for my ZIP code and found I could save $${r.annualSavings.toFixed(0)}/year by switching from the default rate. It's free — a guy named Andy built it to help Texans stop overpaying. Check it out and just enter your ZIP!
+  `;
+
+  renderPlans();
+}
+
+function renderPlans() {
+  const r = currentResults;
+  const plans = showAll ? r.sorted : r.sorted.slice(0, 5);
+  let sorted;
+
+  if (currentSort === 'rate') sorted = [...plans].sort((a,b) => a.r - b.r);
+  else if (currentSort === 'rating') sorted = [...plans].sort((a,b) => b.s - a.s);
+  else if (currentSort === 'renewable') sorted = [...plans].sort((a,b) => b.re - a.re);
+  else sorted = [...plans].sort((a,b) => a.p.localeCompare(b.p));
+
+  document.getElementById('planTableTitle').textContent = showAll ? `All ${r.sorted.length} Plans` : 'Top 5 Plans';
+  document.getElementById('planTableSub').textContent = `Sorted by ${currentSort} · ${r.usage} kWh/mo`;
+
+  let html = '';
+  sorted.forEach((plan, i) => {
+    const monthlyCost = (plan.r / 100) * r.usage;
+    const saving = r.monthlyCostPolr - monthlyCost;
+    const isBest = plan.r === r.best.r;
+    const stars = renderStars(plan.s);
+
+    html += `
+      <div class="plan-row ${isBest ? 'best' : ''} fade-up fade-up-${Math.min(i,9)}">
+        <div class="plan-info">
+          <div>
+            <span class="plan-provider">${plan.p}</span>
+            <span class="plan-badges">
+              ${isBest ? '<span class="badge badge-best">BEST RATE</span>' : ''}
+              ${plan.re === 100 ? '<span class="badge badge-green">100% GREEN</span>' : ''}
+            </span>
+          </div>
+          <div class="plan-name">${plan.n}</div>
+          <div class="plan-meta">
+            ${stars}
+            <span>${plan.t}mo term</span>
+            <span>Cancel: ${plan.cf === 0 ? '<span style="color:var(--green)">None</span>' : '$' + plan.cf}</span>
+            ${plan.re > 0 && plan.re < 100 ? '<span>' + plan.re + '% renewable</span>' : ''}
+          </div>
+        </div>
+        <div class="plan-pricing">
+          <div class="plan-rate ${isBest ? 'best-rate' : ''}">${plan.r}¢</div>
+          <div class="plan-monthly">$${monthlyCost.toFixed(2)}/mo</div>
+          <div class="plan-saving">Save $${saving.toFixed(0)}/mo</div>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('planList').innerHTML = html;
+
+  const showAllBtn = document.getElementById('showAllBtn');
+  if (!showAll && r.sorted.length > 5) {
+    showAllBtn.style.display = 'block';
+    showAllBtn.textContent = `Show all ${r.sorted.length} plans ↓`;
+  } else {
+    showAllBtn.style.display = 'none';
+  }
+}
+
+function renderStars(rating) {
+  const full = Math.floor(rating);
+  const partial = rating - full;
+  let html = '<span class="stars">';
+  for (let i = 0; i < 5; i++) {
+    if (i < full) html += '<span class="star on">★</span>';
+    else if (i === full && partial > 0) html += '<span class="star half">★</span>';
+    else html += '<span class="star off">★</span>';
+  }
+  html += `<span class="star-num">${rating}</span></span>`;
+  return html;
+}
+
+function setSort(sort, btn) {
+  currentSort = sort;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPlans();
+}
+
+function toggleShowAll() {
+  showAll = true;
+  renderPlans();
 }
 
 // ============================================================
-// CONFETTI EFFECT
+// MODALS
 // ============================================================
-function Confetti({ active }) {
-  if (!active) return null;
-  const pieces = Array.from({ length: 50 }, (_, i) => {
-    const colors = ["#00DC82", "#FACC15", "#38BDF8", "#F472B6", "#A78BFA", "#FB923C"];
+function openStory() {
+  document.getElementById('storyOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeStory() {
+  document.getElementById('storyOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openTipJar() {
+  const overlay = document.getElementById('tipOverlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Reset to selection view
+  document.getElementById('tipSelectView').style.display = '';
+  document.getElementById('tipThanksView').style.display = 'none';
+  selectedTipAmount = null;
+  document.querySelectorAll('.tip-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('customTipInput').value = '';
+  document.getElementById('customTipInput').classList.remove('selected');
+  updateTipBtn();
+
+  // Show savings note if results exist
+  const note = document.getElementById('tipSavingsNote');
+  if (currentResults) {
+    note.style.display = 'block';
+    document.getElementById('tipSavingsAmt').textContent = '$' + currentResults.annualSavings.toFixed(0) + '/year';
+  } else {
+    note.style.display = 'none';
+  }
+}
+function closeTipJar() {
+  document.getElementById('tipOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeIfOverlay(e, id) {
+  if (e.target.id === id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// Tip logic
+function selectTip(amount, el) {
+  selectedTipAmount = amount;
+  document.querySelectorAll('.tip-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('customTipInput').value = '';
+  document.getElementById('customTipInput').classList.remove('selected');
+  updateTipBtn();
+}
+
+function selectCustomTip() {
+  const val = parseFloat(document.getElementById('customTipInput').value);
+  document.querySelectorAll('.tip-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('customTipInput').classList.add('selected');
+  selectedTipAmount = val > 0 ? val : null;
+  updateTipBtn();
+}
+
+function updateTipBtn() {
+  const btn = document.getElementById('tipSendBtn');
+  if (selectedTipAmount && selectedTipAmount > 0) {
+    btn.classList.add('active');
+    btn.textContent = `Send $${selectedTipAmount.toFixed(2)} Tip ☕`;
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = 'Select an Amount';
+  }
+}
+
+function sendTip() {
+  if (!selectedTipAmount || selectedTipAmount <= 0) return;
+
+  document.getElementById('tipSelectView').style.display = 'none';
+  const thanks = document.getElementById('tipThanksView');
+  thanks.style.display = '';
+  document.getElementById('tipAmountThanks').textContent = '$' + selectedTipAmount.toFixed(2);
+  document.getElementById('tipSavingsThanks').textContent = currentResults
+    ? '$' + currentResults.annualSavings.toFixed(0) + '/year' : 'big money';
+}
+
+// Copy share text
+function copyShare() {
+  const el = document.getElementById('shareText');
+  const text = el.textContent.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.querySelector('.btn-copy');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function fireConfetti() {
+  const container = document.getElementById('confettiContainer');
+  container.innerHTML = '';
+  const colors = ['#00DC82','#FACC15','#38BDF8','#F472B6','#A78BFA','#FB923C'];
+  for (let i = 0; i < 50; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
     const color = colors[i % colors.length];
     const left = Math.random() * 100;
     const delay = Math.random() * 0.8;
     const duration = 2 + Math.random() * 1.5;
     const size = 4 + Math.random() * 6;
     const rotation = Math.random() * 720;
-    return (
-      <div key={i} style={{
-        position: "fixed", top: -20, left: `${left}%`, width: size, height: size * 1.4,
-        backgroundColor: color, borderRadius: Math.random() > 0.5 ? "50%" : "2px",
-        animation: `confettiFall ${duration}s ease-in ${delay}s forwards`,
-        transform: `rotate(${rotation}deg)`, zIndex: 9999, opacity: 0,
-      }} />
-    );
-  });
-  return <>{pieces}</>;
-}
-
-// ============================================================
-// STAR RATING COMPONENT
-// ============================================================
-function Stars({ rating }) {
-  const full = Math.floor(rating);
-  const partial = rating - full;
-  return (
-    <span style={{ display: "inline-flex", gap: 1, alignItems: "center" }}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} style={{
-          color: i < full ? "#FACC15" : i === full && partial > 0 ? "#FACC15" : "#3a3a3a",
-          fontSize: 12, opacity: i < full ? 1 : i === full && partial > 0 ? 0.5 + partial * 0.5 : 0.3,
-        }}>★</span>
-      ))}
-      <span style={{ fontSize: 11, color: "#888", marginLeft: 3 }}>{rating}</span>
-    </span>
-  );
-}
-
-// ============================================================
-// ANDY'S STORY COMPONENT
-// ============================================================
-function AndyStory({ onClose }) {
-  return (
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 10000,
-      display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
-      backdropFilter: "blur(8px)",
-    }}>
-      <div style={{
-        background: "linear-gradient(165deg, #1a1a2e 0%, #0f0f1a 50%, #1a0f2e 100%)",
-        border: "1px solid rgba(0,220,130,0.2)", borderRadius: 20, maxWidth: 680,
-        width: "100%", maxHeight: "85vh", overflow: "auto", padding: "40px 36px",
-        boxShadow: "0 25px 80px rgba(0,220,130,0.15)",
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div style={{
-            fontSize: 11, letterSpacing: 3, textTransform: "uppercase",
-            color: "#00DC82", fontFamily: "'JetBrains Mono', monospace", marginBottom: 16,
-          }}>The Origin Story</div>
-          <button onClick={onClose} style={{
-            background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
-            color: "#aaa", borderRadius: "50%", width: 32, height: 32, cursor: "pointer",
-            fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center",
-          }}>×</button>
-        </div>
-
-        <h2 style={{
-          fontFamily: "'Playfair Display', Georgia, serif", fontSize: 32,
-          color: "#fff", lineHeight: 1.2, margin: "0 0 24px",
-        }}>How Andy Turned a <span style={{ color: "#00DC82" }}>Kitchen Table Gripe</span> Into a Movement</h2>
-
-        <div style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: 16, lineHeight: 1.85, color: "#c8c8d0" }}>
-          <p style={{ marginBottom: 20 }}>
-            It started the way most good ideas do in Texas — over cold beer and a too-high electric bill.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            Andy had just gotten his August bill from one of the big-name retail electric providers. <span style={{ color: "#FACC15" }}>$387 for a modest three-bedroom in the DFW suburbs.</span> He knew the deregulated market meant he had options, but the PowerToChoose website felt like comparing airline tickets — hundreds of plans, confusing "energy facts" labels, and rates that looked great until you read the fine print about TDU delivery charges and usage thresholds.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            So Andy did what he always does: he dove in. Nights after putting the kids to bed, he built spreadsheets. He reverse-engineered the PUCT's EFL (Electricity Facts Label) format. He mapped every ZIP code to its TDU territory. He scraped every licensed REP's current offering and normalized the rates to a true apples-to-apples cost per kWh at 500, 1000, and 2000 kWh usage tiers.
-          </p>
-
-          <div style={{
-            borderLeft: "3px solid #00DC82", paddingLeft: 20, margin: "28px 0",
-            fontStyle: "italic", color: "#e0e0e0", fontSize: 17,
-          }}>
-            "I saved $1,140 the first year just by switching. And I thought — if I can do this for myself, why not make it dead simple for everyone I know?"
-          </div>
-
-          <p style={{ marginBottom: 20 }}>
-            Andy started texting his neighbors. Then posting in his Nextdoor group. Then his kids' school parent chat. The message was always the same: <strong style={{ color: "#fff" }}>"Send me your ZIP code. I'll send you the best rate. Totally free."</strong>
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            No affiliate links. No commissions. No catch. Just a guy with a spreadsheet and a conviction that <span style={{ color: "#00DC82" }}>Texans were overpaying by billions every year</span> simply because the comparison process was designed to be confusing.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            Within three months, Andy had personally helped <strong style={{ color: "#fff" }}>47 families</strong> switch to better plans, saving them a collective <strong style={{ color: "#FACC15" }}>$62,000 annually</strong>. Word spread to his office. Then to his church. Then to three different Facebook groups.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            People kept asking: "Andy, can I pay you for this?" His answer was always the same — <em>"Nah, just buy me a coffee if you feel like it."</em> That line became the philosophy behind everything you see here.
-          </p>
-
-          <div style={{
-            background: "rgba(0,220,130,0.06)", border: "1px solid rgba(0,220,130,0.15)",
-            borderRadius: 14, padding: "24px 20px", margin: "28px 0",
-          }}>
-            <div style={{ fontSize: 13, color: "#00DC82", fontWeight: 600, marginBottom: 10, fontFamily: "'JetBrains Mono', monospace" }}>
-              THE WATTSWISE PHILOSOPHY
-            </div>
-            <p style={{ margin: 0, color: "#e8e8f0" }}>
-              Give value first. Give it freely. Give it publicly. The people who benefit will <em>want</em> to support you — not because they have to, but because they've seen the receipts. A voluntary tip after a real savings reveal is worth more than any hard sell. Andy calls it <strong style={{ color: "#fff" }}>"The Gratitude Economy."</strong>
-            </p>
-          </div>
-
-          <p style={{ marginBottom: 20 }}>
-            WattWise Gratuity is the tool Andy wished existed when he started. It pulls real rates, compares them against your current TDU's default pricing, shows you exactly how much you'd save, and then — only after you've seen your savings — gives you the option to say thanks with a small tip. No pressure. No guilt. Just gratitude between neighbors.
-          </p>
-          <p style={{ marginBottom: 20 }}>
-            Andy's mission hasn't changed since that first kitchen table session: <strong style={{ color: "#00DC82" }}>help every Texan in a deregulated zone get the best possible electricity rate, for free.</strong> The tips? They keep the servers running, the data fresh, and Andy caffeinated enough to keep fighting for fair energy prices.
-          </p>
-          <p style={{ marginBottom: 8, color: "#888", fontSize: 14 }}>
-            — The WattWise Team, February 2026
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// TIP JAR COMPONENT
-// ============================================================
-function TipJar({ savings, onClose }) {
-  const [selected, setSelected] = useState(null);
-  const [customAmount, setCustomAmount] = useState("");
-  const [tipSent, setTipSent] = useState(false);
-
-  const tiers = [
-    { amount: 3, label: "Small Drip", emoji: "☕", desc: "A quick thanks" },
-    { amount: 7, label: "Coffee & Pastry", emoji: "🥐", desc: "Andy eats today" },
-    { amount: 15, label: "Energy Hero", emoji: "⚡", desc: "Keep the lights on" },
-  ];
-
-  const handleTip = () => {
-    setTipSent(true);
-  };
-
-  if (tipSent) {
-    const amt = selected === "custom" ? parseFloat(customAmount) : selected;
-    return (
-      <div style={{
-        position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 10000,
-        display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
-        backdropFilter: "blur(8px)",
-      }}>
-        <div style={{
-          background: "linear-gradient(165deg, #0f2a1a 0%, #0f0f1a 100%)",
-          border: "1px solid rgba(0,220,130,0.3)", borderRadius: 20, padding: "48px 36px",
-          textAlign: "center", maxWidth: 440,
-        }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>💚</div>
-          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: "#fff", margin: "0 0 12px" }}>
-            You're Amazing!
-          </h3>
-          <p style={{ color: "#a0a0b0", fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>
-            Your ${amt?.toFixed(2)} tip helps Andy keep WattWise free for every Texan.
-            You're saving <strong style={{ color: "#00DC82" }}>${savings?.annualSavingsVsPolr?.toFixed(0)}/year</strong> and paying it forward.
-          </p>
-          <button onClick={onClose} style={{
-            background: "#00DC82", color: "#0a0a0a", border: "none", borderRadius: 10,
-            padding: "12px 32px", fontSize: 15, fontWeight: 600, cursor: "pointer",
-          }}>Close</button>
-        </div>
-      </div>
-    );
+    piece.style.cssText = `
+      left:${left}%; width:${size}px; height:${size*1.4}px;
+      background:${color}; border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation: confettiFall ${duration}s ease-in ${delay}s forwards;
+      transform: rotate(${rotation}deg); opacity:0;
+    `;
+    container.appendChild(piece);
   }
-
-  return (
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 10000,
-      display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
-      backdropFilter: "blur(8px)",
-    }}>
-      <div style={{
-        background: "linear-gradient(165deg, #1a1a2e 0%, #0f0f1a 100%)",
-        border: "1px solid rgba(0,220,130,0.2)", borderRadius: 20, maxWidth: 480,
-        width: "100%", padding: "36px 30px",
-        boxShadow: "0 25px 80px rgba(0,220,130,0.1)",
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            <div style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#00DC82", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
-              Andy's Coffee Fund
-            </div>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: "#fff", margin: 0, lineHeight: 1.2 }}>
-              Feeling Generous?
-            </h3>
-          </div>
-          <button onClick={onClose} style={{
-            background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
-            color: "#aaa", borderRadius: "50%", width: 32, height: 32, cursor: "pointer",
-            fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center",
-          }}>×</button>
-        </div>
-
-        {savings && (
-          <div style={{
-            background: "rgba(0,220,130,0.06)", border: "1px solid rgba(0,220,130,0.12)",
-            borderRadius: 10, padding: "12px 16px", margin: "20px 0", fontSize: 14, color: "#a8a8b8",
-          }}>
-            You're saving <strong style={{ color: "#00DC82" }}>${savings.annualSavingsVsPolr.toFixed(0)}/year</strong> — 
-            this service is always free. Tips are optional and appreciated.
-          </div>
-        )}
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, margin: "20px 0" }}>
-          {tiers.map(t => (
-            <button key={t.amount} onClick={() => { setSelected(t.amount); setCustomAmount(""); }} style={{
-              background: selected === t.amount ? "rgba(0,220,130,0.15)" : "rgba(255,255,255,0.03)",
-              border: `1px solid ${selected === t.amount ? "rgba(0,220,130,0.5)" : "rgba(255,255,255,0.08)"}`,
-              borderRadius: 12, padding: "18px 10px", cursor: "pointer", textAlign: "center",
-              transition: "all 0.2s",
-            }}>
-              <div style={{ fontSize: 28, marginBottom: 6 }}>{t.emoji}</div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>${t.amount}</div>
-              <div style={{ fontSize: 11, color: "#00DC82", fontWeight: 600, marginTop: 4 }}>{t.label}</div>
-              <div style={{ fontSize: 10, color: "#777", marginTop: 2 }}>{t.desc}</div>
-            </button>
-          ))}
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "16px 0" }}>
-          <div style={{
-            flex: 1, height: 1, background: "rgba(255,255,255,0.06)",
-          }} />
-          <span style={{ fontSize: 11, color: "#555" }}>or custom amount</span>
-          <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
-        </div>
-
-        <div style={{ display: "flex", gap: 10 }}>
-          <div style={{ position: "relative", flex: 1 }}>
-            <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#666", fontSize: 16 }}>$</span>
-            <input
-              type="number" placeholder="5.00" value={customAmount}
-              onChange={e => { setCustomAmount(e.target.value); setSelected("custom"); }}
-              onClick={() => setSelected("custom")}
-              style={{
-                width: "100%", background: "rgba(255,255,255,0.03)", border: `1px solid ${selected === "custom" && customAmount ? "rgba(0,220,130,0.5)" : "rgba(255,255,255,0.08)"}`,
-                borderRadius: 10, padding: "12px 14px 12px 28px", color: "#fff", fontSize: 16,
-                fontFamily: "'JetBrains Mono', monospace", outline: "none", boxSizing: "border-box",
-              }}
-            />
-          </div>
-        </div>
-
-        <button onClick={handleTip} disabled={!selected} style={{
-          width: "100%", marginTop: 20, padding: "14px 0",
-          background: selected ? "linear-gradient(135deg, #00DC82, #00b368)" : "rgba(255,255,255,0.05)",
-          color: selected ? "#0a0a0a" : "#555",
-          border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: selected ? "pointer" : "default",
-          transition: "all 0.3s", letterSpacing: 0.5,
-        }}>
-          {selected ? `Send $${selected === "custom" ? (parseFloat(customAmount) || 0).toFixed(2) : selected.toFixed(2)} Tip ☕` : "Select an Amount"}
-        </button>
-
-        <p style={{ textAlign: "center", fontSize: 11, color: "#555", marginTop: 14 }}>
-          100% goes to keeping WattWise free. No middlemen. No corporate sponsors.
-        </p>
-      </div>
-    </div>
-  );
+  setTimeout(() => container.innerHTML = '', 4000);
 }
-
-// ============================================================
-// MAIN APP COMPONENT
-// ============================================================
-export default function WattWiseGratuity() {
-  const [zip, setZip] = useState("");
-  const [usage, setUsage] = useState(1000);
-  const [results, setResults] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [showTipJar, setShowTipJar] = useState(false);
-  const [showStory, setShowStory] = useState(false);
-  const [showAllPlans, setShowAllPlans] = useState(false);
-  const [sortBy, setSortBy] = useState("rate");
-  const resultsRef = useRef(null);
-
-  const handleSearch = () => {
-    setError("");
-    setResults(null);
-    setShowAllPlans(false);
-
-    if (!zip || zip.length !== 5 || !/^\d{5}$/.test(zip)) {
-      setError("Please enter a valid 5-digit Texas ZIP code");
-      return;
-    }
-
-    setLoading(true);
-
-    setTimeout(() => {
-      const result = calculateSavings(zip, usage);
-      if (!result) {
-        setError("This ZIP code isn't in our Texas deregulated market database. Try a ZIP in the DFW, Houston, or other deregulated areas.");
-        setLoading(false);
-        return;
-      }
-      setResults(result);
-      setLoading(false);
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3500);
-      setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    }, 1200);
-  };
-
-  const getSortedPlans = () => {
-    if (!results) return [];
-    const plans = showAllPlans ? results.allPlans : results.top5;
-    return [...plans].sort((a, b) => {
-      if (sortBy === "rate") return a.rate - b.rate;
-      if (sortBy === "rating") return b.rating - a.rating;
-      if (sortBy === "renewable") return b.renewable - a.renewable;
-      if (sortBy === "provider") return a.provider.localeCompare(b.provider);
-      return 0;
-    });
-  };
-
-  const dbUpdateDate = "February 20, 2026";
-  const totalPlansInDB = Object.values(TEXAS_ENERGY_DB.plans).reduce((s, p) => s + p.length, 0);
-  const totalZips = Object.keys(TEXAS_ENERGY_DB.zip_to_tdu).length;
-
-  return (
-    <div style={{
-      minHeight: "100vh",
-      background: "linear-gradient(165deg, #0a0a12 0%, #0d0d1a 40%, #0a1a12 100%)",
-      color: "#e0e0e8", fontFamily: "'Source Serif 4', Georgia, serif",
-    }}>
-      <Confetti active={showConfetti} />
-      {showTipJar && <TipJar savings={results} onClose={() => setShowTipJar(false)} />}
-      {showStory && <AndyStory onClose={() => setShowStory(false)} />}
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        @keyframes confettiFall {
-          0% { opacity: 1; transform: translateY(0) rotate(0deg); }
-          100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(24px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 1; }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
-        }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
-          -webkit-appearance: none; margin: 0;
-        }
-        input[type=number] { -moz-appearance: textfield; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,220,130,0.2); border-radius: 3px; }
-      `}</style>
-
-      {/* HEADER */}
-      <header style={{
-        padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center",
-        borderBottom: "1px solid rgba(255,255,255,0.04)",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: "linear-gradient(135deg, #00DC82, #00b368)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 18, fontWeight: 700, color: "#0a0a0a",
-          }}>⚡</div>
-          <div>
-            <div style={{
-              fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: "#fff",
-              lineHeight: 1,
-            }}>WattWise</div>
-            <div style={{
-              fontSize: 9, letterSpacing: 2.5, textTransform: "uppercase",
-              color: "#00DC82", fontFamily: "'JetBrains Mono', monospace",
-            }}>GRATUITY</div>
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button onClick={() => setShowStory(true)} style={{
-            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
-            color: "#a0a0b0", borderRadius: 8, padding: "8px 14px", fontSize: 12,
-            cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
-            transition: "all 0.2s",
-          }}>Andy's Story</button>
-          {results && (
-            <button onClick={() => setShowTipJar(true)} style={{
-              background: "linear-gradient(135deg, #00DC82, #00b368)",
-              border: "none", color: "#0a0a0a", borderRadius: 8, padding: "8px 14px", fontSize: 12,
-              cursor: "pointer", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
-              animation: "float 3s ease-in-out infinite",
-            }}>☕ Tip Andy</button>
-          )}
-        </div>
-      </header>
-
-      {/* HERO */}
-      <section style={{
-        padding: "60px 24px 40px", textAlign: "center", maxWidth: 640, margin: "0 auto",
-      }}>
-        <div style={{
-          fontSize: 10, letterSpacing: 4, textTransform: "uppercase",
-          color: "#00DC82", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20,
-        }}>FREE TEXAS ENERGY COMPARISON ENGINE</div>
-
-        <h1 style={{
-          fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 6vw, 52px)",
-          fontWeight: 700, color: "#fff", lineHeight: 1.1, marginBottom: 20,
-        }}>
-          Stop Overpaying<br />for <span style={{
-            background: "linear-gradient(135deg, #00DC82, #38BDF8)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          }}>Texas Electricity</span>
-        </h1>
-
-        <p style={{
-          fontSize: 17, lineHeight: 1.7, color: "#888", maxWidth: 480, margin: "0 auto 36px",
-        }}>
-          Real rates from {totalPlansInDB} plans across {totalZips}+ ZIP codes.
-          Andy built this so his friends and family would never overpay again.
-          <span style={{ color: "#00DC82" }}> Always free. Tip only if you want to.</span>
-        </p>
-
-        {/* SEARCH FORM */}
-        <div style={{
-          background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
-          borderRadius: 16, padding: 24, maxWidth: 480, margin: "0 auto",
-        }}>
-          <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: "block", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#666", fontFamily: "'JetBrains Mono', monospace", marginBottom: 6, textAlign: "left" }}>
-                Texas ZIP Code
-              </label>
-              <input
-                type="text" placeholder="e.g. 75201" value={zip} maxLength={5}
-                onChange={e => setZip(e.target.value.replace(/\D/g, ""))}
-                onKeyDown={e => e.key === "Enter" && handleSearch()}
-                style={{
-                  width: "100%", background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 10, padding: "14px 16px", color: "#fff", fontSize: 18,
-                  fontFamily: "'JetBrains Mono', monospace", outline: "none", letterSpacing: 2,
-                }}
-              />
-            </div>
-            <div style={{ width: 140 }}>
-              <label style={{ display: "block", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#666", fontFamily: "'JetBrains Mono', monospace", marginBottom: 6, textAlign: "left" }}>
-                Monthly kWh
-              </label>
-              <input
-                type="number" value={usage}
-                onChange={e => setUsage(Math.max(100, parseInt(e.target.value) || 1000))}
-                style={{
-                  width: "100%", background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 10, padding: "14px 16px", color: "#fff", fontSize: 18,
-                  fontFamily: "'JetBrains Mono', monospace", outline: "none",
-                }}
-              />
-            </div>
-          </div>
-
-          <button onClick={handleSearch} disabled={loading} style={{
-            width: "100%", padding: "16px 0",
-            background: loading ? "rgba(0,220,130,0.3)" : "linear-gradient(135deg, #00DC82, #00b368)",
-            color: "#0a0a0a", border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700,
-            cursor: loading ? "default" : "pointer", letterSpacing: 0.5,
-            fontFamily: "'JetBrains Mono', monospace",
-          }}>
-            {loading ? "⚡ Scanning Database..." : "Find My Best Rate"}
-          </button>
-
-          {error && (
-            <div style={{
-              marginTop: 12, padding: "10px 14px", background: "rgba(255,80,80,0.08)",
-              border: "1px solid rgba(255,80,80,0.2)", borderRadius: 8, fontSize: 13, color: "#ff8888",
-            }}>{error}</div>
-          )}
-
-          <div style={{
-            marginTop: 14, fontSize: 11, color: "#444",
-            fontFamily: "'JetBrains Mono', monospace",
-          }}>
-            Database: {totalPlansInDB} plans · Updated {dbUpdateDate} · Source: PowerToChoose.org
-          </div>
-        </div>
-      </section>
-
-      {/* RESULTS */}
-      {results && (
-        <section ref={resultsRef} style={{
-          padding: "0 24px 60px", maxWidth: 720, margin: "0 auto",
-          animation: "fadeUp 0.6s ease-out",
-        }}>
-          {/* TERRITORY INFO */}
-          <div style={{
-            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
-            borderRadius: 12, padding: "14px 18px", marginBottom: 20,
-            display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
-          }}>
-            <div>
-              <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#666", fontFamily: "'JetBrains Mono', monospace" }}>
-                Your Service Territory
-              </div>
-              <div style={{ fontSize: 15, color: "#fff", fontWeight: 600, marginTop: 2 }}>
-                {results.territory.name}
-              </div>
-              <div style={{ fontSize: 12, color: "#777" }}>{results.territory.region}</div>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#666", fontFamily: "'JetBrains Mono', monospace" }}>
-                Default Rate (POLR)
-              </div>
-              <div style={{ fontSize: 20, color: "#ff6b6b", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>
-                {results.polr}¢/kWh
-              </div>
-            </div>
-          </div>
-
-          {/* SAVINGS CARDS */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 24 }}>
-            <div style={{
-              background: "linear-gradient(135deg, rgba(0,220,130,0.08), rgba(0,220,130,0.02))",
-              border: "1px solid rgba(0,220,130,0.2)", borderRadius: 14, padding: "20px 18px",
-            }}>
-              <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#00DC82", fontFamily: "'JetBrains Mono', monospace" }}>
-                Best Available Rate
-              </div>
-              <div style={{ fontSize: 34, fontWeight: 700, color: "#00DC82", fontFamily: "'JetBrains Mono', monospace", marginTop: 6 }}>
-                {results.best.rate}¢
-              </div>
-              <div style={{ fontSize: 12, color: "#888" }}>per kWh · {results.best.provider}</div>
-            </div>
-
-            <div style={{
-              background: "rgba(250,204,21,0.04)", border: "1px solid rgba(250,204,21,0.15)",
-              borderRadius: 14, padding: "20px 18px",
-            }}>
-              <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#FACC15", fontFamily: "'JetBrains Mono', monospace" }}>
-                Monthly Savings
-              </div>
-              <div style={{ fontSize: 34, fontWeight: 700, color: "#FACC15", fontFamily: "'JetBrains Mono', monospace", marginTop: 6 }}>
-                ${results.savingsVsPolr.toFixed(0)}
-              </div>
-              <div style={{ fontSize: 12, color: "#888" }}>vs default TDU rate</div>
-            </div>
-
-            <div style={{
-              background: "rgba(56,189,248,0.04)", border: "1px solid rgba(56,189,248,0.15)",
-              borderRadius: 14, padding: "20px 18px",
-            }}>
-              <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#38BDF8", fontFamily: "'JetBrains Mono', monospace" }}>
-                Annual Savings
-              </div>
-              <div style={{ fontSize: 34, fontWeight: 700, color: "#38BDF8", fontFamily: "'JetBrains Mono', monospace", marginTop: 6 }}>
-                ${results.annualSavingsVsPolr.toFixed(0)}
-              </div>
-              <div style={{ fontSize: 12, color: "#888" }}>that's real money back</div>
-            </div>
-          </div>
-
-          {/* COST COMPARISON BAR */}
-          <div style={{
-            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
-            borderRadius: 14, padding: "20px 18px", marginBottom: 24,
-          }}>
-            <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#666", fontFamily: "'JetBrains Mono', monospace", marginBottom: 16 }}>
-              Monthly Cost Comparison at {results.monthlyUsage} kWh
-            </div>
-            {[
-              { label: "TDU Default", cost: results.monthlyCostPolr, rate: results.polr, color: "#ff6b6b" },
-              { label: "Texas Average", cost: results.monthlyCostAvg, rate: results.stateAvg, color: "#FACC15" },
-              { label: `Best Rate (${results.best.provider})`, cost: results.monthlyCostBest, rate: results.best.rate, color: "#00DC82" },
-            ].map((item, i) => (
-              <div key={i} style={{ marginBottom: i < 2 ? 12 : 0 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#aaa", marginBottom: 4 }}>
-                  <span>{item.label} ({item.rate}¢/kWh)</span>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: item.color }}>
-                    ${item.cost.toFixed(2)}/mo
-                  </span>
-                </div>
-                <div style={{ height: 8, background: "rgba(255,255,255,0.04)", borderRadius: 4, overflow: "hidden" }}>
-                  <div style={{
-                    width: `${(item.cost / results.monthlyCostPolr) * 100}%`,
-                    height: "100%", background: item.color, borderRadius: 4,
-                    transition: "width 0.8s ease-out",
-                  }} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* PLAN TABLE */}
-          <div style={{
-            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
-            borderRadius: 14, overflow: "hidden", marginBottom: 24,
-          }}>
-            <div style={{
-              padding: "16px 18px", display: "flex", justifyContent: "space-between",
-              alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.04)", flexWrap: "wrap", gap: 10,
-            }}>
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: "#fff" }}>
-                  {showAllPlans ? `All ${results.allPlans.length} Plans` : "Top 5 Plans"}
-                </div>
-                <div style={{ fontSize: 11, color: "#666" }}>Sorted by {sortBy} · {results.monthlyUsage} kWh/mo</div>
-              </div>
-              <div style={{ display: "flex", gap: 6 }}>
-                {["rate", "rating", "renewable", "provider"].map(s => (
-                  <button key={s} onClick={() => setSortBy(s)} style={{
-                    background: sortBy === s ? "rgba(0,220,130,0.15)" : "rgba(255,255,255,0.03)",
-                    border: `1px solid ${sortBy === s ? "rgba(0,220,130,0.3)" : "rgba(255,255,255,0.06)"}`,
-                    color: sortBy === s ? "#00DC82" : "#777", borderRadius: 6, padding: "5px 10px",
-                    fontSize: 10, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
-                    textTransform: "uppercase", letterSpacing: 1,
-                  }}>{s}</button>
-                ))}
-              </div>
-            </div>
-
-            {getSortedPlans().map((plan, i) => {
-              const monthlyCost = (plan.rate / 100) * results.monthlyUsage;
-              const saving = results.monthlyCostPolr - monthlyCost;
-              const isBest = plan.rate === results.best.rate;
-              return (
-                <div key={`${plan.provider}-${plan.plan}`} style={{
-                  padding: "16px 18px",
-                  borderBottom: "1px solid rgba(255,255,255,0.03)",
-                  background: isBest ? "rgba(0,220,130,0.03)" : "transparent",
-                  animation: `fadeUp 0.4s ease-out ${i * 0.06}s both`,
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
-                    <div style={{ flex: 1, minWidth: 200 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>{plan.provider}</span>
-                        {isBest && (
-                          <span style={{
-                            background: "rgba(0,220,130,0.15)", color: "#00DC82", fontSize: 9,
-                            padding: "2px 8px", borderRadius: 4, fontFamily: "'JetBrains Mono', monospace",
-                            letterSpacing: 1, textTransform: "uppercase", fontWeight: 700,
-                          }}>BEST RATE</span>
-                        )}
-                        {plan.renewable === 100 && (
-                          <span style={{
-                            background: "rgba(56,189,248,0.1)", color: "#38BDF8", fontSize: 9,
-                            padding: "2px 8px", borderRadius: 4, fontFamily: "'JetBrains Mono', monospace",
-                            letterSpacing: 1,
-                          }}>100% GREEN</span>
-                        )}
-                      </div>
-                      <div style={{ fontSize: 13, color: "#888", marginTop: 2 }}>{plan.plan}</div>
-                      <div style={{ marginTop: 4, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                        <Stars rating={plan.rating} />
-                        <span style={{ fontSize: 11, color: "#555" }}>{plan.term}mo term</span>
-                        <span style={{ fontSize: 11, color: "#555" }}>
-                          Cancel fee: {plan.cancel_fee === 0 ? <span style={{ color: "#00DC82" }}>None</span> : `$${plan.cancel_fee}`}
-                        </span>
-                        {plan.renewable > 0 && plan.renewable < 100 && (
-                          <span style={{ fontSize: 11, color: "#555" }}>{plan.renewable}% renewable</span>
-                        )}
-                      </div>
-                    </div>
-                    <div style={{ textAlign: "right", minWidth: 120 }}>
-                      <div style={{
-                        fontSize: 24, fontWeight: 700, color: isBest ? "#00DC82" : "#fff",
-                        fontFamily: "'JetBrains Mono', monospace",
-                      }}>
-                        {plan.rate}¢
-                      </div>
-                      <div style={{ fontSize: 11, color: "#777" }}>${monthlyCost.toFixed(2)}/mo</div>
-                      <div style={{ fontSize: 11, color: "#00DC82", fontWeight: 600, marginTop: 2 }}>
-                        Save ${saving.toFixed(0)}/mo
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {!showAllPlans && results.allPlans.length > 5 && (
-              <button onClick={() => setShowAllPlans(true)} style={{
-                width: "100%", padding: "14px 0", background: "rgba(255,255,255,0.02)",
-                border: "none", color: "#00DC82", fontSize: 13, cursor: "pointer",
-                fontFamily: "'JetBrains Mono', monospace", borderTop: "1px solid rgba(255,255,255,0.04)",
-              }}>
-                Show all {results.allPlans.length} plans ↓
-              </button>
-            )}
-          </div>
-
-          {/* TIP CTA */}
-          <div style={{
-            background: "linear-gradient(135deg, rgba(0,220,130,0.06), rgba(250,204,21,0.04))",
-            border: "1px solid rgba(0,220,130,0.15)", borderRadius: 16, padding: "28px 24px",
-            textAlign: "center",
-          }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>☕</div>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: "#fff", marginBottom: 8 }}>
-              Andy just saved you <span style={{ color: "#00DC82" }}>${results.annualSavingsVsPolr.toFixed(0)}/year</span>
-            </h3>
-            <p style={{ fontSize: 14, color: "#888", lineHeight: 1.6, maxWidth: 420, margin: "0 auto 20px" }}>
-              This tool is always free. If you found it helpful, consider buying Andy a coffee.
-              Every tip helps keep this service running for fellow Texans.
-            </p>
-            <button onClick={() => setShowTipJar(true)} style={{
-              background: "linear-gradient(135deg, #00DC82, #00b368)", color: "#0a0a0a",
-              border: "none", borderRadius: 12, padding: "14px 40px", fontSize: 16,
-              fontWeight: 700, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
-            }}>
-              Buy Andy a Coffee ☕
-            </button>
-          </div>
-
-          {/* SHARE SECTION */}
-          <div style={{
-            marginTop: 20, background: "rgba(255,255,255,0.02)",
-            border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, padding: "20px 18px",
-          }}>
-            <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#666", fontFamily: "'JetBrains Mono', monospace", marginBottom: 12 }}>
-              Share with Friends & Neighbors
-            </div>
-            <p style={{ fontSize: 13, color: "#888", lineHeight: 1.6, marginBottom: 14 }}>
-              Know someone in Texas who might be overpaying? Here's a ready-to-share message:
-            </p>
-            <div style={{
-              background: "rgba(0,0,0,0.3)", borderRadius: 10, padding: 16,
-              fontSize: 13, color: "#c8c8d0", lineHeight: 1.6,
-              border: "1px solid rgba(255,255,255,0.04)",
-            }}>
-              "Hey! I just used WattWise to compare electricity rates for my ZIP code and found I could save ${results.annualSavingsVsPolr.toFixed(0)}/year by switching from the default rate.
-              It's free — a guy named Andy built it to help Texans stop overpaying.
-              Check it out and just enter your ZIP: wattwisegratuity.com"
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* FOOTER */}
-      <footer style={{
-        padding: "40px 24px", borderTop: "1px solid rgba(255,255,255,0.04)",
-        textAlign: "center", maxWidth: 640, margin: "0 auto",
-      }}>
-        <div style={{ fontSize: 12, color: "#444", lineHeight: 1.8 }}>
-          <p>Rates sourced from PowerToChoose.org & public PUCT filings. Updated {dbUpdateDate}.</p>
-          <p>Not affiliated with any REP. No affiliate links. No commissions.</p>
-          <p style={{ marginTop: 8 }}>
-            Built with 💚 by Andy for his friends, family, and every Texan who deserves a fair rate.
-          </p>
-          <button onClick={() => setShowStory(true)} style={{
-            background: "none", border: "none", color: "#00DC82", cursor: "pointer",
-            fontSize: 12, textDecoration: "underline", marginTop: 8,
-          }}>
-            Read Andy's Story →
-          </button>
-        </div>
-      </footer>
-    </div>
-  );
-}
+</script>
+</body>
+</html>
