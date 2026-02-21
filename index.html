@@ -3,1044 +3,1009 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>⚡ WattWise — Texas Energy Savings</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --tx-amber: #F59E0B;
-    --tx-orange: #EA580C;
-    --tx-gold: #FCD34D;
-    --tx-dark: #0C1117;
-    --tx-surface: #161B24;
-    --tx-card: #1E2535;
-    --tx-border: #2A3347;
-    --tx-muted: #4B5870;
-    --tx-text: #E8EDF5;
-    --tx-sub: #8A97AD;
-    --tx-green: #10B981;
-    --tx-red: #EF4444;
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
-  }
+/* ── RESET & VARIABLES ── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  background: #0C1117;
+  color: #E8EDF5;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 16px;
+}
 
-  body {
-    background: var(--tx-dark);
-    color: var(--tx-text);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ── HEADER ── */
+.header {
+  background: #161B24;
+  border-bottom: 1px solid #2A3347;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.header-logo {
+  font-family: 'Bebas Neue', Georgia, 'Times New Roman', serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: #F59E0B;
+  line-height: 1;
+}
+.header-logo span { color: #E8EDF5; }
+.header-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(245,158,11,0.12);
+  color: #F59E0B;
+  border: 1px solid rgba(245,158,11,0.25);
+  padding: 5px 11px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 6px #10B981;
+  flex-shrink: 0;
+}
+.dot.off { background: #EF4444; box-shadow: none; }
 
-  /* ── HEADER ── */
-  .header {
-    background: var(--tx-surface);
-    border-bottom: 1px solid var(--tx-border);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-logo {
-    font-family: var(--font-display);
-    font-size: 26px;
-    letter-spacing: 1px;
-    color: var(--tx-amber);
-    line-height: 1;
-  }
-  .header-logo span { color: var(--tx-text); }
-  .header-badge {
-    font-size: 11px;
-    font-weight: 600;
-    background: rgba(245,158,11,0.15);
-    color: var(--tx-amber);
-    border: 1px solid rgba(245,158,11,0.3);
-    padding: 4px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-  }
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  background: #161B24;
+  border-bottom: 1px solid #2A3347;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1;
+  min-width: 64px;
+  padding: 11px 6px 9px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  color: #4B5870;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.tab i { font-size: 18px; display: block; margin-bottom: 2px; font-style: normal; }
+.tab.active { color: #F59E0B; border-bottom-color: #F59E0B; }
 
-  /* ── TABS ── */
-  .tabs {
-    display: flex;
-    background: var(--tx-surface);
-    border-bottom: 1px solid var(--tx-border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    flex: 1;
-    min-width: 70px;
-    padding: 12px 8px 10px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--tx-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .tab .tab-icon { font-size: 18px; display: block; margin-bottom: 3px; }
-  .tab.active { color: var(--tx-amber); border-bottom-color: var(--tx-amber); }
+/* ── PANELS ── */
+.panel { display: none; padding: 18px 16px 100px; }
+.panel.active { display: block; animation: fadeUp 0.22s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  /* ── PANELS ── */
-  .panel { display: none; padding: 20px; animation: fadeIn 0.25s ease; }
-  .panel.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* ── CARDS ── */
+.card {
+  background: #1E2535;
+  border: 1px solid #2A3347;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 17px;
+  letter-spacing: 1px;
+  color: #F59E0B;
+  margin-bottom: 14px;
+}
 
-  /* ── CARDS ── */
-  .card {
-    background: var(--tx-card);
-    border: 1px solid var(--tx-border);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 14px;
-  }
-  .card-title {
-    font-family: var(--font-display);
-    font-size: 18px;
-    letter-spacing: 0.5px;
-    color: var(--tx-amber);
-    margin-bottom: 14px;
-  }
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(145deg, #161B24 0%, #1a2236 100%);
+  border: 1px solid #2A3347;
+  border-radius: 20px;
+  padding: 26px 18px 24px;
+  margin-bottom: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  color: #F59E0B;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.hero-title {
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 48px;
+  line-height: 0.95;
+  letter-spacing: 2px;
+  color: #E8EDF5;
+  margin-bottom: 8px;
+}
+.hero-title em { color: #F59E0B; font-style: normal; }
+.hero-sub {
+  font-size: 13px;
+  color: #8A97AD;
+  margin-bottom: 22px;
+  line-height: 1.55;
+}
 
-  /* ── HERO SEARCH ── */
-  .hero {
-    background: linear-gradient(135deg, var(--tx-surface) 0%, #1a2035 100%);
-    border: 1px solid var(--tx-border);
-    border-radius: 20px;
-    padding: 28px 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-title {
-    font-family: var(--font-display);
-    font-size: 42px;
-    line-height: 1;
-    letter-spacing: 1px;
-    color: var(--tx-text);
-    margin-bottom: 6px;
-  }
-  .hero-title span { color: var(--tx-amber); }
-  .hero-sub {
-    font-size: 14px;
-    color: var(--tx-sub);
-    margin-bottom: 22px;
-    line-height: 1.5;
-  }
+/* ── ZIP INPUT ── */
+.zip-row {
+  display: flex;
+  gap: 10px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.zip-input {
+  flex: 1;
+  background: #0C1117;
+  border: 2px solid #2A3347;
+  border-radius: 12px;
+  padding: 14px 12px;
+  font-size: 24px;
+  font-family: 'Bebas Neue', Georgia, serif;
+  letter-spacing: 4px;
+  color: #E8EDF5;
+  text-align: center;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.zip-input:focus { border-color: #F59E0B; }
+.zip-input::placeholder { color: #4B5870; font-size: 14px; letter-spacing: 1px; font-family: 'DM Sans', sans-serif; }
 
-  .zip-row {
-    display: flex;
-    gap: 10px;
-    max-width: 340px;
-    margin: 0 auto;
-  }
-  .zip-input {
-    flex: 1;
-    background: var(--tx-dark);
-    border: 2px solid var(--tx-border);
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 22px;
-    font-family: var(--font-display);
-    letter-spacing: 3px;
-    color: var(--tx-text);
-    text-align: center;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .zip-input:focus { border-color: var(--tx-amber); }
-  .zip-input::placeholder { color: var(--tx-muted); font-size: 16px; letter-spacing: 1px; font-family: var(--font-body); }
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: transform 0.12s, box-shadow 0.15s;
+  -webkit-appearance: none;
+  text-decoration: none;
+}
+.btn:active { transform: scale(0.95); }
+.btn-primary {
+  background: linear-gradient(135deg, #F59E0B, #EA580C);
+  color: white;
+  box-shadow: 0 4px 18px rgba(245,158,11,0.28);
+}
+.btn-primary:hover { box-shadow: 0 4px 24px rgba(245,158,11,0.42); }
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid #2A3347;
+  color: #8A97AD;
+}
+.btn-outline:hover { border-color: #F59E0B; color: #F59E0B; }
+.btn-sm { padding: 9px 15px; font-size: 13px; border-radius: 10px; }
+.btn-full { width: 100%; }
+.btn-danger { border-color: rgba(239,68,68,0.35); color: #EF4444; }
 
-  /* ── BUTTONS ── */
-  .btn {
-    padding: 14px 22px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-  }
-  .btn:active { transform: scale(0.96); }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--tx-amber), var(--tx-orange));
-    color: white;
-    box-shadow: 0 4px 20px rgba(245,158,11,0.3);
-  }
-  .btn-primary:hover { box-shadow: 0 4px 28px rgba(245,158,11,0.45); }
-  .btn-outline {
-    background: transparent;
-    border: 1.5px solid var(--tx-border);
-    color: var(--tx-sub);
-  }
-  .btn-outline:hover { border-color: var(--tx-amber); color: var(--tx-amber); }
-  .btn-sm { padding: 9px 16px; font-size: 13px; border-radius: 10px; }
-  .btn-green { background: var(--tx-green); color: white; }
+/* ── SEARCHING STATE ── */
+#searching-overlay { display: none; padding: 36px 10px; text-align: center; }
+.spinner {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 4px solid #2A3347;
+  border-top-color: #F59E0B;
+  animation: spin 0.75s linear infinite;
+  margin: 0 auto 18px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.searching-label {
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 22px;
+  color: #F59E0B;
+  letter-spacing: 1px;
+  animation: blink 1.3s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.45} }
+.searching-sub { font-size: 13px; color: #8A97AD; margin-top: 5px; }
 
-  /* ── SAVINGS REVEAL ── */
-  #savings-result { display: none; }
-  .savings-number {
-    font-family: var(--font-display);
-    font-size: 80px;
-    line-height: 1;
-    color: var(--tx-gold);
-    letter-spacing: 2px;
-  }
-  .savings-label {
-    font-size: 13px;
-    color: var(--tx-sub);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 4px;
-  }
-  .rate-comparison {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 16px 0;
-  }
-  .rate-pill {
-    background: var(--tx-dark);
-    border-radius: 10px;
-    padding: 10px 16px;
-    text-align: center;
-  }
-  .rate-pill .val {
-    font-family: var(--font-display);
-    font-size: 26px;
-    line-height: 1;
-  }
-  .rate-pill .lbl { font-size: 11px; color: var(--tx-sub); margin-top: 2px; }
-  .rate-pill.good .val { color: var(--tx-green); }
-  .rate-pill.bad  .val { color: var(--tx-red); }
+/* ── RESULTS ── */
+#savings-result { display: none; }
 
-  /* ── PLAN CARDS ── */
-  .plan-card {
-    background: var(--tx-dark);
-    border: 1px solid var(--tx-border);
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    transition: border-color 0.2s;
-  }
-  .plan-card:hover { border-color: var(--tx-amber); }
-  .plan-rank {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: var(--tx-surface);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-display);
-    font-size: 20px;
-    color: var(--tx-sub);
-    flex-shrink: 0;
-  }
-  .plan-rank.gold { background: rgba(245,158,11,0.2); color: var(--tx-amber); }
-  .plan-info { flex: 1; min-width: 0; }
-  .plan-provider { font-size: 11px; color: var(--tx-sub); }
-  .plan-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .plan-tags { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
-  .tag {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.06);
-    color: var(--tx-sub);
-  }
-  .tag.green { background: rgba(16,185,129,0.15); color: var(--tx-green); }
-  .plan-rate-col { text-align: right; flex-shrink: 0; }
-  .plan-rate {
-    font-family: var(--font-display);
-    font-size: 30px;
-    color: var(--tx-gold);
-    line-height: 1;
-  }
-  .plan-rate-sub { font-size: 11px; color: var(--tx-sub); }
-  .efl-link {
-    font-size: 11px;
-    color: #60A5FA;
-    text-decoration: none;
-    margin-top: 4px;
-    display: block;
-  }
-  .efl-link:hover { text-decoration: underline; }
+.polr-banner {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #FCA5A5;
+  line-height: 1.5;
+}
 
-  /* ── SEARCHING OVERLAY ── */
-  #searching-overlay {
-    display: none;
-    text-align: center;
-    padding: 40px 20px;
-  }
-  .spinner {
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    border: 4px solid var(--tx-border);
-    border-top-color: var(--tx-amber);
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 20px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .searching-text {
-    font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--tx-amber);
-    letter-spacing: 1px;
-    animation: pulse 1.4s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-  .searching-sub { font-size: 13px; color: var(--tx-sub); margin-top: 6px; }
+.savings-hero {
+  background: #1E2535;
+  border: 1px solid #2A3347;
+  border-radius: 16px;
+  padding: 22px 16px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.savings-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #8A97AD;
+  margin-bottom: 6px;
+}
+.savings-amount {
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 82px;
+  line-height: 1;
+  color: #FCD34D;
+  letter-spacing: 2px;
+}
+.savings-period {
+  font-size: 13px;
+  color: #8A97AD;
+  margin-top: 4px;
+}
+.rate-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0 10px;
+}
+.rate-chip {
+  background: #0C1117;
+  border-radius: 10px;
+  padding: 10px 18px;
+  text-align: center;
+}
+.rate-chip .rv {
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 28px;
+  line-height: 1;
+}
+.rate-chip .rl { font-size: 11px; color: #8A97AD; margin-top: 2px; }
+.rate-chip.good .rv { color: #10B981; }
+.rate-chip.bad  .rv { color: #EF4444; }
+.arrow-sep { color: #4B5870; font-size: 20px; }
+.location-label { font-size: 12px; color: #8A97AD; }
 
-  /* ── COFFEE TIP JAR ── */
-  #tip-jar {
-    display: none;
-    background: linear-gradient(135deg, #1a1208, #201508);
-    border: 1px solid rgba(245,158,11,0.35);
-    border-radius: 20px;
-    overflow: hidden;
-    margin-top: 20px;
-    animation: slideUp 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
-  }
-  @keyframes slideUp { from { opacity:0; transform:translateY(30px) scale(0.95); } to { opacity:1; transform:none; } }
-  .tip-header {
-    background: linear-gradient(90deg, var(--tx-orange), #b45309);
-    padding: 16px 20px;
-  }
-  .tip-header-top { font-size: 11px; color: rgba(255,220,150,0.7); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-  .tip-header-title { font-family: var(--font-display); font-size: 24px; color: white; letter-spacing: 0.5px; }
-  .tip-body { padding: 18px 20px; }
-  .tip-copy { font-size: 14px; color: #C4A46B; line-height: 1.6; margin-bottom: 16px; }
-  .tip-copy strong { color: var(--tx-gold); }
-  .tip-tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-  .tier-btn {
-    background: rgba(0,0,0,0.4);
-    border: 1.5px solid rgba(245,158,11,0.25);
-    border-radius: 14px;
-    padding: 14px 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
-  .tier-btn:hover { border-color: var(--tx-amber); background: rgba(245,158,11,0.08); }
-  .tier-btn:active { transform: scale(0.95); }
-  .tier-btn.popular { border-color: var(--tx-amber); }
-  .tier-popular-badge {
-    position: absolute;
-    top: -9px; left: 50%; transform: translateX(-50%);
-    background: var(--tx-amber);
-    color: #000;
-    font-size: 9px;
-    font-weight: 800;
-    padding: 2px 8px;
-    border-radius: 20px;
-    white-space: nowrap;
-  }
-  .tier-emoji { font-size: 26px; display: block; margin-bottom: 6px; }
-  .tier-amount { font-family: var(--font-display); font-size: 24px; color: var(--tx-gold); line-height: 1; }
-  .tier-label { font-size: 11px; color: var(--tx-sub); margin-top: 3px; line-height: 1.3; }
-  .tip-dismiss { text-align: center; }
-  .tip-dismiss button {
-    background: none; border: none; font-size: 12px; color: var(--tx-muted);
-    cursor: pointer; text-decoration: underline;
-  }
+/* ── PLAN CARDS ── */
+.section-label {
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  color: #4B5870;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+.plan-card {
+  background: #0C1117;
+  border: 1px solid #2A3347;
+  border-radius: 14px;
+  padding: 14px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.18s;
+  cursor: default;
+}
+.plan-card:hover { border-color: rgba(245,158,11,0.4); }
+.rank-badge {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: #1E2535;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 19px;
+  color: #8A97AD;
+  flex-shrink: 0;
+}
+.rank-badge.top { background: rgba(245,158,11,0.18); color: #F59E0B; }
+.plan-info { flex: 1; min-width: 0; }
+.plan-prov { font-size: 11px; color: #8A97AD; }
+.plan-name { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.plan-tags { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  color: #8A97AD;
+}
+.tag.green { background: rgba(16,185,129,0.12); color: #10B981; }
+.efl-link { font-size: 11px; color: #60A5FA; text-decoration: none; display: block; margin-top: 4px; }
+.efl-link:hover { text-decoration: underline; }
+.plan-rate-col { flex-shrink: 0; text-align: right; }
+.plan-rate {
+  font-family: 'Bebas Neue', Georgia, serif;
+  font-size: 32px;
+  color: #FCD34D;
+  line-height: 1;
+}
+.plan-rate-sub { font-size: 11px; color: #8A97AD; }
 
-  /* ── THANK YOU STATE ── */
-  #tip-thanks {
-    display: none;
-    background: linear-gradient(135deg, #0a1f14, #0d2818);
-    border: 1px solid rgba(16,185,129,0.3);
-    border-radius: 20px;
-    padding: 30px 20px;
-    text-align: center;
-    margin-top: 20px;
-    animation: slideUp 0.4s ease;
-  }
-  .thanks-emoji { font-size: 52px; display: block; margin-bottom: 12px; animation: bounce 0.5s ease 0.1s; }
-  @keyframes bounce { 0%,100%{transform:scale(1)} 40%{transform:scale(1.25)} }
-  .thanks-title { font-family: var(--font-display); font-size: 28px; color: var(--tx-green); margin-bottom: 8px; }
-  .thanks-sub { font-size: 14px; color: #6EE7B7; line-height: 1.6; }
+/* ── TIP JAR ── */
+#tip-jar {
+  display: none;
+  margin-top: 18px;
+  background: linear-gradient(145deg, #1a1208 0%, #1c1509 100%);
+  border: 1px solid rgba(245,158,11,0.28);
+  border-radius: 20px;
+  overflow: hidden;
+  animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.94); }
+  to   { opacity: 1; transform: none; }
+}
+.tip-hd {
+  background: linear-gradient(90deg, #EA580C, #b45309);
+  padding: 15px 18px;
+}
+.tip-hd-eyebrow { font-size: 10px; color: rgba(255,220,150,0.65); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 2px; }
+.tip-hd-title { font-family: 'Bebas Neue', Georgia, serif; font-size: 24px; color: white; letter-spacing: 1px; }
+.tip-body { padding: 16px 18px; }
+.tip-copy { font-size: 13px; color: #C4A46B; line-height: 1.65; margin-bottom: 16px; }
+.tip-copy strong { color: #FCD34D; }
+.tip-tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 14px; }
+.tier {
+  background: rgba(0,0,0,0.35);
+  border: 1.5px solid rgba(245,158,11,0.18);
+  border-radius: 13px;
+  padding: 13px 6px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.18s, background 0.18s, transform 0.1s;
+  -webkit-appearance: none;
+  font-family: inherit;
+}
+.tier:hover  { border-color: #F59E0B; background: rgba(245,158,11,0.07); }
+.tier:active { transform: scale(0.94); }
+.tier.pop    { border-color: #F59E0B; }
+.tier-badge {
+  position: absolute;
+  top: -9px; left: 50%; transform: translateX(-50%);
+  background: #F59E0B;
+  color: #000;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+.tier-icon  { font-size: 24px; display: block; margin-bottom: 5px; }
+.tier-amt   { font-family: 'Bebas Neue', Georgia, serif; font-size: 26px; color: #FCD34D; line-height: 1; }
+.tier-lbl   { font-size: 10px; color: #8A97AD; margin-top: 3px; line-height: 1.3; }
+.tip-dismiss { text-align: center; }
+.tip-dismiss button { background: none; border: none; font-size: 12px; color: #4B5870; cursor: pointer; text-decoration: underline; font-family: inherit; }
 
-  /* ── HISTORY TABLE ── */
-  .rate-table { width: 100%; border-collapse: collapse; }
-  .rate-table th {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
-    color: var(--tx-sub); text-align: left; padding: 8px 12px;
-    border-bottom: 1px solid var(--tx-border);
-  }
-  .rate-table td {
-    padding: 12px 12px; font-size: 14px;
-    border-bottom: 1px solid rgba(42,51,71,0.5);
-  }
-  .rate-table tr:last-child td { border-bottom: none; }
-  .rate-table .rate-val { font-family: var(--font-display); font-size: 18px; color: var(--tx-gold); }
+/* ── THANKS ── */
+#tip-thanks {
+  display: none;
+  background: linear-gradient(145deg, #091a10, #0b1f12);
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 20px;
+  padding: 28px 18px;
+  text-align: center;
+  margin-top: 18px;
+  animation: popIn 0.4s ease;
+}
+.thanks-icon  { font-size: 50px; display: block; margin-bottom: 10px; }
+.thanks-title { font-family: 'Bebas Neue', Georgia, serif; font-size: 28px; color: #10B981; margin-bottom: 8px; letter-spacing: 1px; }
+.thanks-body  { font-size: 13px; color: #6EE7B7; line-height: 1.6; }
 
-  /* ── SETTINGS ── */
-  .setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--tx-border);
-  }
-  .setting-row:last-child { border-bottom: none; }
-  .setting-label { font-size: 14px; font-weight: 500; }
-  .setting-sub { font-size: 12px; color: var(--tx-sub); margin-top: 2px; }
-  .input-field {
-    background: var(--tx-dark);
-    border: 1.5px solid var(--tx-border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
-    color: var(--tx-text);
-    width: 100%;
-    outline: none;
-    font-family: var(--font-body);
-    transition: border-color 0.2s;
-  }
-  .input-field:focus { border-color: var(--tx-amber); }
-  .input-group { margin-bottom: 12px; }
-  .input-label { font-size: 12px; color: var(--tx-sub); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+/* ── TABLES ── */
+.rate-table { width: 100%; border-collapse: collapse; }
+.rate-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #8A97AD; text-align: left; padding: 8px 10px; border-bottom: 1px solid #2A3347; }
+.rate-table td { padding: 11px 10px; font-size: 13px; border-bottom: 1px solid rgba(42,51,71,0.4); }
+.rate-table tr:last-child td { border-bottom: none; }
+.rv-cell { font-family: 'Bebas Neue', Georgia, serif; font-size: 19px; color: #FCD34D; }
+.green-cell { color: #10B981; font-weight: 600; }
+.red-cell   { color: #EF4444; }
 
-  /* ── TOAST ── */
-  #toast {
-    position: fixed;
-    bottom: 80px; left: 50%; transform: translateX(-50%);
-    background: var(--tx-card);
-    border: 1px solid var(--tx-border);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  #toast.show { opacity: 1; }
+/* ── SETTINGS ── */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid #2A3347;
+  gap: 12px;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-lbl   { font-size: 14px; font-weight: 600; }
+.setting-sub   { font-size: 12px; color: #8A97AD; margin-top: 2px; }
+.input-wrap    { margin-bottom: 12px; }
+.input-lbl     { font-size: 11px; color: #8A97AD; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+.field {
+  background: #0C1117;
+  border: 1.5px solid #2A3347;
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-size: 14px;
+  color: #E8EDF5;
+  width: 100%;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-appearance: none;
+  transition: border-color 0.18s;
+}
+.field:focus { border-color: #F59E0B; }
+.field-sm { width: 90px; text-align: center; }
 
-  /* ── STATUS DOT ── */
-  .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
-  .status-dot.online { background: var(--tx-green); box-shadow: 0 0 6px var(--tx-green); }
-  .status-dot.offline { background: var(--tx-red); }
+/* ── MISC ── */
+.row    { display: flex; align-items: center; gap: 10px; }
+.between { display: flex; align-items: center; justify-content: space-between; }
+.empty  { text-align: center; padding: 30px 10px; color: #4B5870; font-size: 14px; }
+.empty-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+.divider { border: none; border-top: 1px solid #2A3347; margin: 14px 0; }
+.amber  { color: #F59E0B; }
+.green  { color: #10B981; }
+.red    { color: #EF4444; }
+.sub    { color: #8A97AD; font-size: 13px; }
+.bold   { font-weight: 700; }
+.mt1    { margin-top: 6px; }
+.mt2    { margin-top: 12px; }
+.mt3    { margin-top: 18px; }
+.center { text-align: center; }
+.footer-note { text-align: center; padding: 8px; color: #4B5870; font-size: 11px; line-height: 1.6; }
 
-  /* ── MISC ── */
-  .section-title { font-family: var(--font-display); font-size: 16px; letter-spacing: 0.5px; color: var(--tx-sub); text-transform: uppercase; margin-bottom: 12px; margin-top: 6px; }
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--tx-muted); }
-  .empty-state .icon { font-size: 40px; margin-bottom: 12px; display: block; }
-  .divider { border: none; border-top: 1px solid var(--tx-border); margin: 16px 0; }
-  .flex-row { display: flex; align-items: center; gap: 10px; }
-  .flex-between { display: flex; align-items: center; justify-content: space-between; }
-  .text-amber { color: var(--tx-amber); }
-  .text-green { color: var(--tx-green); }
-  .text-red { color: var(--tx-red); }
-  .text-sub { color: var(--tx-sub); font-size: 13px; }
-  .mt-1 { margin-top: 4px; }
-  .mt-2 { margin-top: 10px; }
-  .mt-3 { margin-top: 16px; }
-  .bold { font-weight: 700; }
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 90px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #1E2535;
+  border: 1px solid #2A3347;
+  border-radius: 12px;
+  padding: 11px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  white-space: nowrap;
+  max-width: 90vw;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ── POLR BANNER ── */
-  .polr-banner {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.25);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: #FCA5A5;
-    line-height: 1.5;
-  }
+/* ── HISTORY ITEM ── */
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #2A3347;
+  cursor: pointer;
+}
+.history-item:last-child { border-bottom: none; }
+.history-item:active { opacity: 0.7; }
 
-  /* mobile bottom padding for fixed nav */
-  .panel { padding-bottom: 80px; }
-
-  @media (max-width: 360px) {
-    .savings-number { font-size: 64px; }
-    .tip-tiers { gap: 7px; }
-  }
+/* ── ABOUT HERO ── */
+.about-hero {
+  background: linear-gradient(145deg, #161B24, #1a2236);
+  border: 1px solid #2A3347;
+  border-radius: 20px;
+  padding: 26px 18px;
+  margin-bottom: 16px;
+}
+.about-icon  { font-size: 42px; margin-bottom: 10px; display: block; }
+.about-title { font-family: 'Bebas Neue', Georgia, serif; font-size: 38px; line-height: 0.95; letter-spacing: 2px; color: #E8EDF5; margin-bottom: 8px; }
+.about-title em { color: #F59E0B; font-style: normal; }
+.about-sub   { font-size: 13px; color: #8A97AD; line-height: 1.6; }
+.prose       { font-size: 14px; color: #8A97AD; line-height: 1.7; }
+.prose strong { color: #E8EDF5; }
 </style>
 </head>
 <body>
 
-<!-- ═══════ HEADER ═══════ -->
+<!-- ══ HEADER ══ -->
 <div class="header">
   <div class="header-logo">⚡ WATT<span>WISE</span></div>
   <div class="header-badge">
-    <span class="status-dot online" id="status-dot"></span>
-    <span id="status-text">Texas Live</span>
+    <span class="dot" id="sdot"></span>
+    <span id="stxt">Texas Live</span>
   </div>
 </div>
 
-<!-- ═══════ TABS ═══════ -->
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('search')">
-    <span class="tab-icon">🔍</span>Search
-  </div>
-  <div class="tab" onclick="switchTab('history')">
-    <span class="tab-icon">📊</span>History
-  </div>
-  <div class="tab" onclick="switchTab('alerts')">
-    <span class="tab-icon">🔔</span>Alerts
-  </div>
-  <div class="tab" onclick="switchTab('about')">
-    <span class="tab-icon">☕</span>About
-  </div>
-  <div class="tab" onclick="switchTab('settings')">
-    <span class="tab-icon">⚙️</span>Settings
-  </div>
+<!-- ══ TABS ══ -->
+<div class="tabs" id="tabs">
+  <div class="tab active" data-tab="search"><i>🔍</i>Search</div>
+  <div class="tab" data-tab="history"><i>📊</i>History</div>
+  <div class="tab" data-tab="alerts"><i>🔔</i>Alerts</div>
+  <div class="tab" data-tab="about"><i>☕</i>About</div>
+  <div class="tab" data-tab="settings"><i>⚙️</i>Settings</div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     PANEL 1 — SEARCH
-══════════════════════════════════════════════ -->
+<!-- ══════════════ SEARCH ══════════════ -->
 <div class="panel active" id="panel-search">
 
-  <!-- Hero ZIP Entry -->
   <div class="hero">
-    <div class="hero-title">FIND YOUR<br><span>SAVINGS</span></div>
-    <div class="hero-sub">Compare every Texas energy plan by ZIP code.<br>No email. No ads. No kickbacks.</div>
+    <div class="hero-eyebrow">⚡ Texas Deregulated Energy</div>
+    <div class="hero-title">FIND YOUR<br><em>SAVINGS</em></div>
+    <div class="hero-sub">Compare every plan in your ZIP. No email, no ads, no kickbacks from providers.</div>
     <div class="zip-row">
-      <input type="tel" class="zip-input" id="zip-input" maxlength="5" placeholder="ZIP CODE"
+      <input type="tel" class="zip-input" id="zip-input" maxlength="5"
+        placeholder="ZIP CODE" inputmode="numeric" pattern="[0-9]*"
         oninput="this.value=this.value.replace(/\D/g,'')"
-        onkeydown="if(event.key==='Enter')runSearch()">
-      <button class="btn btn-primary" onclick="runSearch()">⚡ Go</button>
+        onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn btn-primary" onclick="doSearch()">⚡ Go</button>
     </div>
-    <!-- Searching state -->
+
+    <!-- Searching overlay -->
     <div id="searching-overlay">
       <div class="spinner"></div>
-      <div class="searching-text" id="searching-zip-label">Scanning 75024…</div>
-      <div class="searching-sub" id="searching-count">Comparing 0 plans from all providers</div>
+      <div class="searching-label" id="slabel">Scanning 75024…</div>
+      <div class="searching-sub" id="scount">Comparing plans…</div>
     </div>
   </div>
 
   <!-- Results -->
   <div id="savings-result">
 
-    <!-- POLR Warning Banner -->
-    <div class="polr-banner" id="polr-banner">
-      ⚠️ The default utility rate in your area is <strong id="polr-rate-label">14.2¢/kWh</strong>. Most people are on this rate and don't know it.
+    <div class="polr-banner">
+      ⚠️ The default utility rate in your area is <strong id="polr-lbl">14.2¢/kWh</strong>. Most Texans are on this and don't know it.
     </div>
 
-    <!-- Big savings number -->
-    <div class="card" style="text-align:center; padding: 24px 20px;">
-      <div class="text-sub" style="text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">You could be overpaying</div>
-      <div class="savings-number" id="savings-number">$580</div>
-      <div class="savings-label">per year · based on 1,000 kWh/mo</div>
-      <div class="rate-comparison">
-        <div class="rate-pill good">
-          <div class="val" id="best-rate-label">9.4¢</div>
-          <div class="lbl">Best Rate</div>
+    <div class="savings-hero">
+      <div class="savings-eyebrow">You could be overpaying</div>
+      <div class="savings-amount" id="savings-num">$580</div>
+      <div class="savings-period">per year · based on <span id="usage-lbl">1,000</span> kWh/mo</div>
+      <div class="rate-row">
+        <div class="rate-chip good">
+          <div class="rv" id="best-rate">9.4¢</div>
+          <div class="rl">Best Rate</div>
         </div>
-        <div style="align-self:center;color:var(--tx-muted);font-size:20px;">→</div>
-        <div class="rate-pill bad">
-          <div class="val" id="your-rate-label">14.2¢</div>
-          <div class="lbl">Your Rate</div>
+        <div class="arrow-sep">→</div>
+        <div class="rate-chip bad">
+          <div class="rv" id="your-rate">14.2¢</div>
+          <div class="rl">Your Rate</div>
         </div>
       </div>
-      <div class="text-sub mt-1" id="savings-location-label">ZIP 75024 · Plano, TX · Oncor territory</div>
+      <div class="location-label" id="loc-lbl">ZIP 75024 · Plano, TX · Oncor territory</div>
     </div>
 
-    <!-- Top 3 Plans -->
-    <div class="section-title">⚡ Top Plans Available Now</div>
-    <div id="plan-cards-container"></div>
+    <div class="section-label">⚡ Top Plans Available Now</div>
+    <div id="plan-cards"></div>
 
-    <!-- Coffee Tip Jar -->
+    <!-- Coffee Jar -->
     <div id="tip-jar">
-      <div class="tip-header">
-        <div class="tip-header-top">☕ Ad-Free · No Kickbacks · Solo Developer</div>
-        <div class="tip-header-title">Keep WattWise Running?</div>
+      <div class="tip-hd">
+        <div class="tip-hd-eyebrow">☕ Ad-Free · No Kickbacks · Solo Developer</div>
+        <div class="tip-hd-title">Keep WattWise Running?</div>
       </div>
       <div class="tip-body">
         <div class="tip-copy">
           I'm a neighbor who built this because I was tired of watching Texans overpay.
           I take <strong>zero money from energy companies</strong> and run zero ads.
-          If I just found you <strong id="tip-savings-amount">$580 in savings</strong>,
+          If I just found you <strong id="tip-savings">$580 in savings</strong>,
           consider buying me a coffee to keep the servers on. ☕
         </div>
         <div class="tip-tiers">
-          <div class="tier-btn" onclick="handleTip('small_drip', 3)">
-            <span class="tier-emoji">☕</span>
-            <div class="tier-amount">$3</div>
-            <div class="tier-label">Small Drip</div>
-          </div>
-          <div class="tier-btn popular" onclick="handleTip('coffee_pastry', 7)">
-            <div class="tier-popular-badge">⭐ Popular</div>
-            <span class="tier-emoji">🥐</span>
-            <div class="tier-amount">$7</div>
-            <div class="tier-label">Coffee &amp; Pastry</div>
-          </div>
-          <div class="tier-btn" onclick="handleTip('energy_hero', 15)">
-            <span class="tier-emoji">⚡</span>
-            <div class="tier-amount">$15</div>
-            <div class="tier-label">Energy Hero</div>
-          </div>
+          <button class="tier" onclick="doTip('small_drip',3)">
+            <span class="tier-icon">☕</span>
+            <div class="tier-amt">$3</div>
+            <div class="tier-lbl">Small Drip</div>
+          </button>
+          <button class="tier pop" onclick="doTip('coffee_pastry',7)">
+            <div class="tier-badge">⭐ Popular</div>
+            <span class="tier-icon">🥐</span>
+            <div class="tier-amt">$7</div>
+            <div class="tier-lbl">Coffee &amp; Pastry</div>
+          </button>
+          <button class="tier" onclick="doTip('energy_hero',15)">
+            <span class="tier-icon">⚡</span>
+            <div class="tier-amt">$15</div>
+            <div class="tier-lbl">Energy Hero</div>
+          </button>
         </div>
         <div class="tip-dismiss">
-          <button onclick="dismissTip()">No thanks, I'll keep overpaying</button>
+          <button onclick="document.getElementById('tip-jar').style.display='none'">
+            No thanks, I'll keep overpaying
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Thank you state -->
+    <!-- Thanks -->
     <div id="tip-thanks">
-      <span class="thanks-emoji">🙌</span>
+      <span class="thanks-icon">🙌</span>
       <div class="thanks-title">You're a Texas Legend.</div>
-      <div class="thanks-sub" id="thanks-message">
-        Thank you — that covers one week of server time and keeps this tool free for every neighbor in Texas.
-      </div>
-      <button class="btn btn-outline btn-sm mt-3" onclick="document.getElementById('tip-thanks').style.display='none'">Close</button>
+      <div class="thanks-body" id="thanks-msg">Thank you — that keeps the site free for every neighbor in Texas.</div>
+      <button class="btn btn-outline btn-sm mt2" onclick="document.getElementById('tip-thanks').style.display='none'">Close</button>
     </div>
 
   </div><!-- /savings-result -->
+</div>
 
-</div><!-- /panel-search -->
-
-<!-- ══════════════════════════════════════════════
-     PANEL 2 — HISTORY
-══════════════════════════════════════════════ -->
+<!-- ══════════════ HISTORY ══════════════ -->
 <div class="panel" id="panel-history">
-  <div class="section-title">📈 Rate History</div>
-
   <div class="card">
-    <div class="flex-between" style="margin-bottom:14px">
+    <div class="between" style="margin-bottom:14px">
       <div>
-        <div class="bold" id="history-zip-label">No ZIP searched yet</div>
-        <div class="text-sub">30-day rate trend</div>
+        <div class="bold" id="hist-zip-lbl">No ZIP searched yet</div>
+        <div class="sub">30-day rate trend</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="switchTab('search')">Search ZIP</button>
     </div>
-    <div id="history-content">
-      <div class="empty-state">
-        <span class="icon">📊</span>
-        Search a ZIP to see its rate history
-      </div>
+    <div id="hist-table">
+      <div class="empty"><span class="empty-icon">📊</span>Search a ZIP first</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title">🗂 Saved ZIPs</div>
-    <div id="saved-zips-list">
-      <div class="empty-state" style="padding:20px 0">
-        <span style="color:var(--tx-sub);font-size:13px">Your searched ZIPs appear here</span>
-      </div>
+    <div id="saved-zips">
+      <div class="empty" style="padding:12px 0"><span class="sub">Your searched ZIPs will appear here</span></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     PANEL 3 — ALERTS
-══════════════════════════════════════════════ -->
+<!-- ══════════════ ALERTS ══════════════ -->
 <div class="panel" id="panel-alerts">
-  <div class="section-title">🔔 Rate Alerts</div>
-
   <div class="card">
-    <div class="card-title">Create an Alert</div>
-    <div class="input-group">
-      <label class="input-label">ZIP Code</label>
-      <input type="tel" class="input-field" id="alert-zip" maxlength="5" placeholder="75024" oninput="this.value=this.value.replace(/\D/g,'')">
+    <div class="card-title">🔔 Create a Rate Alert</div>
+    <div class="input-wrap">
+      <label class="input-lbl">ZIP Code</label>
+      <input type="tel" class="field" id="al-zip" maxlength="5" placeholder="75024" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
     </div>
-    <div class="input-group">
-      <label class="input-label">Alert me when rates drop below (¢/kWh)</label>
-      <input type="number" class="input-field" id="alert-threshold" placeholder="10.0" step="0.1" min="5" max="25">
+    <div class="input-wrap">
+      <label class="input-lbl">Alert me when rate drops below (¢/kWh)</label>
+      <input type="number" class="field" id="al-thresh" placeholder="10.0" step="0.1" min="5" max="25">
     </div>
-    <div class="input-group">
-      <label class="input-label">Your Email</label>
-      <input type="email" class="input-field" id="alert-email" placeholder="you@example.com">
+    <div class="input-wrap">
+      <label class="input-lbl">Your Email</label>
+      <input type="email" class="field" id="al-email" placeholder="you@example.com">
     </div>
-    <button class="btn btn-primary mt-2" style="width:100%" onclick="saveAlert()">🔔 Set Alert</button>
+    <button class="btn btn-primary btn-full mt1" onclick="saveAlert()">🔔 Set Alert</button>
   </div>
 
   <div class="card">
     <div class="card-title">Active Alerts</div>
     <div id="alerts-list">
-      <div class="empty-state" style="padding:10px 0">
-        <span class="text-sub">No alerts set yet</span>
-      </div>
+      <div class="empty" style="padding:10px 0"><span class="sub">No alerts yet</span></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     PANEL 4 — ABOUT
-══════════════════════════════════════════════ -->
+<!-- ══════════════ ABOUT ══════════════ -->
 <div class="panel" id="panel-about">
-  <div class="hero" style="text-align:left;padding:24px 20px;margin-bottom:20px">
-    <div style="font-size:40px;margin-bottom:10px">☕</div>
-    <div class="hero-title" style="font-size:32px">THE COFFEE<br><span>FUND</span></div>
-    <div class="hero-sub" style="margin-bottom:0">
-      WattWise is a free tool built by a solo developer in Texas.
-      No ads, no affiliate links, no sponsored plans.
-    </div>
+  <div class="about-hero">
+    <span class="about-icon">☕</span>
+    <div class="about-title">THE COFFEE<br><em>FUND</em></div>
+    <div class="about-sub">WattWise is built by a solo developer in Texas. No ads, no affiliate links, no sponsored results — ever.</div>
   </div>
 
   <div class="card">
     <div class="card-title">How This Works</div>
-    <p style="font-size:14px;color:var(--tx-sub);line-height:1.7">
+    <p class="prose">
       Every morning, WattWise pulls the latest rates from
-      <strong style="color:var(--tx-text)">PowerToChoose.org</strong> — the official Texas
-      PUC comparison site — and stores them by ZIP code. When you search,
-      you're seeing today's actual available rates, ranked by real effective price
-      at 1,000 kWh/month (not teaser rates).
+      <strong>PowerToChoose.org</strong> — the official Texas PUC comparison site —
+      and stores them by ZIP code. When you search, you're seeing today's actual
+      available rates ranked by real effective price at 1,000 kWh/month
+      (not teaser rates designed to mislead you).
     </p>
-    <hr class="divider">
-    <p style="font-size:14px;color:var(--tx-sub);line-height:1.7">
-      I compare those rates against your TDU's
-      <strong style="color:var(--tx-text)">POLR (Provider of Last Resort)</strong> rate —
-      the default rate you end up on if you've never switched, or when your contract expires.
-      That's where the savings number comes from.
+    <div class="divider"></div>
+    <p class="prose">
+      Your savings number is calculated by comparing the best available fixed
+      12-month rate against your TDU's <strong>POLR (Provider of Last Resort)</strong> rate —
+      the default rate you're on if you've never switched or your contract expired.
     </p>
-    <hr class="divider">
-    <p style="font-size:14px;color:var(--tx-sub);line-height:1.7">
-      The <strong style="color:var(--tx-amber)">EFL (Electricity Facts Label)</strong> linked
-      on each plan is the official PUC document showing the real price breakdown.
-      Always read the EFL before you switch.
+    <div class="divider"></div>
+    <p class="prose">
+      The <strong style="color:#F59E0B">EFL (Electricity Facts Label)</strong> linked on each plan
+      is the official PUC document with the real price breakdown. Always read it before switching.
     </p>
   </div>
 
-  <div class="card" style="background:linear-gradient(135deg,#1a1208,#1c1508);border-color:rgba(245,158,11,0.2)">
+  <div class="card" style="background:linear-gradient(145deg,#1a1208,#1c1508);border-color:rgba(245,158,11,0.2)">
     <div class="card-title">Support This Tool</div>
-    <p style="font-size:14px;color:#C4A46B;line-height:1.7;margin-bottom:16px">
-      If WattWise saved you money, consider buying me a coffee.
-      It's completely voluntary — the site will always be free.
+    <p class="tip-copy" style="margin-bottom:16px">
+      If WattWise saved you money, consider buying me a coffee. Completely voluntary — the site is always free.
     </p>
     <div class="tip-tiers">
-      <div class="tier-btn" onclick="handleTip('small_drip', 3)">
-        <span class="tier-emoji">☕</span>
-        <div class="tier-amount">$3</div>
-        <div class="tier-label">Small Drip</div>
-      </div>
-      <div class="tier-btn popular" onclick="handleTip('coffee_pastry', 7)">
-        <div class="tier-popular-badge">⭐ Popular</div>
-        <span class="tier-emoji">🥐</span>
-        <div class="tier-amount">$7</div>
-        <div class="tier-label">Coffee &amp; Pastry</div>
-      </div>
-      <div class="tier-btn" onclick="handleTip('energy_hero', 15)">
-        <span class="tier-emoji">⚡</span>
-        <div class="tier-amount">$15</div>
-        <div class="tier-label">Energy Hero</div>
-      </div>
+      <button class="tier" onclick="doTip('small_drip',3)">
+        <span class="tier-icon">☕</span>
+        <div class="tier-amt">$3</div>
+        <div class="tier-lbl">Small Drip</div>
+      </button>
+      <button class="tier pop" onclick="doTip('coffee_pastry',7)">
+        <div class="tier-badge">⭐ Popular</div>
+        <span class="tier-icon">🥐</span>
+        <div class="tier-amt">$7</div>
+        <div class="tier-lbl">Coffee &amp; Pastry</div>
+      </button>
+      <button class="tier" onclick="doTip('energy_hero',15)">
+        <span class="tier-icon">⚡</span>
+        <div class="tier-amt">$15</div>
+        <div class="tier-lbl">Energy Hero</div>
+      </button>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">Share WattWise</div>
-    <p style="font-size:13px;color:var(--tx-sub);margin-bottom:14px;line-height:1.6">
-      Post this in your neighborhood Facebook group or Nextdoor — your neighbors will thank you.
-    </p>
-    <button class="btn btn-outline" style="width:100%;justify-content:center;margin-bottom:10px" onclick="shareNeighborhood()">
-      📣 Share to Nextdoor / Facebook
-    </button>
-    <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="copyShareText()">
-      📋 Copy Neighborly Message
-    </button>
+    <div class="card-title">Share With Neighbors</div>
+    <p class="sub" style="margin-bottom:14px;line-height:1.6">Post in your neighborhood Facebook group or Nextdoor — your neighbors will thank you.</p>
+    <button class="btn btn-outline btn-full" style="margin-bottom:10px" onclick="doShare()">📣 Share to Nextdoor / Facebook</button>
+    <button class="btn btn-outline btn-full" onclick="copyMsg()">📋 Copy Neighborly Message</button>
   </div>
 
-  <div style="text-align:center;padding:10px 0;color:var(--tx-muted);font-size:12px">
+  <div class="footer-note">
     WattWise v1.0 · Not affiliated with any energy company<br>
     Data from PowerToChoose.org · PUC-regulated rates
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     PANEL 5 — SETTINGS
-══════════════════════════════════════════════ -->
+<!-- ══════════════ SETTINGS ══════════════ -->
 <div class="panel" id="panel-settings">
-  <div class="section-title">⚙️ Configuration</div>
-
   <div class="card">
     <div class="card-title">☁️ Supabase Connection</div>
-    <div class="input-group">
-      <label class="input-label">Project URL</label>
-      <input type="text" class="input-field" id="sb-url" placeholder="https://xxxx.supabase.co">
+    <div class="input-wrap">
+      <label class="input-lbl">Project URL</label>
+      <input type="url" class="field" id="sb-url" placeholder="https://xxxx.supabase.co">
     </div>
-    <div class="input-group">
-      <label class="input-label">Anon Key</label>
-      <input type="password" class="input-field" id="sb-key" placeholder="eyJh...">
+    <div class="input-wrap">
+      <label class="input-lbl">Anon Key</label>
+      <input type="password" class="field" id="sb-key" placeholder="eyJh…">
     </div>
-    <button class="btn btn-primary btn-sm mt-2" onclick="saveSupabase()">💾 Save &amp; Connect</button>
-    <div class="mt-2 text-sub" id="sb-status">Not connected</div>
+    <button class="btn btn-primary btn-sm mt1" onclick="saveSupabase()">💾 Save &amp; Connect</button>
+    <div class="sub mt1" id="sb-status">Not connected</div>
   </div>
 
   <div class="card">
     <div class="card-title">⚙️ Preferences</div>
     <div class="setting-row">
       <div>
-        <div class="setting-label">Monthly Usage (kWh)</div>
-        <div class="setting-sub">Used to calculate your savings estimate</div>
+        <div class="setting-lbl">Monthly Usage (kWh)</div>
+        <div class="setting-sub">Used to calculate savings</div>
       </div>
-      <input type="number" class="input-field" style="width:90px;text-align:center" id="pref-usage" value="1000" min="200" max="5000" step="100">
+      <input type="number" class="field field-sm" id="pref-usage" value="1000" min="200" max="5000" step="100">
     </div>
     <div class="setting-row">
       <div>
-        <div class="setting-label">Default ZIP</div>
-        <div class="setting-sub">Pre-fill on app open</div>
+        <div class="setting-lbl">Default ZIP</div>
+        <div class="setting-sub">Pre-fill on open</div>
       </div>
-      <input type="tel" class="input-field" style="width:90px;text-align:center" id="pref-zip" maxlength="5" placeholder="75024" oninput="this.value=this.value.replace(/\D/g,'')">
+      <input type="tel" class="field field-sm" id="pref-zip" maxlength="5" placeholder="75024" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
     </div>
-    <button class="btn btn-primary btn-sm mt-3" onclick="savePrefs()">💾 Save Preferences</button>
+    <button class="btn btn-primary btn-sm mt2" onclick="savePrefs()">💾 Save</button>
   </div>
 
   <div class="card">
-    <div class="card-title">💾 Data Management</div>
-    <button class="btn btn-outline" style="width:100%;justify-content:center;margin-bottom:10px" onclick="exportData()">📤 Export My Data (JSON)</button>
-    <button class="btn btn-outline" style="width:100%;justify-content:center;color:var(--tx-red);border-color:rgba(239,68,68,0.3)" onclick="clearData()">🗑️ Clear Local Data</button>
+    <div class="card-title">💾 Data</div>
+    <button class="btn btn-outline btn-full" style="margin-bottom:10px" onclick="exportData()">📤 Export My Data (JSON)</button>
+    <button class="btn btn-outline btn-full btn-danger" onclick="clearData()">🗑️ Clear All Local Data</button>
   </div>
 
-  <div style="text-align:center;padding:10px;color:var(--tx-muted);font-size:11px">
-    ⚡ WattWise · Texas Deregulated Energy Market<br>
-    Data sourced from PowerToChoose.org
-  </div>
+  <div class="footer-note">⚡ WattWise · Texas Deregulated Energy Market<br>Data from PowerToChoose.org</div>
 </div>
 
-<!-- ═══════ TOAST ═══════ -->
+<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- ══════════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════════ -->
+<!-- ══════════════ JS ══════════════ -->
 <script>
+'use strict';
 
-// ─── STATE ───────────────────────────────────────
-const APP = {
-  supabase:    null,
-  currentZip:  null,
-  currentData: null,
-  prefs: {
-    usage: 1000,
-    defaultZip: '',
-  },
-  savedZips: [],
-  alerts: [],
-  tips: [],
-};
-
-// ─── SUPABASE INIT ────────────────────────────────
-function initSupabase() {
-  const url = localStorage.getItem('ww_sb_url');
-  const key = localStorage.getItem('ww_sb_key');
-  if (url && key) {
+// ── SUPABASE (lazy init) ──────────────────────────
+let SB = null;
+function initSB() {
+  const url = ls('ww_sb_url'), key = ls('ww_sb_key');
+  if (url && key && typeof supabase !== 'undefined') {
     try {
-      APP.supabase = supabase.createClient(url, key);
-      document.getElementById('sb-url').value = url;
-      document.getElementById('sb-key').value = key;
-      document.getElementById('sb-status').textContent = '✅ Connected';
-      document.getElementById('sb-status').style.color = 'var(--tx-green)';
-    } catch(e) {
-      console.warn('Supabase init failed', e);
-    }
+      SB = supabase.createClient(url, key);
+      byId('sb-url').value = url;
+      byId('sb-key').value = key;
+      byId('sb-status').textContent = '✅ Connected';
+      byId('sb-status').style.color = '#10B981';
+    } catch(e) { console.warn('SB init', e); }
   }
 }
 
-function saveSupabase() {
-  const url = document.getElementById('sb-url').value.trim();
-  const key = document.getElementById('sb-key').value.trim();
-  if (!url || !key) { showToast('⚠️ Enter both URL and key'); return; }
-  localStorage.setItem('ww_sb_url', url);
-  localStorage.setItem('ww_sb_key', key);
-  APP.supabase = supabase.createClient(url, key);
-  document.getElementById('sb-status').textContent = '✅ Connected';
-  document.getElementById('sb-status').style.color = 'var(--tx-green)';
-  showToast('✅ Supabase connected!');
+// ── HELPERS ─────────────────────────────────────
+const byId = id => document.getElementById(id);
+const ls   = key => localStorage.getItem(key) || '';
+const lss  = (k,v) => localStorage.setItem(k,v);
+
+function toast(msg, ms=2800) {
+  const t = byId('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
 }
 
-// ─── TAB SWITCHING ────────────────────────────────
+// ── TABS ─────────────────────────────────────────
 function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const names = ['search','history','alerts','about','settings'];
-    t.classList.toggle('active', names[i] === name);
-  });
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.panel').forEach(p =>
+    p.classList.toggle('active', p.id === 'panel-' + name));
 }
+document.getElementById('tabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab');
+  if (t) switchTab(t.dataset.tab);
+});
 
-// ─── TEXAS ZIP DATA ──────────────────────────────
-// TDU lookup by ZIP prefix (simplified — real app queries DB)
-const ZIP_TDU = {
+// ── TEXAS DATA ───────────────────────────────────
+const TDU_MAP = {
   '750':'Oncor','751':'Oncor','752':'Oncor','753':'Oncor','754':'Oncor',
   '755':'Oncor','756':'Oncor','757':'Oncor','758':'Oncor','759':'Oncor',
   '760':'Oncor','761':'Oncor','762':'Oncor','763':'Oncor','764':'Oncor',
   '765':'Oncor','766':'Oncor','767':'Oncor','768':'Oncor','769':'Oncor',
-  '770':'CenterPoint','771':'CenterPoint','772':'CenterPoint','773':'CenterPoint','774':'CenterPoint',
-  '775':'CenterPoint','776':'CenterPoint','777':'CenterPoint','778':'CenterPoint','779':'CenterPoint',
-  '786':'AEP Texas','787':'AEP Texas','788':'AEP Texas','789':'AEP Texas',
-  '780':'AEP Texas','781':'AEP Texas','782':'AEP Texas','783':'AEP Texas','784':'AEP Texas','785':'AEP Texas',
-  '790':'AEP Texas','791':'AEP Texas','792':'AEP Texas','793':'AEP Texas','794':'AEP Texas','795':'AEP Texas',
+  '770':'CenterPoint','771':'CenterPoint','772':'CenterPoint','773':'CenterPoint',
+  '774':'CenterPoint','775':'CenterPoint','776':'CenterPoint','777':'CenterPoint',
+  '778':'CenterPoint','779':'CenterPoint',
+  '780':'AEP Texas','781':'AEP Texas','782':'AEP Texas','783':'AEP Texas',
+  '784':'AEP Texas','785':'AEP Texas','786':'AEP Texas','787':'AEP Texas',
+  '788':'AEP Texas','789':'AEP Texas','790':'AEP Texas','791':'AEP Texas',
+  '792':'AEP Texas','793':'AEP Texas','794':'AEP Texas','795':'AEP Texas',
   '796':'AEP Texas','797':'AEP Texas','798':'AEP Texas','799':'AEP Texas',
 };
-
-const POLR_RATES = { 'Oncor': 14.2, 'CenterPoint': 13.8, 'AEP Texas': 15.1, 'TNMP': 14.6 };
-
-const CITY_NAMES = {
-  '750': 'Dallas', '751': 'Dallas', '752': 'Dallas', '753': 'Dallas',
-  '754': 'Corsicana', '755': 'Palestine', '756': 'Longview', '757': 'Tyler',
-  '758': 'Palestine', '759': 'Lufkin', '760': 'Fort Worth', '761': 'Fort Worth',
-  '762': 'Weatherford', '763': 'Waco', '764': 'Waco', '765': 'Waco',
-  '766': 'Waco', '767': 'Dallas', '768': 'Abilene', '769': 'Midland',
-  '770': 'Houston', '771': 'Houston', '772': 'Houston', '773': 'Houston',
-  '774': 'Houston', '775': 'Houston', '776': 'Beaumont', '777': 'Beaumont',
-  '778': 'Bryan', '779': 'Victoria', '780': 'San Antonio', '781': 'San Antonio',
-  '782': 'San Antonio', '783': 'Corpus Christi', '784': 'Corpus Christi',
-  '785': 'McAllen', '786': 'Austin', '787': 'Austin', '788': 'Del Rio',
-  '789': 'Uvalde', '790': 'Amarillo', '791': 'Amarillo', '792': 'Childress',
-  '793': 'Lubbock', '794': 'Lubbock', '795': 'Abilene', '796': 'Abilene',
-  '797': 'Midland', '798': 'El Paso', '799': 'El Paso',
+const POLR  = { 'Oncor':14.2, 'CenterPoint':13.8, 'AEP Texas':15.1, 'TNMP':14.6 };
+const CITIES = {
+  '750':'Dallas','751':'Dallas','752':'Dallas','753':'Dallas','754':'Corsicana',
+  '755':'Palestine','756':'Longview','757':'Tyler','758':'Palestine','759':'Lufkin',
+  '760':'Fort Worth','761':'Fort Worth','762':'Weatherford','763':'Waco','764':'Waco',
+  '765':'Waco','766':'Waco','767':'Dallas','768':'Abilene','769':'Midland',
+  '770':'Houston','771':'Houston','772':'Houston','773':'Houston','774':'Houston',
+  '775':'Houston','776':'Beaumont','777':'Beaumont','778':'Bryan','779':'Victoria',
+  '780':'San Antonio','781':'San Antonio','782':'San Antonio','783':'Corpus Christi',
+  '784':'Corpus Christi','785':'McAllen','786':'Austin','787':'Austin',
+  '788':'Del Rio','789':'Uvalde','790':'Amarillo','791':'Amarillo',
+  '792':'Childress','793':'Lubbock','794':'Lubbock','795':'Abilene',
+  '796':'Abilene','797':'Midland','798':'El Paso','799':'El Paso',
 };
+const PROVIDERS = [
+  {n:'Gexa Energy',    plan:'Gexa Eco Saver 12',   green:true},
+  {n:'4Change Energy', plan:'Simply Low 12',        green:true},
+  {n:'Pulse Power',    plan:'Pulse Fixed 12',       green:false},
+  {n:'Cirro Energy',   plan:'Cirro Saver 12',       green:false},
+  {n:'TXU Energy',     plan:'TXU Simple Rate 12',   green:false},
+];
 
-function getTDU(zip) {
-  return ZIP_TDU[zip.substring(0,3)] || 'Oncor';
-}
-function getCity(zip) {
-  return CITY_NAMES[zip.substring(0,3)] || 'Texas';
-}
+function getTDU(z)  { return TDU_MAP[z.slice(0,3)] || 'Oncor'; }
+function getCity(z) { return CITIES[z.slice(0,3)]  || 'Texas'; }
 
-// ─── MOCK PLAN GENERATOR (replace with real Supabase query) ──
-function generateMockPlans(zip, bestRate) {
-  const tdu = getTDU(zip);
-  const providers = [
-    { name: 'Gexa Energy',     slug: 'gexa'     },
-    { name: '4Change Energy',  slug: '4change'  },
-    { name: 'Pulse Power',     slug: 'pulse'    },
-    { name: 'Cirro Energy',    slug: 'cirro'    },
-    { name: 'TXU Energy',      slug: 'txu'      },
-    { name: 'Reliant Energy',  slug: 'reliant'  },
-  ];
-  const plans = [
-    ['Eco Saver 12',   12, true,  bestRate],
-    ['Simply Low 12',  12, true,  bestRate + 0.4],
-    ['Fixed Saver 12', 12, false, bestRate + 0.7],
-  ];
-  return plans.map((p, i) => ({
-    rank:       i + 1,
-    provider:   providers[i].name,
-    name:       p[0],
-    term:       p[1],
-    green:      p[2],
-    rate:       p[3].toFixed(1),
-    cancel_fee: i === 0 ? 0 : 150,
-    efl_url:    `https://powertochoose.org/en/plans/efl/${providers[i].slug}-${zip}`,
+function genPlans(bestRate, zip) {
+  return PROVIDERS.slice(0,3).map((p,i) => ({
+    rank: i+1,
+    provider: p.n,
+    name: p.plan,
+    green: p.green,
+    rate: (bestRate + i*0.4).toFixed(1),
+    term: 12,
+    cancelFee: i===0 ? 0 : 150,
+    eflUrl: `https://www.powertochoose.org/en/plans?zip=${zip}`,
   }));
 }
 
-// ─── MAIN SEARCH ─────────────────────────────────
-async function runSearch() {
-  const zip = document.getElementById('zip-input').value.trim();
-  if (zip.length !== 5) { showToast('⚠️ Enter a 5-digit ZIP'); return; }
+// ── SEARCH ──────────────────────────────────────
+let currentData = null;
 
-  const tdu      = getTDU(zip);
-  const city     = getCity(zip);
-  const polrRate = POLR_RATES[tdu] || 14.2;
-  const usage    = parseInt(localStorage.getItem('ww_usage') || '1000');
+async function doSearch() {
+  const zip = byId('zip-input').value.trim();
+  if (zip.length !== 5) { toast('⚠️ Enter a 5-digit ZIP'); return; }
 
-  // Show searching state
-  document.getElementById('savings-result').style.display = 'none';
-  document.getElementById('tip-jar').style.display        = 'none';
-  document.getElementById('tip-thanks').style.display     = 'none';
-  const overlay = document.getElementById('searching-overlay');
-  overlay.style.display = 'block';
-  document.getElementById('searching-zip-label').textContent = `Scanning ${zip}…`;
+  const tdu   = getTDU(zip);
+  const city  = getCity(zip);
+  const polr  = POLR[tdu] || 14.2;
+  const usage = parseInt(ls('ww_usage') || '1000');
 
-  // Animate plan count
+  // Reset UI
+  byId('savings-result').style.display = 'none';
+  byId('tip-jar').style.display        = 'none';
+  byId('tip-thanks').style.display     = 'none';
+
+  // Show spinner
+  const ov = byId('searching-overlay');
+  ov.style.display = 'block';
+  byId('slabel').textContent = `Scanning ${zip}…`;
+
   let n = 0;
-  const planCountEl = document.getElementById('searching-count');
-  const countInterval = setInterval(() => {
-    n = Math.min(n + Math.floor(Math.random()*6)+3, 42);
-    planCountEl.textContent = `Comparing ${n} plans from all providers`;
-  }, 120);
+  const iv = setInterval(() => {
+    n = Math.min(n + Math.floor(Math.random()*5)+2, 44);
+    byId('scount').textContent = `Comparing ${n} plans from all providers`;
+  }, 100);
 
-  // Simulate fetch (replace with real Supabase/API call)
-  await new Promise(r => setTimeout(r, 2000 + Math.random()*600));
-  clearInterval(countInterval);
+  // Simulate API (replace with real Supabase query below)
+  await new Promise(r => setTimeout(r, 1800 + Math.random()*500));
+  clearInterval(iv);
 
-  // ── REAL SUPABASE QUERY (uncomment when DB is populated) ──
-  // let plans = [];
-  // if (APP.supabase) {
-  //   const { data } = await APP.supabase
-  //     .from('v_top3_plans_by_zip')
-  //     .select('*')
-  //     .eq('zip', zip)
-  //     .order('effective_rate', { ascending: true })
-  //     .limit(3);
-  //   plans = data || [];
-  // }
-  // For now, generate mock data:
-  const bestRate = polrRate - (3.5 + Math.random()*1.5);
-  const plans    = generateMockPlans(zip, bestRate);
-  const annualSavings = Math.round((polrRate - bestRate) * usage * 12 / 100);
+  /* ── REAL SUPABASE QUERY (uncomment once DB is populated) ──
+  if (SB) {
+    const { data } = await SB
+      .from('v_top3_plans_by_zip')
+      .select('*')
+      .eq('zip', zip)
+      .order('effective_rate', { ascending: true })
+      .limit(3);
+    // use data here instead of genPlans
+  }
+  ──────────────────────────────────────────────────────────── */
 
-  // Store state
-  APP.currentZip  = zip;
-  APP.currentData = { zip, city, tdu, polrRate, bestRate, annualSavings, plans, usage };
-  saveSearchHistory(zip, city, annualSavings);
+  const bestRate    = polr - (3.2 + Math.random()*1.8);
+  const plans       = genPlans(bestRate, zip);
+  const annualSave  = Math.round((polr - bestRate) * usage * 12 / 100);
 
-  // Hide searching, show results
-  overlay.style.display = 'none';
-  renderResults(APP.currentData);
+  currentData = { zip, city, tdu, polr, bestRate, annualSave, plans, usage };
+  saveHistory(zip, city, annualSave);
 
-  // Fire confetti + show tip jar after delay
-  fireConfetti();
+  ov.style.display = 'none';
+  renderResults(currentData);
+  boom();
   setTimeout(() => {
-    document.getElementById('tip-jar').style.display = 'block';
-    document.getElementById('tip-savings-amount').textContent = `$${annualSavings} in savings`;
-    document.getElementById('tip-jar').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 1300);
+    byId('tip-jar').style.display = 'block';
+    byId('tip-savings').textContent = `$${annualSave} in savings`;
+    byId('tip-jar').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }, 1200);
 }
 
-function renderResults(data) {
-  const { zip, city, tdu, polrRate, bestRate, annualSavings, plans } = data;
+function renderResults(d) {
+  byId('polr-lbl').textContent    = `${d.polr.toFixed(1)}¢/kWh`;
+  byId('savings-num').textContent = `$${d.annualSave.toLocaleString()}`;
+  byId('best-rate').textContent   = `${d.bestRate.toFixed(1)}¢`;
+  byId('your-rate').textContent   = `${d.polr.toFixed(1)}¢`;
+  byId('usage-lbl').textContent   = d.usage.toLocaleString();
+  byId('loc-lbl').textContent     = `ZIP ${d.zip} · ${d.city}, TX · ${d.tdu} territory`;
+  byId('hist-zip-lbl').textContent = `ZIP ${d.zip} · ${d.city}`;
 
-  document.getElementById('polr-rate-label').textContent     = `${polrRate.toFixed(1)}¢/kWh`;
-  document.getElementById('savings-number').textContent      = `$${annualSavings.toLocaleString()}`;
-  document.getElementById('best-rate-label').textContent     = `${bestRate.toFixed(1)}¢`;
-  document.getElementById('your-rate-label').textContent     = `${polrRate.toFixed(1)}¢`;
-  document.getElementById('savings-location-label').textContent = `ZIP ${zip} · ${city}, TX · ${tdu} territory`;
-
-  // Render plan cards
-  const container = document.getElementById('plan-cards-container');
-  container.innerHTML = plans.map(p => `
+  byId('plan-cards').innerHTML = d.plans.map(p => `
     <div class="plan-card">
-      <div class="plan-rank ${p.rank===1?'gold'}">
-        #${p.rank}
-      </div>
+      <div class="rank-badge ${p.rank===1?'top':''}">#${p.rank}</div>
       <div class="plan-info">
-        <div class="plan-provider">${p.provider}</div>
+        <div class="plan-prov">${p.provider}</div>
         <div class="plan-name">${p.name}</div>
         <div class="plan-tags">
           <span class="tag">${p.term} mo</span>
           ${p.green ? '<span class="tag green">🌱 Renewable</span>' : ''}
-          ${p.cancel_fee === 0 ? '<span class="tag">No cancel fee</span>' : `<span class="tag">$${p.cancel_fee} cancel fee</span>`}
+          <span class="tag">${p.cancelFee===0?'No cancel fee':'$'+p.cancelFee+' cancel fee'}</span>
         </div>
-        <a href="${p.efl_url}" target="_blank" class="efl-link">📄 Download EFL →</a>
+        <a href="${p.eflUrl}" target="_blank" class="efl-link">📄 Download EFL →</a>
       </div>
       <div class="plan-rate-col">
         <div class="plan-rate">${p.rate}¢</div>
@@ -1049,266 +1014,206 @@ function renderResults(data) {
     </div>
   `).join('');
 
-  document.getElementById('savings-result').style.display = 'block';
-  document.getElementById('savings-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  // Update history panel
-  document.getElementById('history-zip-label').textContent = `ZIP ${zip} · ${city}`;
-  renderHistory(data);
+  byId('savings-result').style.display = 'block';
+  renderHistoryTable(d);
 }
 
-// ─── HISTORY ─────────────────────────────────────
-function saveSearchHistory(zip, city, savings) {
-  let history = JSON.parse(localStorage.getItem('ww_history') || '[]');
-  history = history.filter(h => h.zip !== zip);
-  history.unshift({ zip, city, savings, date: new Date().toLocaleDateString() });
-  history = history.slice(0, 10);
-  localStorage.setItem('ww_history', JSON.stringify(history));
+// ── CONFETTI ────────────────────────────────────
+function boom() {
+  if (typeof confetti === 'undefined') return;
+  const colors = ['#F59E0B','#EA580C','#FCD34D','#10B981','#E8EDF5'];
+  [[0.25,{spread:26,startVelocity:55}],[0.2,{spread:60}],
+   [0.35,{spread:100,decay:0.91,scalar:0.8}],[0.1,{spread:120,startVelocity:25}]]
+  .forEach(([r,o]) => confetti({particleCount:Math.floor(160*r),origin:{y:0.55},colors,...o}));
+}
+
+// ── HISTORY ─────────────────────────────────────
+function saveHistory(zip, city, savings) {
+  let h = JSON.parse(ls('ww_hist') || '[]').filter(x => x.zip !== zip);
+  h.unshift({ zip, city, savings, date: new Date().toLocaleDateString() });
+  lss('ww_hist', JSON.stringify(h.slice(0,10)));
   renderSavedZips();
 }
 
 function renderSavedZips() {
-  const history = JSON.parse(localStorage.getItem('ww_history') || '[]');
-  const el = document.getElementById('saved-zips-list');
-  if (!history.length) {
-    el.innerHTML = '<div class="empty-state" style="padding:20px 0"><span class="text-sub">Your searched ZIPs appear here</span></div>';
-    return;
-  }
-  el.innerHTML = history.map(h => `
-    <div class="flex-between" style="padding:12px 0;border-bottom:1px solid var(--tx-border);cursor:pointer"
-      onclick="document.getElementById('zip-input').value='${h.zip}';switchTab('search');runSearch()">
-      <div>
-        <div class="bold">${h.zip} · ${h.city}</div>
-        <div class="text-sub">${h.date}</div>
-      </div>
-      <div class="text-amber bold">Save $${h.savings}/yr</div>
-    </div>
-  `).join('');
+  const h = JSON.parse(ls('ww_hist') || '[]');
+  byId('saved-zips').innerHTML = h.length
+    ? h.map(x => `
+        <div class="history-item" onclick="byId('zip-input').value='${x.zip}';switchTab('search');doSearch()">
+          <div><div class="bold">${x.zip} · ${x.city}</div><div class="sub">${x.date}</div></div>
+          <div class="amber bold">Save $${x.savings}/yr</div>
+        </div>`).join('')
+    : '<div class="empty" style="padding:10px 0"><span class="sub">Your searched ZIPs appear here</span></div>';
 }
 
-function renderHistory(data) {
-  // Generate mock 7-day history for the chart
-  const rows = [];
-  for (let i = 6; i >= 0; i--) {
-    const d    = new Date(); d.setDate(d.getDate() - i);
-    const rate = (data.bestRate + (Math.random()-0.5)*0.4).toFixed(2);
-    rows.push({ date: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}), rate });
-  }
-  document.getElementById('history-content').innerHTML = `
+function renderHistoryTable(d) {
+  const rows = Array.from({length:7},(_,i) => {
+    const dt = new Date(); dt.setDate(dt.getDate()-6+i);
+    const r  = (d.bestRate+(Math.random()-.5)*.5).toFixed(2);
+    const s  = Math.round((d.polr-parseFloat(r))*d.usage*12/100);
+    return `<tr>
+      <td>${dt.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+      <td class="rv-cell">${r}¢</td>
+      <td class="red-cell">${d.polr.toFixed(1)}¢</td>
+      <td class="green-cell">$${s}/yr</td>
+    </tr>`;
+  });
+  byId('hist-table').innerHTML = `
     <table class="rate-table">
-      <thead><tr><th>Date</th><th>Best Rate</th><th>POLR Rate</th><th>Savings</th></tr></thead>
-      <tbody>
-        ${rows.map(r => `
-          <tr>
-            <td>${r.date}</td>
-            <td class="rate-val">${r.rate}¢</td>
-            <td style="color:var(--tx-red)">${data.polrRate.toFixed(1)}¢</td>
-            <td class="text-green">$${Math.round((data.polrRate - parseFloat(r.rate)) * data.usage * 12 / 100)}/yr</td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-  `;
+      <thead><tr><th>Date</th><th>Best Rate</th><th>POLR</th><th>Savings</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
 }
 
-// ─── CONFETTI ────────────────────────────────────
-function fireConfetti() {
-  const colors = ['#F59E0B','#EA580C','#FCD34D','#10B981'];
-  function shoot(ratio, opts) {
-    confetti({ particleCount: Math.floor(160*ratio), spread:60, origin:{y:0.55}, colors, ...opts });
+// ── TIP ─────────────────────────────────────────
+const TIP_MSGS = {
+  small_drip:    "That covers one day of server time. Every bit helps — thank you!",
+  coffee_pastry: "That covers a full week online. You're a real one. Thank you!",
+  energy_hero:   "Texas-sized generosity! That covers almost a month of hosting. Legend.",
+};
+function doTip(tier, amt) {
+  if (SB && currentData) {
+    SB.from('tips').insert({
+      zip: currentData.zip, annual_savings: currentData.annualSave,
+      tier_label: tier, amount_usd: amt, status: 'pending',
+    }).catch(e => console.warn('tip log', e));
   }
-  shoot(0.25, { spread:26, startVelocity:55 });
-  shoot(0.20, { spread:60 });
-  shoot(0.35, { spread:100, decay:0.91, scalar:0.8 });
-  shoot(0.10, { spread:120, startVelocity:25 });
+  // TODO: replace with your Stripe link
+  // window.open('https://buy.stripe.com/YOUR_LINK', '_blank');
+  byId('tip-jar').style.display    = 'none';
+  byId('tip-thanks').style.display = 'block';
+  byId('thanks-msg').textContent   = TIP_MSGS[tier];
+  if (typeof confetti !== 'undefined')
+    confetti({particleCount:80,spread:60,origin:{y:0.8},colors:['#10B981','#FCD34D','#F59E0B']});
+  toast(`☕ Thank you! $${amt} received`);
+  switchTab('search');
 }
 
-// ─── TIP LOGIC ────────────────────────────────────
-function handleTip(tier, amount) {
-  // Log tip attempt to Supabase
-  if (APP.supabase && APP.currentData) {
-    APP.supabase.from('tips').insert({
-      zip: APP.currentData.zip,
-      annual_savings: APP.currentData.annualSavings,
-      tier_label: tier,
-      amount_usd: amount,
-      status: 'pending',
-    }).then(({ error }) => { if (error) console.warn('Tip log error', error); });
-  }
-
-  // Open payment link (replace with your Stripe link)
-  const stripeLinks = {
-    small_drip:    'https://buy.stripe.com/test_small',
-    coffee_pastry: 'https://buy.stripe.com/test_medium',
-    energy_hero:   'https://buy.stripe.com/test_large',
-  };
-  // For demo, skip payment and show thanks
-  // window.open(stripeLinks[tier], '_blank');
-
-  const msgs = {
-    small_drip:    "That covers one day of server time. Every bit helps — thank you!",
-    coffee_pastry: "That covers a full week online. You're a real one. Thank you!",
-    energy_hero:   "Texas-sized generosity! That covers almost a month of hosting. You're a legend.",
-  };
-  document.getElementById('tip-jar').style.display    = 'none';
-  document.getElementById('tip-thanks').style.display = 'block';
-  document.getElementById('thanks-message').textContent = msgs[tier];
-  confetti({ particleCount: 80, spread: 60, origin: { y: 0.8 }, colors: ['#10B981','#FCD34D','#F59E0B'] });
-  showToast(`☕ Thank you! $${amount} received`);
-}
-
-function dismissTip() {
-  document.getElementById('tip-jar').style.display = 'none';
-  showToast('💡 Come back anytime you need to compare rates');
-}
-
-// ─── ALERTS ─────────────────────────────────────
+// ── ALERTS ───────────────────────────────────────
 function saveAlert() {
-  const zip       = document.getElementById('alert-zip').value.trim();
-  const threshold = parseFloat(document.getElementById('alert-threshold').value);
-  const email     = document.getElementById('alert-email').value.trim();
-  if (zip.length !== 5) { showToast('⚠️ Enter a valid ZIP'); return; }
-  if (!threshold || threshold < 5) { showToast('⚠️ Enter a valid rate threshold'); return; }
-  if (!email.includes('@')) { showToast('⚠️ Enter a valid email'); return; }
-
-  const alert = { zip, threshold, email, created: new Date().toLocaleDateString(), id: Date.now() };
-  let alerts = JSON.parse(localStorage.getItem('ww_alerts') || '[]');
-  alerts.push(alert);
-  localStorage.setItem('ww_alerts', JSON.stringify(alerts));
-
-  // Save to Supabase if connected
-  if (APP.supabase) {
-    APP.supabase.from('rate_alerts').insert({ zip, threshold_rate: threshold, email, is_active: true })
-      .then(({ error }) => { if (error) console.warn('Alert save error', error); });
-  }
-
+  const zip    = byId('al-zip').value.trim();
+  const thresh = parseFloat(byId('al-thresh').value);
+  const email  = byId('al-email').value.trim();
+  if (zip.length!==5)    { toast('⚠️ Enter a valid ZIP'); return; }
+  if (!thresh||thresh<5) { toast('⚠️ Enter a valid threshold'); return; }
+  if (!email.includes('@')){ toast('⚠️ Enter a valid email'); return; }
+  let alerts = JSON.parse(ls('ww_alerts')||'[]');
+  alerts.push({ zip, thresh, email, date: new Date().toLocaleDateString(), id: Date.now() });
+  lss('ww_alerts', JSON.stringify(alerts));
+  if (SB) SB.from('rate_alerts').insert({zip,threshold_rate:thresh,email,is_active:true}).catch(()=>{});
   renderAlerts();
-  showToast(`🔔 Alert set for ZIP ${zip} below ${threshold}¢`);
-  document.getElementById('alert-zip').value = '';
-  document.getElementById('alert-threshold').value = '';
-  document.getElementById('alert-email').value = '';
+  toast(`🔔 Alert set for ${zip} below ${thresh}¢`);
+  ['al-zip','al-thresh','al-email'].forEach(id => byId(id).value='');
 }
 
 function renderAlerts() {
-  const alerts = JSON.parse(localStorage.getItem('ww_alerts') || '[]');
-  const el = document.getElementById('alerts-list');
-  if (!alerts.length) {
-    el.innerHTML = '<div class="empty-state" style="padding:10px 0"><span class="text-sub">No alerts set yet</span></div>';
-    return;
-  }
-  el.innerHTML = alerts.map(a => `
-    <div class="flex-between" style="padding:12px 0;border-bottom:1px solid var(--tx-border)">
-      <div>
-        <div class="bold">ZIP ${a.zip}</div>
-        <div class="text-sub">Alert when below <span class="text-amber">${a.threshold}¢/kWh</span></div>
-        <div class="text-sub">${a.email}</div>
-      </div>
-      <button class="btn btn-outline btn-sm" style="color:var(--tx-red);border-color:rgba(239,68,68,0.3)"
-        onclick="deleteAlert(${a.id})">🗑️</button>
-    </div>
-  `).join('');
+  const alerts = JSON.parse(ls('ww_alerts')||'[]');
+  byId('alerts-list').innerHTML = alerts.length
+    ? alerts.map(a => `
+        <div class="setting-row">
+          <div>
+            <div class="bold">ZIP ${a.zip}</div>
+            <div class="sub">Below <span class="amber">${a.thresh}¢</span> · ${a.email}</div>
+            <div class="sub">${a.date}</div>
+          </div>
+          <button class="btn btn-outline btn-sm btn-danger" onclick="delAlert(${a.id})">🗑️</button>
+        </div>`).join('')
+    : '<div class="empty" style="padding:10px 0"><span class="sub">No alerts yet</span></div>';
 }
 
-function deleteAlert(id) {
-  let alerts = JSON.parse(localStorage.getItem('ww_alerts') || '[]');
-  alerts = alerts.filter(a => a.id !== id);
-  localStorage.setItem('ww_alerts', JSON.stringify(alerts));
+function delAlert(id) {
+  let a = JSON.parse(ls('ww_alerts')||'[]').filter(x=>x.id!==id);
+  lss('ww_alerts',JSON.stringify(a));
   renderAlerts();
-  showToast('Alert deleted');
+  toast('Alert deleted');
 }
 
-// ─── SHARING ─────────────────────────────────────
-function shareNeighborhood() {
-  const zip  = APP.currentZip || '75024';
-  const city = APP.currentData?.city || 'your area';
-  const save = APP.currentData?.annualSavings || 500;
-  const rate = APP.currentData?.bestRate?.toFixed(1) || '9.4';
-  const url  = `https://wattwisegratuity.com/${zip}`;
-  const text = `📣 ${city} neighbors — are you overpaying for electricity?\n\nI found a free tool that compares every energy plan in our ZIP code. Best rate right now: ${rate}¢/kWh vs the default ${POLR_RATES[getTDU(zip)] || 14.2}¢ — that's ~$${save}/year in savings.\n\nNo email. No ads. No kickbacks.\n👉 ${url}`;
-  if (navigator.share) {
-    navigator.share({ title: 'WattWise — Texas Energy Savings', text, url });
+// ── SHARE ────────────────────────────────────────
+function doShare() {
+  const zip  = currentData?.zip  || '75024';
+  const city = currentData?.city || 'your area';
+  const save = currentData?.annualSave || 500;
+  const rate = currentData?.bestRate?.toFixed(1) || '9.4';
+  const url  = `https://24kr97gsxq-prog.github.io/Wattwise/`;
+  const text = `📣 ${city} neighbors — are you overpaying for electricity?\n\nBest rate in ${zip} right now: ${rate}¢/kWh vs the default ${POLR[getTDU(zip)]||14.2}¢ — that's ~$${save}/year difference.\n\nFree comparison tool, no email, no ads, no kickbacks:\n👉 ${url}`;
+  if (navigator.share) navigator.share({title:'WattWise',text,url});
+  else navigator.clipboard.writeText(text).then(()=>toast('✅ Copied!'));
+}
+
+function copyMsg() {
+  const city = currentData?.city || 'your city';
+  const save = currentData?.annualSave || 500;
+  const url  = `https://24kr97gsxq-prog.github.io/Wattwise/`;
+  const msg  = `Hey neighbors — I found a free tool that shows if you're overpaying for electricity in ${city}.\n\nNo email, no ads, the developer takes zero kickbacks from energy companies. Just type your ZIP.\n\nI saved ~$${save}/year.\n👉 ${url}`;
+  navigator.clipboard.writeText(msg).then(()=>toast('✅ Neighborly message copied!'));
+}
+
+// ── SETTINGS ─────────────────────────────────────
+function saveSupabase() {
+  const url = byId('sb-url').value.trim(), key = byId('sb-key').value.trim();
+  if (!url||!key) { toast('⚠️ Enter both URL and key'); return; }
+  lss('ww_sb_url',url); lss('ww_sb_key',key);
+  if (typeof supabase !== 'undefined') {
+    SB = supabase.createClient(url,key);
+    byId('sb-status').textContent = '✅ Connected';
+    byId('sb-status').style.color = '#10B981';
+    toast('✅ Supabase connected!');
   } else {
-    navigator.clipboard.writeText(text).then(() => showToast('✅ Share text copied!'));
+    toast('⚠️ Supabase library not loaded — credentials saved, refresh to connect');
   }
 }
 
-function copyShareText() {
-  const zip  = APP.currentZip || 'your ZIP';
-  const city = APP.currentData?.city || 'your city';
-  const save = APP.currentData?.annualSavings || 500;
-  const text = `Hey neighbors — I found a free tool that shows you if you're overpaying for electricity in ${city}.\n\nNo email required, no ads, the developer doesn't take kickbacks from energy companies. Just type your ZIP and see how much you could save.\n\nI saved ~$${save}/year.\n👉 https://wattwisegratuity.com/${zip}`;
-  navigator.clipboard.writeText(text).then(() => showToast('✅ Neighborly message copied!'));
-}
-
-// ─── PREFERENCES ─────────────────────────────────
 function savePrefs() {
-  const usage = parseInt(document.getElementById('pref-usage').value) || 1000;
-  const zip   = document.getElementById('pref-zip').value.trim();
-  localStorage.setItem('ww_usage', usage);
-  localStorage.setItem('ww_default_zip', zip);
-  showToast('✅ Preferences saved');
+  lss('ww_usage', byId('pref-usage').value || '1000');
+  lss('ww_defzip', byId('pref-zip').value.trim());
+  toast('✅ Preferences saved');
 }
 
-function loadPrefs() {
-  const usage = localStorage.getItem('ww_usage') || '1000';
-  const zip   = localStorage.getItem('ww_default_zip') || '';
-  document.getElementById('pref-usage').value = usage;
-  document.getElementById('pref-zip').value   = zip;
-  if (zip) document.getElementById('zip-input').value = zip;
-}
-
-// ─── EXPORT / CLEAR ──────────────────────────────
 function exportData() {
-  const data = {
-    history: JSON.parse(localStorage.getItem('ww_history') || '[]'),
-    alerts:  JSON.parse(localStorage.getItem('ww_alerts')  || '[]'),
-    prefs: {
-      usage:      localStorage.getItem('ww_usage'),
-      defaultZip: localStorage.getItem('ww_default_zip'),
-    },
-    exportedAt: new Date().toISOString(),
+  const d = {
+    history: JSON.parse(ls('ww_hist')||'[]'),
+    alerts:  JSON.parse(ls('ww_alerts')||'[]'),
+    prefs:   { usage: ls('ww_usage'), defaultZip: ls('ww_defzip') },
+    exported: new Date().toISOString(),
   };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a    = document.createElement('a');
-  a.href     = URL.createObjectURL(blob);
-  a.download = `wattwise-export-${Date.now()}.json`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
+  a.download = `wattwise-${Date.now()}.json`;
   a.click();
 }
 
 function clearData() {
-  if (!confirm('Clear all local data? This cannot be undone.')) return;
-  ['ww_history','ww_alerts','ww_usage','ww_default_zip'].forEach(k => localStorage.removeItem(k));
-  showToast('🗑️ Local data cleared');
-  renderSavedZips();
-  renderAlerts();
+  if (!confirm('Clear all local data?')) return;
+  ['ww_hist','ww_alerts','ww_usage','ww_defzip'].forEach(k=>localStorage.removeItem(k));
+  toast('🗑️ Cleared'); renderSavedZips(); renderAlerts();
 }
 
-// ─── TOAST ───────────────────────────────────────
-function showToast(msg, duration = 2800) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
+// ── ONLINE STATUS ────────────────────────────────
+function updateStatus() {
+  const on = navigator.onLine;
+  byId('sdot').className = 'dot' + (on?'':' off');
+  byId('stxt').textContent = on ? 'Texas Live' : 'Offline';
 }
 
-// ─── INIT ─────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  initSupabase();
-  loadPrefs();
+  initSB();
+  const defZip = ls('ww_defzip');
+  if (defZip) byId('zip-input').value = defZip;
+  byId('pref-usage').value = ls('ww_usage') || '1000';
+  byId('pref-zip').value   = ls('ww_defzip') || '';
   renderSavedZips();
   renderAlerts();
-
-  // Online/offline indicator
-  function updateStatus() {
-    const online = navigator.onLine;
-    document.getElementById('status-dot').className   = `status-dot ${online?'online':'offline'}`;
-    document.getElementById('status-text').textContent = online ? 'Texas Live' : 'Offline';
-  }
   window.addEventListener('online',  updateStatus);
   window.addEventListener('offline', updateStatus);
   updateStatus();
 });
-
 </script>
+
+<!-- Supabase CDN (loads async, app works without it) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<!-- Confetti CDN -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
+
 </body>
 </html>
