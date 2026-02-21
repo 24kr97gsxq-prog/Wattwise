@@ -3,1225 +3,483 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WattWise Gratuity — Free Texas Electricity Savings Finder</title>
-<meta name="description" content="Andy's free tool to find the best electricity rates in Texas. Compare 54+ plans across all TDU territories. Always free — tip only if you want to.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<title>WattWise Gratuity — Free Texas Electricity Savings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   CSS RESET & ROOT VARIABLES
-   ============================================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --green: #00DC82;
-  --green-dark: #00b368;
-  --yellow: #FACC15;
-  --blue: #38BDF8;
-  --red: #ff6b6b;
-  --pink: #F472B6;
-  --purple: #A78BFA;
-  --bg-primary: #0a0a12;
-  --bg-card: rgba(255,255,255,0.02);
-  --border: rgba(255,255,255,0.06);
-  --text-primary: #fff;
-  --text-secondary: #c8c8d0;
-  --text-muted: #888;
-  --text-dim: #555;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  --font-body: 'Source Serif 4', Georgia, serif;
-}
-html { scroll-behavior: smooth; }
-body {
-  min-height: 100vh;
-  background: linear-gradient(165deg, #0a0a12 0%, #0d0d1a 40%, #0a1a12 100%);
-  color: var(--text-secondary);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-input[type=number] { -moz-appearance: textfield; }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,220,130,0.2); border-radius: 3px; }
-button { font-family: inherit; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#00DC82;--gd:#00b368;--y:#FACC15;--b:#38BDF8;--r:#ff6b6b;--o:#FB923C;--fd:'Playfair Display',Georgia,serif;--fm:'JetBrains Mono',monospace;--fb:'Source Serif 4',Georgia,serif}
+html{scroll-behavior:smooth}
+body{min-height:100vh;background:linear-gradient(165deg,#0a0a12,#0d0d1a 40%,#0a1a12);color:#c8c8d0;font-family:var(--fb);-webkit-font-smoothing:antialiased}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}input[type=number]{-moz-appearance:textfield}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(0,220,130,.2);border-radius:3px}
+button{font-family:inherit;border:none;cursor:pointer}
 
-/* ============================================================
-   ANIMATIONS
-   ============================================================ */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes confettiFall {
-  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
-  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-}
-@keyframes barGrow {
-  from { width: 0; }
-}
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(0,220,130,0.1); }
-  50% { box-shadow: 0 0 40px rgba(0,220,130,0.25); }
-}
-.fade-up { animation: fadeUp 0.6s ease-out both; }
-.fade-up-1 { animation-delay: 0.06s; }
-.fade-up-2 { animation-delay: 0.12s; }
-.fade-up-3 { animation-delay: 0.18s; }
-.fade-up-4 { animation-delay: 0.24s; }
-.fade-up-5 { animation-delay: 0.30s; }
-.fade-up-6 { animation-delay: 0.36s; }
-.fade-up-7 { animation-delay: 0.42s; }
-.fade-up-8 { animation-delay: 0.48s; }
-.fade-up-9 { animation-delay: 0.54s; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confetti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes barGrow{from{width:0}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(0,220,130,.1)}50%{box-shadow:0 0 40px rgba(0,220,130,.25)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes checkPop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.fu{animation:fadeUp .6s ease-out both}
+.confetti-p{position:fixed;top:-20px;z-index:9999;pointer-events:none}
 
-/* ============================================================
-   LAYOUT
-   ============================================================ */
-.container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
-.label {
-  display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: #666; font-family: var(--font-mono); margin-bottom: 6px; text-align: left;
-}
-.label-green { color: var(--green); }
-.label-yellow { color: var(--yellow); }
-.label-blue { color: var(--blue); }
+/* === HEADER === */
+.hdr{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.04)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--g),var(--gd));display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#0a0a0a}
+.logo-t{font-family:var(--fd);font-size:17px;font-weight:700;color:#fff;line-height:1}
+.logo-s{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);font-family:var(--fm)}
+.hdr-b{display:flex;gap:8px;align-items:center}
+.btn-gh{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#a0a0b0;border-radius:8px;padding:7px 12px;font-size:11px;font-family:var(--fm);transition:all .2s}
+.btn-gh:hover{background:rgba(255,255,255,.07);color:#fff}
+.btn-tp{background:linear-gradient(135deg,var(--g),var(--gd));color:#0a0a0a;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;font-family:var(--fm);animation:float 3s ease-in-out infinite;display:none}
+.btn-tp.vis{display:inline-block}
 
-/* ============================================================
-   HEADER
-   ============================================================ */
-.header {
-  padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid var(--border);
-}
-.logo { display: flex; align-items: center; gap: 10px; }
-.logo-icon {
-  width: 34px; height: 34px; border-radius: 9px;
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px; font-weight: 700; color: #0a0a0a;
-}
-.logo-text { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: #fff; line-height: 1; }
-.logo-sub { font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--green); font-family: var(--font-mono); }
-.header-btns { display: flex; gap: 8px; align-items: center; }
-.btn-ghost {
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-  color: #a0a0b0; border-radius: 8px; padding: 7px 12px; font-size: 11px;
-  cursor: pointer; font-family: var(--font-mono); transition: all 0.2s;
-}
-.btn-ghost:hover { background: rgba(255,255,255,0.07); color: #fff; }
-.btn-tip {
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
-  border: none; color: #0a0a0a; border-radius: 8px; padding: 7px 12px; font-size: 11px;
-  cursor: pointer; font-weight: 700; font-family: var(--font-mono);
-  animation: float 3s ease-in-out infinite; display: none;
-}
-.btn-tip.visible { display: inline-block; }
+/* === HERO === */
+.hero{padding:56px 20px 36px;text-align:center;max-width:640px;margin:0 auto}
+.hero-tag{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--g);font-family:var(--fm);margin-bottom:18px}
+.hero h1{font-family:var(--fd);font-size:clamp(30px,6vw,50px);font-weight:700;color:#fff;line-height:1.1;margin-bottom:18px}
+.hero .gr{background:linear-gradient(135deg,var(--g),var(--b));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:16px;line-height:1.7;color:#888;max-width:460px;margin:0 auto 32px}
+.hl{color:var(--g)}
 
-/* ============================================================
-   HERO
-   ============================================================ */
-.hero { padding: 56px 20px 36px; text-align: center; }
-.hero-tag {
-  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-  color: var(--green); font-family: var(--font-mono); margin-bottom: 18px;
-}
-.hero h1 {
-  font-family: var(--font-display); font-size: clamp(30px, 6vw, 50px);
-  font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 18px;
-}
-.hero h1 .gradient {
-  background: linear-gradient(135deg, var(--green), var(--blue));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero p {
-  font-size: 16px; line-height: 1.7; color: var(--text-muted);
-  max-width: 460px; margin: 0 auto 32px;
-}
-.hero p .hl { color: var(--green); }
+/* === SEARCH === */
+.sbox{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:22px;max-width:480px;margin:0 auto}
+.srow{display:flex;gap:10px;margin-bottom:12px}.srow .f1{flex:1}.srow .fs{width:130px}
+.inp{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:13px 15px;color:#fff;font-size:17px;font-family:var(--fm);outline:none;letter-spacing:2px;transition:border .2s}
+.inp:focus{border-color:rgba(0,220,130,.4)}.inp-u{letter-spacing:0}
+.btn-s{width:100%;padding:15px;background:linear-gradient(135deg,var(--g),var(--gd));color:#0a0a0a;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--fm);transition:opacity .2s}
+.btn-s:hover{opacity:.9}.btn-s:disabled{background:rgba(0,220,130,.3);cursor:default}
+.smeta{margin-top:12px;font-size:10px;color:#444;font-family:var(--fm);text-align:center}
+.errmsg{margin-top:12px;padding:10px 14px;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.2);border-radius:8px;font-size:12px;color:#ff8888}
+.lb{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#666;font-family:var(--fm);margin-bottom:6px;text-align:left}
 
-/* ============================================================
-   SEARCH FORM
-   ============================================================ */
-.search-box {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 22px; max-width: 480px; margin: 0 auto;
-}
-.search-row { display: flex; gap: 10px; margin-bottom: 12px; }
-.search-row .field { flex: 1; }
-.search-row .field-sm { width: 130px; }
-.input {
-  width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px; padding: 13px 15px; color: #fff; font-size: 17px;
-  font-family: var(--font-mono); outline: none; letter-spacing: 2px;
-  transition: border-color 0.2s;
-}
-.input:focus { border-color: rgba(0,220,130,0.4); }
-.input-usage { letter-spacing: 0; }
-.btn-search {
-  width: 100%; padding: 15px 0;
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
-  color: #0a0a0a; border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
-  cursor: pointer; letter-spacing: 0.5px; font-family: var(--font-mono);
-  transition: opacity 0.2s;
-}
-.btn-search:hover { opacity: 0.9; }
-.btn-search:disabled { background: rgba(0,220,130,0.3); cursor: default; }
-.search-meta {
-  margin-top: 12px; font-size: 10px; color: #444;
-  font-family: var(--font-mono); text-align: center;
-}
-.error-msg {
-  margin-top: 12px; padding: 10px 14px; background: rgba(255,80,80,0.08);
-  border: 1px solid rgba(255,80,80,0.2); border-radius: 8px; font-size: 12px; color: #ff8888;
-}
+/* === CURRENT RATE === */
+.crbar{background:linear-gradient(135deg,rgba(255,107,107,.06),rgba(255,107,107,.02));border:1px solid rgba(255,107,107,.15);border-radius:12px;padding:16px 18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.crbar h4{font-size:14px;color:#fff;font-weight:600;margin-bottom:3px}.crbar p{font-size:12px;color:#888}
+.cr-inp{display:flex;align-items:center;gap:8px}
+.cr-inp label{font-size:11px;color:#aaa;font-family:var(--fm);white-space:nowrap}
+.cr-sm{width:80px;background:rgba(0,0,0,.4);border:1px solid rgba(255,107,107,.25);border-radius:8px;padding:10px;color:#fff;font-size:16px;font-family:var(--fm);outline:none;text-align:center}
 
-/* ============================================================
-   RESULTS
-   ============================================================ */
-.results { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
-.results.hidden { display: none; }
+/* === RESULTS === */
+.res{padding:0 20px 60px;max-width:720px;margin:0 auto}.res.hid{display:none}
+.tbar{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.tbar .nm{font-size:15px;color:#fff;font-weight:600;margin-top:2px}.tbar .rg{font-size:12px;color:#777}
+.polr{font-size:20px;color:var(--r);font-weight:700;font-family:var(--fm)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:22px}
+.scard{border-radius:14px;padding:18px 16px;animation:glow 3s ease-in-out infinite}
+.scard.grn{background:linear-gradient(135deg,rgba(0,220,130,.08),rgba(0,220,130,.02));border:1px solid rgba(0,220,130,.2)}
+.scard.ylw{background:rgba(250,204,21,.04);border:1px solid rgba(250,204,21,.15)}
+.scard.blu{background:rgba(56,189,248,.04);border:1px solid rgba(56,189,248,.15)}
+.scard .big{font-size:32px;font-weight:700;font-family:var(--fm);margin-top:6px}
+.scard .sub{font-size:12px;color:#888}
 
-/* Territory bar */
-.territory-bar {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 18px; margin-bottom: 18px;
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 10px;
-}
-.territory-bar .name { font-size: 15px; color: #fff; font-weight: 600; margin-top: 2px; }
-.territory-bar .region { font-size: 12px; color: #777; }
-.polr-rate { font-size: 20px; color: var(--red); font-weight: 700; font-family: var(--font-mono); }
+/* === COST BARS === */
+.ccomp{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;margin-bottom:22px}
+.brow{margin-bottom:12px}.brow:last-child{margin-bottom:0}
+.bhdr{display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:4px}
+.bhdr .v{font-family:var(--fm);font-weight:600}
+.btrk{height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden}
+.bfil{height:100%;border-radius:4px;animation:barGrow .8s ease-out both}
 
-/* Savings cards */
-.savings-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 12px; margin-bottom: 22px;
-}
-.savings-card {
-  border-radius: 14px; padding: 18px 16px;
-  animation: pulseGlow 3s ease-in-out infinite;
-}
-.savings-card.green {
-  background: linear-gradient(135deg, rgba(0,220,130,0.08), rgba(0,220,130,0.02));
-  border: 1px solid rgba(0,220,130,0.2);
-}
-.savings-card.yellow {
-  background: rgba(250,204,21,0.04); border: 1px solid rgba(250,204,21,0.15);
-}
-.savings-card.blue {
-  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.15);
-}
-.savings-card .big {
-  font-size: 32px; font-weight: 700; font-family: var(--font-mono); margin-top: 6px;
-}
-.savings-card .sub { font-size: 12px; color: var(--text-muted); }
+/* === PLAN TABLE === */
+.ptbl{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.ptbl-h{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:10px}
+.ptbl-h h3{font-size:16px;font-weight:600;color:#fff}.ptbl-h .sub{font-size:11px;color:#666}
+.sortb{display:flex;gap:5px;flex-wrap:wrap}
+.sbtn{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:#777;border-radius:6px;padding:4px 9px;font-size:9px;font-family:var(--fm);text-transform:uppercase;letter-spacing:1px;transition:all .15s}
+.sbtn.a{background:rgba(0,220,130,.15);border-color:rgba(0,220,130,.3);color:var(--g)}
 
-/* Cost comparison */
-.cost-compare {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 14px; padding: 18px; margin-bottom: 22px;
-}
-.bar-row { margin-bottom: 12px; }
-.bar-row:last-child { margin-bottom: 0; }
-.bar-header { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 4px; }
-.bar-header .cost { font-family: var(--font-mono); font-weight: 600; }
-.bar-track { height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 4px; animation: barGrow 0.8s ease-out both; }
+/* Plan Rows */
+.prow{padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
+.prow:hover{background:rgba(255,255,255,.015)}.prow.best{background:rgba(0,220,130,.03)}
+.prow-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.pinf{flex:1;min-width:180px}
+.pprov{font-size:14px;font-weight:600;color:#fff}
+.pbdg{display:inline-flex;gap:5px;margin-left:8px;vertical-align:middle}
+.bdg{font-size:8px;padding:2px 7px;border-radius:4px;font-family:var(--fm);letter-spacing:1px;text-transform:uppercase;font-weight:700}
+.bdg-b{background:rgba(0,220,130,.15);color:var(--g)}.bdg-g{background:rgba(56,189,248,.1);color:var(--b)}
+.pname{font-size:12px;color:#888;margin-top:2px}
+.pmeta{margin-top:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px;color:#555}
+.stars{display:inline-flex;gap:1px;align-items:center}.star{font-size:11px}.star.on{color:var(--y)}.star.hlf{color:var(--y);opacity:.5}.star.off{color:#3a3a3a;opacity:.3}
+.star-n{font-size:10px;color:#888;margin-left:3px}
+.pprc{text-align:right;min-width:110px}
+.prate{font-size:22px;font-weight:700;font-family:var(--fm);color:#fff}.prate.br{color:var(--g)}
+.pmo{font-size:11px;color:#777}.psav{font-size:11px;color:var(--g);font-weight:600;margin-top:2px}
 
-/* Plan table */
-.plan-table {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 14px; overflow: hidden; margin-bottom: 22px;
-}
-.plan-table-header {
-  padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.04); flex-wrap: wrap; gap: 10px;
-}
-.plan-table-header h3 { font-size: 16px; font-weight: 600; color: #fff; }
-.plan-table-header .sub { font-size: 11px; color: #666; }
-.sort-btns { display: flex; gap: 5px; flex-wrap: wrap; }
-.sort-btn {
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-  color: #777; border-radius: 6px; padding: 4px 9px;
-  font-size: 9px; cursor: pointer; font-family: var(--font-mono);
-  text-transform: uppercase; letter-spacing: 1px; transition: all 0.15s;
-}
-.sort-btn.active { background: rgba(0,220,130,0.15); border-color: rgba(0,220,130,0.3); color: var(--green); }
-.plan-row {
-  padding: 15px 18px; border-bottom: 1px solid rgba(255,255,255,0.03);
-  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;
-  transition: background 0.15s;
-}
-.plan-row:hover { background: rgba(255,255,255,0.015); }
-.plan-row.best { background: rgba(0,220,130,0.03); }
-.plan-info { flex: 1; min-width: 200px; }
-.plan-provider { font-size: 14px; font-weight: 600; color: #fff; display: inline; }
-.plan-badges { display: inline-flex; gap: 5px; margin-left: 8px; vertical-align: middle; }
-.badge {
-  font-size: 8px; padding: 2px 7px; border-radius: 4px;
-  font-family: var(--font-mono); letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
-}
-.badge-best { background: rgba(0,220,130,0.15); color: var(--green); }
-.badge-green { background: rgba(56,189,248,0.1); color: var(--blue); }
-.plan-name { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.plan-meta { margin-top: 4px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--text-dim); }
-.stars { display: inline-flex; gap: 1px; align-items: center; }
-.star { font-size: 11px; }
-.star.on { color: var(--yellow); }
-.star.half { color: var(--yellow); opacity: 0.5; }
-.star.off { color: #3a3a3a; opacity: 0.3; }
-.star-num { font-size: 10px; color: var(--text-muted); margin-left: 3px; }
-.plan-pricing { text-align: right; min-width: 110px; }
-.plan-rate { font-size: 22px; font-weight: 700; font-family: var(--font-mono); color: #fff; }
-.plan-rate.best-rate { color: var(--green); }
-.plan-monthly { font-size: 11px; color: #777; }
-.plan-saving { font-size: 11px; color: var(--green); font-weight: 600; margin-top: 2px; }
-.btn-show-all {
-  width: 100%; padding: 13px 0; background: rgba(255,255,255,0.02);
-  border: none; color: var(--green); font-size: 12px; cursor: pointer;
-  font-family: var(--font-mono); border-top: 1px solid rgba(255,255,255,0.04);
-  transition: background 0.15s;
-}
-.btn-show-all:hover { background: rgba(255,255,255,0.04); }
+/* Plan select row */
+.psel{margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.psel-info{font-size:11px;color:#aaa;font-family:var(--fm)}
+.psel-info .amt{color:var(--g);font-weight:700;font-size:13px}
+.btn-sel{background:rgba(0,220,130,.1);border:1px solid rgba(0,220,130,.25);color:var(--g);border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;font-family:var(--fm);transition:all .2s;white-space:nowrap}
+.btn-sel:hover{background:rgba(0,220,130,.2);border-color:rgba(0,220,130,.4);color:#fff}
+.btn-all{width:100%;padding:13px;background:rgba(255,255,255,.02);color:var(--g);font-size:12px;font-family:var(--fm);border-top:1px solid rgba(255,255,255,.04)}
 
-/* Tip CTA */
-.tip-cta {
-  background: linear-gradient(135deg, rgba(0,220,130,0.06), rgba(250,204,21,0.04));
-  border: 1px solid rgba(0,220,130,0.15); border-radius: 16px; padding: 28px 22px;
-  text-align: center; margin-bottom: 20px;
-}
-.tip-cta .emoji { font-size: 32px; margin-bottom: 10px; }
-.tip-cta h3 { font-family: var(--font-display); font-size: 21px; color: #fff; margin-bottom: 8px; }
-.tip-cta h3 .hl { color: var(--green); }
-.tip-cta p { font-size: 13px; color: var(--text-muted); line-height: 1.6; max-width: 400px; margin: 0 auto 18px; }
-.btn-cta {
-  background: linear-gradient(135deg, var(--green), var(--green-dark)); color: #0a0a0a;
-  border: none; border-radius: 12px; padding: 13px 36px; font-size: 15px;
-  font-weight: 700; cursor: pointer; font-family: var(--font-mono);
-  transition: opacity 0.2s;
-}
-.btn-cta:hover { opacity: 0.9; }
+/* === TIP CTA === */
+.tcta{background:linear-gradient(135deg,rgba(0,220,130,.06),rgba(250,204,21,.04));border:1px solid rgba(0,220,130,.15);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:20px}
+.tcta .emo{font-size:32px;margin-bottom:10px}
+.tcta h3{font-family:var(--fd);font-size:21px;color:#fff;margin-bottom:8px}
+.tcta p{font-size:13px;color:#888;line-height:1.6;max-width:400px;margin:0 auto 18px}
+.btn-cta{background:linear-gradient(135deg,var(--g),var(--gd));color:#0a0a0a;border-radius:12px;padding:13px 36px;font-size:15px;font-weight:700;font-family:var(--fm)}
+.btn-cta:hover{opacity:.9}
 
-/* Share section */
-.share-box {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 14px; padding: 18px; margin-bottom: 22px;
-}
-.share-box p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
-.share-text {
-  background: rgba(0,0,0,0.3); border-radius: 10px; padding: 14px;
-  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
-  border: 1px solid rgba(255,255,255,0.04); position: relative;
-}
-.btn-copy {
-  position: absolute; top: 10px; right: 10px;
-  background: rgba(0,220,130,0.15); border: 1px solid rgba(0,220,130,0.3);
-  color: var(--green); border-radius: 6px; padding: 4px 10px; font-size: 10px;
-  cursor: pointer; font-family: var(--font-mono); transition: all 0.15s;
-}
-.btn-copy:hover { background: rgba(0,220,130,0.25); }
+/* Share */
+.share{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;margin-bottom:22px}
+.share p{font-size:13px;color:#888;line-height:1.6;margin-bottom:12px}
+.shtxt{background:rgba(0,0,0,.3);border-radius:10px;padding:14px;font-size:13px;color:#c8c8d0;line-height:1.6;border:1px solid rgba(255,255,255,.04);position:relative}
+.btn-cp{position:absolute;top:10px;right:10px;background:rgba(0,220,130,.15);border:1px solid rgba(0,220,130,.3);color:var(--g);border-radius:6px;padding:4px 10px;font-size:10px;font-family:var(--fm)}
 
-/* ============================================================
-   MODALS (Overlays)
-   ============================================================ */
-.overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000;
-  display: none; align-items: center; justify-content: center; padding: 20px;
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-}
-.overlay.open { display: flex; }
-.modal {
-  background: linear-gradient(165deg, #1a1a2e 0%, #0f0f1a 50%, #1a0f2e 100%);
-  border: 1px solid rgba(0,220,130,0.2); border-radius: 20px;
-  max-height: 85vh; overflow: auto; box-shadow: 0 25px 80px rgba(0,220,130,0.15);
-}
-.modal-close {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-  color: #aaa; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;
-  font-size: 18px; display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
-}
-.modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+/* === MODALS === */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ov.open{display:flex}
+.mdl{background:linear-gradient(165deg,#1a1a2e,#0f0f1a 50%,#1a0f2e);border:1px solid rgba(0,220,130,.2);border-radius:20px;max-height:85vh;overflow:auto;box-shadow:0 25px 80px rgba(0,220,130,.15)}
+.mdl-x{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#aaa;border-radius:50%;width:32px;height:32px;font-size:18px;display:flex;align-items:center;justify-content:center}
+.mdl-x:hover{background:rgba(255,255,255,.1);color:#fff}
 
-/* Story modal */
-.story-modal { max-width: 660px; width: 100%; padding: 36px 32px; }
-.story-modal h2 {
-  font-family: var(--font-display); font-size: 30px; color: #fff; line-height: 1.2; margin: 0 0 22px;
-}
-.story-modal h2 .hl { color: var(--green); }
-.story-body { font-family: var(--font-body); font-size: 15px; line-height: 1.85; color: #c8c8d0; }
-.story-body p { margin-bottom: 18px; }
-.story-body .highlight-yellow { color: var(--yellow); }
-.story-body strong { color: #fff; }
-.story-quote {
-  border-left: 3px solid var(--green); padding-left: 18px; margin: 24px 0;
-  font-style: italic; color: #e0e0e0; font-size: 16px;
-}
-.story-philosophy {
-  background: rgba(0,220,130,0.06); border: 1px solid rgba(0,220,130,0.15);
-  border-radius: 14px; padding: 22px 18px; margin: 24px 0;
-}
-.story-philosophy .title {
-  font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 8px;
-  font-family: var(--font-mono);
-}
-.story-philosophy p { margin: 0; color: #e8e8f0; }
+/* Story */
+.st-mdl{max-width:660px;width:100%;padding:36px 32px}
+.st-mdl h2{font-family:var(--fd);font-size:28px;color:#fff;line-height:1.2;margin:0 0 22px}
+.stbdy{font-size:15px;line-height:1.85;color:#c8c8d0}.stbdy p{margin-bottom:18px}
+.stbdy strong{color:#fff}.stbdy .yel{color:var(--y)}
+.stq{border-left:3px solid var(--g);padding-left:18px;margin:24px 0;font-style:italic;color:#e0e0e0;font-size:16px}
+.stph{background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.15);border-radius:14px;padding:22px 18px;margin:24px 0}
+.stph .tt{font-size:12px;color:var(--g);font-weight:600;margin-bottom:8px;font-family:var(--fm)}
+.stph p{margin:0;color:#e8e8f0}
 
-/* Tip modal */
-.tip-modal { max-width: 460px; width: 100%; padding: 32px 26px; }
-.tip-modal h3 { font-family: var(--font-display); font-size: 22px; color: #fff; margin: 0; line-height: 1.2; }
-.tip-savings-note {
-  background: rgba(0,220,130,0.06); border: 1px solid rgba(0,220,130,0.12);
-  border-radius: 10px; padding: 11px 14px; margin: 18px 0; font-size: 13px; color: #a8a8b8;
-}
-.tip-savings-note strong { color: var(--green); }
-.tip-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 18px 0; }
-.tip-option {
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px; padding: 16px 8px; cursor: pointer; text-align: center;
-  transition: all 0.2s;
-}
-.tip-option:hover { background: rgba(255,255,255,0.05); }
-.tip-option.selected { background: rgba(0,220,130,0.15); border-color: rgba(0,220,130,0.5); }
-.tip-option .emoji { font-size: 26px; margin-bottom: 4px; }
-.tip-option .amount { font-size: 19px; font-weight: 700; color: #fff; font-family: var(--font-mono); }
-.tip-option .label { font-size: 10px; color: var(--green); font-weight: 600; margin-top: 3px; }
-.tip-option .desc { font-size: 9px; color: #777; margin-top: 1px; }
-.tip-divider {
-  display: flex; align-items: center; gap: 10px; margin: 14px 0;
-  font-size: 11px; color: var(--text-dim);
-}
-.tip-divider::before, .tip-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
-.tip-custom-row { display: flex; gap: 10px; }
-.tip-custom-wrap { position: relative; flex: 1; }
-.tip-custom-dollar {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #666; font-size: 16px;
-}
-.tip-custom-input {
-  width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px; padding: 12px 14px 12px 28px; color: #fff; font-size: 16px;
-  font-family: var(--font-mono); outline: none;
-}
-.tip-custom-input:focus { border-color: rgba(0,220,130,0.4); }
-.tip-custom-input.selected { border-color: rgba(0,220,130,0.5); }
-.btn-tip-send {
-  width: 100%; margin-top: 18px; padding: 13px 0;
-  background: rgba(255,255,255,0.05); color: var(--text-dim);
-  border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
-  cursor: default; transition: all 0.3s; letter-spacing: 0.5px;
-}
-.btn-tip-send.active {
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
-  color: #0a0a0a; cursor: pointer;
-}
-.tip-footer { text-align: center; font-size: 10px; color: var(--text-dim); margin-top: 12px; }
+/* Tip Modal */
+.tpmdl{max-width:460px;width:100%;padding:32px 26px}
+.tpmdl h3{font-family:var(--fd);font-size:22px;color:#fff;margin:0;line-height:1.2}
+.tpsn{background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.12);border-radius:10px;padding:11px 14px;margin:18px 0;font-size:13px;color:#a8a8b8}
+.tpsn strong{color:var(--g)}
+.tpgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:18px 0}
+.tpopt{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 8px;text-align:center;transition:all .2s}
+.tpopt:hover{background:rgba(255,255,255,.05)}.tpopt.sel{background:rgba(0,220,130,.15);border-color:rgba(0,220,130,.5)}
+.tpopt .emo{font-size:26px;margin-bottom:4px}.tpopt .amt{font-size:19px;font-weight:700;color:#fff;font-family:var(--fm)}
+.tpopt .lbl{font-size:10px;color:var(--g);font-weight:600;margin-top:3px}.tpopt .dsc{font-size:9px;color:#777;margin-top:1px}
+.tpdiv{display:flex;align-items:center;gap:10px;margin:14px 0;font-size:11px;color:#555}
+.tpdiv::before,.tpdiv::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.tpcw{position:relative;flex:1}.tpc${ position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#666;font-size:16px}
+.tpci{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px 12px 28px;color:#fff;font-size:16px;font-family:var(--fm);outline:none}
+.tpci:focus{border-color:rgba(0,220,130,.4)}.tpci.sel{border-color:rgba(0,220,130,.5)}
+.btn-tps{width:100%;margin-top:18px;padding:13px;background:rgba(255,255,255,.05);color:#555;border-radius:12px;font-size:15px;font-weight:700;transition:all .3s}
+.btn-tps.act{background:linear-gradient(135deg,var(--g),var(--gd));color:#0a0a0a;cursor:pointer}
+.tpf{text-align:center;font-size:10px;color:#555;margin-top:12px}
+.tpty{text-align:center;max-width:420px;padding:44px 32px}
+.tpty .emo{font-size:52px;margin-bottom:14px}
+.tpty h3{font-family:var(--fd);font-size:24px;color:#fff;margin:0 0 10px}
+.tpty p{color:#a0a0b0;font-size:14px;line-height:1.6;margin-bottom:22px}
+.tpty strong{color:var(--g)}
 
-/* Tip thank you */
-.tip-thanks { text-align: center; max-width: 420px; padding: 44px 32px; }
-.tip-thanks .emoji { font-size: 52px; margin-bottom: 14px; }
-.tip-thanks h3 { font-family: var(--font-display); font-size: 24px; color: #fff; margin: 0 0 10px; }
-.tip-thanks p { color: #a0a0b0; font-size: 14px; line-height: 1.6; margin-bottom: 22px; }
-.tip-thanks strong { color: var(--green); }
+/* === REGISTRATION MODAL === */
+.rmdl{max-width:560px;width:100%;padding:0;overflow:hidden}
+.rstep{display:none;animation:slideUp .4s ease-out}.rstep.act{display:block}
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
-.site-footer {
-  padding: 36px 20px; border-top: 1px solid var(--border);
-  text-align: center; max-width: 640px; margin: 0 auto;
-}
-.site-footer p { font-size: 12px; color: #444; line-height: 1.8; }
-.site-footer .story-link {
-  background: none; border: none; color: var(--green); cursor: pointer;
-  font-size: 12px; text-decoration: underline; margin-top: 8px; display: inline-block;
-}
+/* Step 1 */
+.rsh{padding:28px 28px 0}.rsh h3{font-family:var(--fd);font-size:24px;color:#fff;margin:0 0 4px}
+.rpb{display:inline-block;background:rgba(0,220,130,.12);border:1px solid rgba(0,220,130,.25);border-radius:8px;padding:6px 14px;margin-top:10px;font-family:var(--fm);font-size:12px;color:var(--g)}
+.rsb{padding:20px 28px 28px}
+.rcmp{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.rcr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px}
+.rcr+.rcr{border-top:1px solid rgba(255,255,255,.04)}
+.rcl{font-size:13px;color:#aaa}.rcl small{display:block;font-size:10px;color:#666;margin-top:1px;font-family:var(--fm)}
+.rcv{font-family:var(--fm);font-weight:700;font-size:18px}
+.rcr.old .rcv{color:var(--r);text-decoration:line-through;text-decoration-color:rgba(255,107,107,.4)}
+.rcr.new .rcv{color:var(--g)}
+.rcr.sav{background:linear-gradient(135deg,rgba(0,220,130,.08),rgba(250,204,21,.04))}
+.rcr.sav .rcv{color:var(--y);font-size:22px}
+.rbkd{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.rbk{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 12px;text-align:center}
+.rbk .n{font-size:22px;font-weight:700;font-family:var(--fm);margin:4px 0}
+.rbk .l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#777;font-family:var(--fm)}
+.rbk.grn .n{color:var(--g)}.rbk.ylw .n{color:var(--y)}.rbk.blu .n{color:var(--b)}
+.rbar{margin-bottom:20px}.rbi{margin-bottom:10px}.rbi:last-child{margin-bottom:0}
+.rbl{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}.rbl span:first-child{color:#aaa}.rbl .v{font-family:var(--fm);font-weight:600}
+.rbtrk{height:10px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden}
+.rbf{height:100%;border-radius:5px;animation:barGrow 1s ease-out both}
+.btn-rn{width:100%;padding:15px;background:linear-gradient(135deg,var(--g),var(--gd));color:#0a0a0a;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--fm)}
+.btn-rn:hover{opacity:.9}
+.btn-rb{width:100%;padding:12px;background:none;color:#777;font-size:13px;margin-top:8px}
 
-/* ============================================================
-   CONFETTI
-   ============================================================ */
-.confetti-piece {
-  position: fixed; top: -20px; z-index: 9999; pointer-events: none;
-}
+/* Step 2 */
+.rfb{padding:28px}.rfb h3{font-family:var(--fd);font-size:22px;color:#fff;margin:0 0 4px}
+.rfb .sub{font-size:13px;color:#888;margin-bottom:20px}
+.rfd{margin-bottom:14px}
+.rfd label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#666;font-family:var(--fm);margin-bottom:5px}
+.rinp{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 15px;color:#fff;font-size:15px;font-family:var(--fb);outline:none;transition:border .2s}
+.rinp:focus{border-color:rgba(0,220,130,.4)}.rinp::placeholder{color:#444}
+.rrow{display:flex;gap:12px}.rrow .rfd{flex:1}
+.rchk{display:flex;align-items:flex-start;gap:10px;margin:18px 0;cursor:pointer}
+.rchk input{margin-top:3px;accent-color:var(--g);width:16px;height:16px}
+.rchk span{font-size:12px;color:#888;line-height:1.5}.rchk a{color:var(--g)}
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-@media (max-width: 480px) {
-  .search-row { flex-direction: column; }
-  .search-row .field-sm { width: 100%; }
-  .savings-grid { grid-template-columns: 1fr; }
-  .plan-row { flex-direction: column; }
-  .plan-pricing { text-align: left; margin-top: 8px; }
-  .territory-bar { flex-direction: column; text-align: left; }
-  .territory-bar > div:last-child { text-align: left; }
-  .tip-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-  .tip-option { padding: 12px 4px; }
-  .story-modal { padding: 24px 20px; }
-  .story-modal h2 { font-size: 24px; }
+/* Step 3 */
+.rcnf{padding:36px 28px;text-align:center}
+.rchk-i{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(0,220,130,.15),rgba(0,220,130,.05));display:flex;align-items:center;justify-content:center;margin:0 auto 18px;animation:checkPop .6s ease-out}
+.rchk-i svg{width:32px;height:32px}
+.rcnf h3{font-family:var(--fd);font-size:26px;color:#fff;margin:0 0 10px}
+.rcnf .pd{font-size:14px;color:#aaa;margin-bottom:6px}.rcnf .pd strong{color:var(--g)}
+.rcsav{background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.15);border-radius:12px;padding:18px;margin:20px 0;text-align:center}
+.rcsav .big{font-size:36px;font-weight:700;color:var(--g);font-family:var(--fm)}
+.rcsav .lbl{font-size:12px;color:#888;margin-top:4px}
+.rcns{text-align:left;margin:20px 0}
+.rcns h4{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#666;font-family:var(--fm);margin-bottom:10px}
+.nsi{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.nsn{width:24px;height:24px;border-radius:50%;background:rgba(0,220,130,.12);color:var(--g);font-size:12px;font-weight:700;font-family:var(--fm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nst{font-size:13px;color:#aaa;line-height:1.5}.nst strong{color:#ddd}
+.btn-tipf{background:linear-gradient(135deg,var(--y),var(--o));color:#0a0a0a;margin-bottom:8px}
+
+/* Footer */
+.ftr{padding:36px 20px;border-top:1px solid rgba(255,255,255,.04);text-align:center;max-width:640px;margin:0 auto}
+.ftr p{font-size:12px;color:#444;line-height:1.8}
+.ftr .sl{background:none;color:var(--g);font-size:12px;text-decoration:underline;margin-top:8px;display:inline-block}
+
+@media(max-width:480px){
+  .srow{flex-direction:column}.srow .fs{width:100%}.sgrid{grid-template-columns:1fr}
+  .prow-top{flex-direction:column}.pprc{text-align:left;margin-top:8px}
+  .tbar{flex-direction:column;text-align:left}.tbar>div:last-child{text-align:left}
+  .crbar{flex-direction:column;align-items:flex-start}
+  .rbkd{grid-template-columns:1fr}.rrow{flex-direction:column;gap:0}
+  .rsh,.rsb,.rfb,.rcnf{padding-left:20px;padding-right:20px}
+  .st-mdl{padding:24px 20px}.st-mdl h2{font-size:24px}
 }
 </style>
 </head>
 <body>
 
-<!-- ============================================================
-     HEADER
-     ============================================================ -->
-<header class="header">
-  <div class="logo">
-    <div class="logo-icon">⚡</div>
-    <div>
-      <div class="logo-text">WattWise</div>
-      <div class="logo-sub">GRATUITY</div>
-    </div>
-  </div>
-  <div class="header-btns">
-    <button class="btn-ghost" onclick="openStory()">Andy's Story</button>
-    <button class="btn-tip" id="headerTipBtn" onclick="openTipJar()">☕ Tip Andy</button>
-  </div>
+<header class="hdr">
+  <div class="logo"><div class="logo-i">⚡</div><div><div class="logo-t">WattWise</div><div class="logo-s">GRATUITY</div></div></div>
+  <div class="hdr-b"><button class="btn-gh" onclick="openStory()">Andy's Story</button><button class="btn-tp" id="hTip" onclick="openTip()">☕ Tip Andy</button></div>
 </header>
 
-<!-- ============================================================
-     HERO
-     ============================================================ -->
 <section class="hero">
   <div class="hero-tag">FREE TEXAS ENERGY COMPARISON ENGINE</div>
-  <h1>Stop Overpaying<br>for <span class="gradient">Texas Electricity</span></h1>
-  <p>
-    Real rates from <span id="totalPlans">54</span> plans across <span id="totalZips">300</span>+ ZIP codes.
-    Andy built this so his friends and family would never overpay again.
-    <span class="hl">Always free. Tip only if you want to.</span>
-  </p>
-
-  <!-- Search Form -->
-  <div class="search-box">
-    <div class="search-row">
-      <div class="field">
-        <label class="label">Texas ZIP Code</label>
-        <input type="text" id="zipInput" class="input" placeholder="e.g. 75201" maxlength="5">
-      </div>
-      <div class="field-sm">
-        <label class="label">Monthly kWh</label>
-        <input type="number" id="usageInput" class="input input-usage" value="1000" min="100">
-      </div>
-    </div>
-    <button class="btn-search" id="searchBtn" onclick="handleSearch()">Find My Best Rate</button>
-    <div id="errorMsg" class="error-msg" style="display:none;"></div>
-    <div class="search-meta">Database: <span id="dbPlanCount">54</span> plans · Updated February 20, 2026 · Source: PowerToChoose.org</div>
+  <h1>Stop Overpaying<br>for <span class="gr">Texas Electricity</span></h1>
+  <p>Real rates from <b id="tpCnt">54</b> plans across <b id="tzCnt">300</b>+ ZIP codes. Andy built this so his friends and family would never overpay again. <span class="hl">Always free. Tip only if you want to.</span></p>
+  <div class="sbox">
+    <div class="srow"><div class="f1"><div class="lb">Texas ZIP Code</div><input type="text" id="zInp" class="inp" placeholder="e.g. 75087" maxlength="5"></div><div class="fs"><div class="lb">Monthly kWh</div><input type="number" id="uInp" class="inp inp-u" value="1000" min="100"></div></div>
+    <button class="btn-s" id="sBtn" onclick="doSearch()">Find My Best Rate</button>
+    <div id="errM" class="errmsg" style="display:none"></div>
+    <div class="smeta">Database: <span id="dbC">54</span> plans · Updated Feb 20, 2026 · Source: PowerToChoose.org</div>
   </div>
 </section>
 
-<!-- ============================================================
-     RESULTS (hidden until search)
-     ============================================================ -->
-<section class="results hidden" id="resultsSection">
+<section class="res hid" id="resSec">
+  <div class="tbar fu"><div><div class="lb">Your Service Territory</div><div class="nm" id="tduN"></div><div class="rg" id="tduR"></div></div><div style="text-align:right"><div class="lb">Default Rate (POLR)</div><div class="polr" id="polrR"></div></div></div>
 
-  <!-- Territory Info -->
-  <div class="territory-bar fade-up" id="territoryBar">
-    <div>
-      <div class="label">Your Service Territory</div>
-      <div class="name" id="tduName"></div>
-      <div class="region" id="tduRegion"></div>
-    </div>
-    <div style="text-align:right">
-      <div class="label">Default Rate (POLR)</div>
-      <div class="polr-rate" id="polrRate"></div>
-    </div>
+  <div class="crbar fu" style="animation-delay:.06s"><div><h4>What are you paying now?</h4><p>Enter your current rate for personalized savings on every plan</p></div><div class="cr-inp"><label>Your Rate:</label><input type="number" id="crInp" class="cr-sm" placeholder="14.5" step="0.1" min="1" max="50" oninput="updCR()"><span style="font-size:13px;color:#888;font-family:var(--fm)">¢/kWh</span></div></div>
+
+  <div class="sgrid">
+    <div class="scard grn fu" style="animation-delay:.12s"><div class="lb" style="color:var(--g)">Best Available Rate</div><div class="big" style="color:var(--g)" id="bRate"></div><div class="sub" id="bProv"></div></div>
+    <div class="scard ylw fu" style="animation-delay:.18s"><div class="lb" style="color:var(--y)">Monthly Savings</div><div class="big" style="color:var(--y)" id="mSav"></div><div class="sub" id="savLbl">vs default TDU rate</div></div>
+    <div class="scard blu fu" style="animation-delay:.24s"><div class="lb" style="color:var(--b)">Annual Savings</div><div class="big" style="color:var(--b)" id="aSav"></div><div class="sub">that's real money back</div></div>
   </div>
 
-  <!-- Savings Cards -->
-  <div class="savings-grid">
-    <div class="savings-card green fade-up fade-up-1">
-      <div class="label label-green">Best Available Rate</div>
-      <div class="big" style="color:var(--green)" id="bestRate"></div>
-      <div class="sub" id="bestProvider"></div>
-    </div>
-    <div class="savings-card yellow fade-up fade-up-2">
-      <div class="label label-yellow">Monthly Savings</div>
-      <div class="big" style="color:var(--yellow)" id="monthlySavings"></div>
-      <div class="sub">vs default TDU rate</div>
-    </div>
-    <div class="savings-card blue fade-up fade-up-3">
-      <div class="label label-blue">Annual Savings</div>
-      <div class="big" style="color:var(--blue)" id="annualSavings"></div>
-      <div class="sub">that's real money back</div>
-    </div>
+  <div class="ccomp fu" style="animation-delay:.3s"><div class="lb" style="margin-bottom:14px">Monthly Cost at <span id="uLbl">1000</span> kWh</div><div id="cBars"></div></div>
+
+  <div class="ptbl fu" style="animation-delay:.36s">
+    <div class="ptbl-h"><div><h3 id="ptTitle">Top 5 Plans</h3><div class="sub" id="ptSub">Sorted by rate · 1000 kWh/mo</div></div><div class="sortb"><button class="sbtn a" onclick="sSort('rate',this)">Rate</button><button class="sbtn" onclick="sSort('rating',this)">Rating</button><button class="sbtn" onclick="sSort('renewable',this)">Renewable</button><button class="sbtn" onclick="sSort('provider',this)">Provider</button></div></div>
+    <div id="pList"></div>
+    <button class="btn-all" id="saBtn" onclick="togAll()" style="display:none">Show all plans ↓</button>
   </div>
 
-  <!-- Cost Comparison Bars -->
-  <div class="cost-compare fade-up fade-up-4">
-    <div class="label" style="margin-bottom:14px">Monthly Cost Comparison at <span id="usageLabel">1000</span> kWh</div>
-    <div class="bar-row" id="barPolr"></div>
-    <div class="bar-row" id="barAvg"></div>
-    <div class="bar-row" id="barBest"></div>
-  </div>
+  <div class="tcta fu" style="animation-delay:.42s"><div class="emo">☕</div><h3>Andy just saved you <span class="hl" id="ctaS">$0</span>/year</h3><p>This tool is always free. If you found it helpful, consider buying Andy a coffee.</p><button class="btn-cta" onclick="openTip()">Buy Andy a Coffee ☕</button></div>
 
-  <!-- Plan Table -->
-  <div class="plan-table fade-up fade-up-5">
-    <div class="plan-table-header">
-      <div>
-        <h3 id="planTableTitle">Top 5 Plans</h3>
-        <div class="sub" id="planTableSub">Sorted by rate · 1000 kWh/mo</div>
-      </div>
-      <div class="sort-btns">
-        <button class="sort-btn active" data-sort="rate" onclick="setSort('rate',this)">Rate</button>
-        <button class="sort-btn" data-sort="rating" onclick="setSort('rating',this)">Rating</button>
-        <button class="sort-btn" data-sort="renewable" onclick="setSort('renewable',this)">Renewable</button>
-        <button class="sort-btn" data-sort="provider" onclick="setSort('provider',this)">Provider</button>
-      </div>
-    </div>
-    <div id="planList"></div>
-    <button class="btn-show-all" id="showAllBtn" onclick="toggleShowAll()" style="display:none;">
-      Show all plans ↓
-    </button>
-  </div>
-
-  <!-- Tip CTA -->
-  <div class="tip-cta fade-up fade-up-6">
-    <div class="emoji">☕</div>
-    <h3>Andy just saved you <span class="hl" id="ctaSavings">$0</span>/year</h3>
-    <p>This tool is always free. If you found it helpful, consider buying Andy a coffee. Every tip helps keep this service running for fellow Texans.</p>
-    <button class="btn-cta" onclick="openTipJar()">Buy Andy a Coffee ☕</button>
-  </div>
-
-  <!-- Share -->
-  <div class="share-box fade-up fade-up-7">
-    <div class="label" style="margin-bottom:10px">Share with Friends & Neighbors</div>
-    <p>Know someone in Texas who might be overpaying? Here's a ready-to-share message:</p>
-    <div class="share-text" id="shareText">
-      <button class="btn-copy" onclick="copyShare()">Copy</button>
-    </div>
-  </div>
+  <div class="share fu" style="animation-delay:.48s"><div class="lb" style="margin-bottom:10px">Share with Friends & Neighbors</div><p>Know someone in Texas who might be overpaying?</p><div class="shtxt" id="shTxt"><button class="btn-cp" onclick="cpSh()">Copy</button></div></div>
 </section>
 
-<!-- ============================================================
-     FOOTER
-     ============================================================ -->
-<footer class="site-footer">
-  <p>Rates sourced from PowerToChoose.org & public PUCT filings. Updated February 20, 2026.</p>
-  <p>Not affiliated with any REP. No affiliate links. No commissions.</p>
-  <p style="margin-top:8px">Built with 💚 by Andy for his friends, family, and every Texan who deserves a fair rate.</p>
-  <button class="story-link" onclick="openStory()">Read Andy's Story →</button>
-</footer>
+<footer class="ftr"><p>Rates sourced from PowerToChoose.org & public PUCT filings. Updated Feb 20, 2026.</p><p>Not affiliated with any REP. No affiliate links. No commissions.</p><p style="margin-top:8px">Built with 💚 by Andy for his friends, family, and every Texan who deserves a fair rate.</p><button class="sl" onclick="openStory()">Read Andy's Story →</button></footer>
 
-<!-- ============================================================
-     STORY MODAL
-     ============================================================ -->
-<div class="overlay" id="storyOverlay" onclick="closeIfOverlay(event,'storyOverlay')">
-  <div class="modal story-modal">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
-      <div class="label label-green" style="margin-bottom:0">The Origin Story</div>
-      <button class="modal-close" onclick="closeStory()">×</button>
-    </div>
-    <h2>How Andy Turned a <span class="hl">Kitchen Table Gripe</span> Into a Movement</h2>
-    <div class="story-body">
-      <p>It started the way most good ideas do in Texas — over cold beer and a too-high electric bill.</p>
-      <p>Andy had just gotten his August bill from one of the big-name retail electric providers. <span class="highlight-yellow">$387 for a modest three-bedroom in the DFW suburbs.</span> He knew the deregulated market meant he had options, but the PowerToChoose website felt like comparing airline tickets — hundreds of plans, confusing "energy facts" labels, and rates that looked great until you read the fine print about TDU delivery charges and usage thresholds.</p>
-      <p>So Andy did what he always does: he dove in. Nights after putting the kids to bed, he built spreadsheets. He reverse-engineered the PUCT's EFL (Electricity Facts Label) format. He mapped every ZIP code to its TDU territory. He scraped every licensed REP's current offering and normalized the rates to a true apples-to-apples cost per kWh at 500, 1,000, and 2,000 kWh usage tiers.</p>
-      <div class="story-quote">
-        "I saved $1,140 the first year just by switching. And I thought — if I can do this for myself, why not make it dead simple for everyone I know?"
-      </div>
-      <p>Andy started texting his neighbors. Then posting in his Nextdoor group. Then his kids' school parent chat. The message was always the same: <strong>"Send me your ZIP code. I'll send you the best rate. Totally free."</strong></p>
-      <p>No affiliate links. No commissions. No catch. Just a guy with a spreadsheet and a conviction that <span style="color:var(--green)">Texans were overpaying by billions every year</span> simply because the comparison process was designed to be confusing.</p>
-      <p>Within three months, Andy had personally helped <strong>47 families</strong> switch to better plans, saving them a collective <strong class="highlight-yellow">$62,000 annually</strong>. Word spread to his office. Then to his church. Then to three different Facebook groups.</p>
-      <p>People kept asking: "Andy, can I pay you for this?" His answer was always the same — <em>"Nah, just buy me a coffee if you feel like it."</em> That line became the philosophy behind everything you see here.</p>
-      <div class="story-philosophy">
-        <div class="title">THE WATTSWISE PHILOSOPHY</div>
-        <p>Give value first. Give it freely. Give it publicly. The people who benefit will <em>want</em> to support you — not because they have to, but because they've seen the receipts. A voluntary tip after a real savings reveal is worth more than any hard sell. Andy calls it <strong>"The Gratitude Economy."</strong></p>
-      </div>
-      <p>WattWise Gratuity is the tool Andy wished existed when he started. It pulls real rates, compares them against your current TDU's default pricing, shows you exactly how much you'd save, and then — only after you've seen your savings — gives you the option to say thanks with a small tip. No pressure. No guilt. Just gratitude between neighbors.</p>
-      <p>Andy's mission hasn't changed since that first kitchen table session: <strong style="color:var(--green)">help every Texan in a deregulated zone get the best possible electricity rate, for free.</strong> The tips? They keep the servers running, the data fresh, and Andy caffeinated enough to keep fighting for fair energy prices.</p>
-      <p style="color:#888;font-size:13px">— The WattWise Team, February 2026</p>
-    </div>
+<!-- STORY MODAL -->
+<div class="ov" id="stOv" onclick="xOv(event,'stOv')"><div class="mdl st-mdl">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px"><div class="lb" style="color:var(--g);margin-bottom:0">The Origin Story</div><button class="mdl-x" onclick="xSt()">×</button></div>
+  <h2>How Andy Turned a <span class="hl">Kitchen Table Gripe</span> Into a Movement</h2>
+  <div class="stbdy">
+    <p>It started the way most good ideas do in Texas — over cold beer and a too-high electric bill.</p>
+    <p>Andy had just gotten his August bill from one of the big-name retail electric providers. <span class="yel">$387 for a modest three-bedroom in the DFW suburbs.</span> He knew the deregulated market meant he had options, but the PowerToChoose website felt like comparing airline tickets — hundreds of plans, confusing "energy facts" labels, and rates that looked great until you read the fine print.</p>
+    <p>So Andy did what he always does: he dove in. Nights after putting the kids to bed, he built spreadsheets. He reverse-engineered the PUCT's EFL format. He mapped every ZIP code to its TDU territory. He normalized every rate to true apples-to-apples cost per kWh.</p>
+    <div class="stq">"I saved $1,140 the first year just by switching. And I thought — if I can do this for myself, why not make it dead simple for everyone I know?"</div>
+    <p>Andy started texting neighbors. Then posting in his Nextdoor group. The message was always the same: <strong>"Send me your ZIP code. I'll send you the best rate. Totally free."</strong></p>
+    <p>No affiliate links. No commissions. No catch. Within three months, Andy had helped <strong>47 families</strong> switch to better plans, saving them <strong class="yel">$62,000 annually</strong>.</p>
+    <p>People kept asking: "Andy, can I pay you for this?" His answer — <em>"Nah, just buy me a coffee if you feel like it."</em></p>
+    <div class="stph"><div class="tt">THE WATTSWISE PHILOSOPHY</div><p>Give value first. Give it freely. Give it publicly. A voluntary tip after a real savings reveal is worth more than any hard sell. Andy calls it <strong>"The Gratitude Economy."</strong></p></div>
+    <p>Andy's mission: <strong style="color:var(--g)">help every Texan in a deregulated zone get the best possible electricity rate, for free.</strong></p>
+    <p style="color:#888;font-size:13px">— The WattWise Team, February 2026</p>
   </div>
+</div></div>
+
+<!-- TIP MODAL -->
+<div class="ov" id="tpOv" onclick="xOv(event,'tpOv')">
+  <div class="mdl tpmdl" id="tpSel">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px"><div><div class="lb" style="color:var(--g);margin-bottom:6px">Andy's Coffee Fund</div><h3>Feeling Generous?</h3></div><button class="mdl-x" onclick="xTp()">×</button></div>
+    <div class="tpsn" id="tpSN" style="display:none">You're saving <strong id="tpSA">$0/year</strong> — always free. Tips optional.</div>
+    <div class="tpgrid">
+      <div class="tpopt" onclick="sTp(3,this)"><div class="emo">☕</div><div class="amt">$3</div><div class="lbl">Small Drip</div><div class="dsc">A quick thanks</div></div>
+      <div class="tpopt" onclick="sTp(7,this)"><div class="emo">🥐</div><div class="amt">$7</div><div class="lbl">Coffee & Pastry</div><div class="dsc">Andy eats today</div></div>
+      <div class="tpopt" onclick="sTp(15,this)"><div class="emo">⚡</div><div class="amt">$15</div><div class="lbl">Energy Hero</div><div class="dsc">Keep the lights on</div></div>
+    </div>
+    <div class="tpdiv">or custom amount</div>
+    <div style="display:flex;gap:10px"><div class="tpcw"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#666;font-size:16px">$</span><input type="number" id="cTpI" class="tpci" placeholder="5.00" oninput="sCTp()" onfocus="sCTp()"></div></div>
+    <button class="btn-tps" id="tpSB" onclick="doTp()">Select an Amount</button>
+    <div class="tpf">100% goes to keeping WattWise free. No middlemen.</div>
+  </div>
+  <div class="mdl tpty" id="tpTy" style="display:none"><div class="emo">💚</div><h3>You're Amazing!</h3><p>Your <span id="tpTA">$0</span> tip helps Andy keep WattWise free. You're saving <strong id="tpTS">$0/yr</strong> and paying it forward.</p><button class="btn-cta" onclick="xTp()">Close</button></div>
 </div>
 
-<!-- ============================================================
-     TIP JAR MODAL
-     ============================================================ -->
-<div class="overlay" id="tipOverlay" onclick="closeIfOverlay(event,'tipOverlay')">
-  <!-- Selection View -->
-  <div class="modal tip-modal" id="tipSelectView">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-      <div>
-        <div class="label label-green" style="margin-bottom:6px">Andy's Coffee Fund</div>
-        <h3>Feeling Generous?</h3>
-      </div>
-      <button class="modal-close" onclick="closeTipJar()">×</button>
+<!-- REGISTRATION MODAL -->
+<div class="ov" id="rgOv" onclick="xOv(event,'rgOv')"><div class="mdl rmdl" id="rgMdl">
+  <!-- Step 1: Savings -->
+  <div class="rstep act" id="rs1">
+    <div style="display:flex;justify-content:flex-end;padding:16px 20px 0"><button class="mdl-x" onclick="xRg()">×</button></div>
+    <div class="rsh"><div class="lb" style="color:var(--g);margin-bottom:8px">YOUR PERSONALIZED SAVINGS</div><h3>Here's What You'll Save</h3><div class="rpb" id="rpBdg"></div></div>
+    <div class="rsb">
+      <div class="rcmp" id="rCmp"></div>
+      <div class="rbkd" id="rBkd"></div>
+      <div class="rbar" id="rBar"></div>
+      <button class="btn-rn" onclick="rgStep(2)">Lock In This Rate →</button>
+      <button class="btn-rb" onclick="xRg()">← Back to Plans</button>
     </div>
-    <div class="tip-savings-note" id="tipSavingsNote" style="display:none">
-      You're saving <strong id="tipSavingsAmt">$0/year</strong> — this service is always free. Tips are optional and appreciated.
-    </div>
-    <div class="tip-grid">
-      <div class="tip-option" onclick="selectTip(3,this)">
-        <div class="emoji">☕</div>
-        <div class="amount">$3</div>
-        <div class="label">Small Drip</div>
-        <div class="desc">A quick thanks</div>
-      </div>
-      <div class="tip-option" onclick="selectTip(7,this)">
-        <div class="emoji">🥐</div>
-        <div class="amount">$7</div>
-        <div class="label">Coffee & Pastry</div>
-        <div class="desc">Andy eats today</div>
-      </div>
-      <div class="tip-option" onclick="selectTip(15,this)">
-        <div class="emoji">⚡</div>
-        <div class="amount">$15</div>
-        <div class="label">Energy Hero</div>
-        <div class="desc">Keep the lights on</div>
-      </div>
-    </div>
-    <div class="tip-divider">or custom amount</div>
-    <div class="tip-custom-row">
-      <div class="tip-custom-wrap">
-        <span class="tip-custom-dollar">$</span>
-        <input type="number" id="customTipInput" class="tip-custom-input" placeholder="5.00"
-               oninput="selectCustomTip()" onfocus="selectCustomTip()">
-      </div>
-    </div>
-    <button class="btn-tip-send" id="tipSendBtn" onclick="sendTip()">Select an Amount</button>
-    <div class="tip-footer">100% goes to keeping WattWise free. No middlemen. No corporate sponsors.</div>
   </div>
-
-  <!-- Thank You View -->
-  <div class="modal tip-thanks" id="tipThanksView" style="display:none">
-    <div class="emoji">💚</div>
-    <h3>You're Amazing!</h3>
-    <p>Your <span id="tipAmountThanks">$0</span> tip helps Andy keep WattWise free for every Texan.
-       You're saving <strong id="tipSavingsThanks">$0/year</strong> and paying it forward.</p>
-    <button class="btn-cta" onclick="closeTipJar()">Close</button>
+  <!-- Step 2: Form -->
+  <div class="rstep" id="rs2">
+    <div style="display:flex;justify-content:flex-end;padding:16px 20px 0"><button class="mdl-x" onclick="xRg()">×</button></div>
+    <div class="rfb">
+      <div class="lb" style="color:var(--g);margin-bottom:8px">STEP 2 OF 3</div>
+      <h3>Your Information</h3>
+      <div class="sub">We'll send your switch request to <span id="rgPN" style="color:var(--g)"></span></div>
+      <div class="rrow"><div class="rfd"><label>First Name</label><input class="rinp" id="rgFN" placeholder="Andy" oninput="chkRg()"></div><div class="rfd"><label>Last Name</label><input class="rinp" id="rgLN" placeholder="Smith"></div></div>
+      <div class="rfd"><label>Email Address</label><input class="rinp" id="rgEM" type="email" placeholder="andy@email.com" oninput="chkRg()"></div>
+      <div class="rfd"><label>Phone Number</label><input class="rinp" id="rgPH" type="tel" placeholder="(214) 555-1234"></div>
+      <div class="rrow"><div class="rfd"><label>Service Address</label><input class="rinp" id="rgAD" placeholder="123 Main St"></div><div class="rfd" style="max-width:110px"><label>ZIP</label><input class="rinp" id="rgZP" readonly></div></div>
+      <div class="rfd"><label>Current Provider (Optional)</label><input class="rinp" id="rgCP" placeholder="e.g. TXU, Reliant..."></div>
+      <div class="rchk" onclick="togChk()"><input type="checkbox" id="rgAg" onchange="chkRg()"><span>I authorize WattWise to submit a switch request on my behalf. This is a <a href="#">free service</a> — cancel anytime.</span></div>
+      <button class="btn-rn" id="rgSub" onclick="subReg()" style="opacity:.4;cursor:default" disabled>Submit Switch Request</button>
+      <button class="btn-rb" onclick="rgStep(1)">← Back to Savings</button>
+    </div>
   </div>
-</div>
+  <!-- Step 3: Confirm -->
+  <div class="rstep" id="rs3">
+    <div class="rcnf">
+      <div class="rchk-i"><svg viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h3>You're All Set!</h3>
+      <div class="pd">Switching to <strong id="rgCPl"></strong></div>
+      <div class="pd" id="rgCPv"></div>
+      <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
+      <div class="rcns"><h4>What Happens Next</h4>
+        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Confirmation email</strong> from the provider within 24 hours</div></div>
+        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Seamless switch</strong> — no power interruption, same wires & meters</div></div>
+        <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>New rate starts</strong> on your next meter read (1–2 billing periods)</div></div>
+      </div>
+      <button class="btn-rn btn-tipf" onclick="xRg();openTip()">☕ Andy saved me money — I want to tip!</button>
+      <button class="btn-rb" onclick="xRg()" style="color:#aaa">Close & share with friends</button>
+    </div>
+  </div>
+</div></div>
 
-<!-- ============================================================
-     CONFETTI CONTAINER
-     ============================================================ -->
-<div id="confettiContainer"></div>
+<div id="confC"></div>
 
-<!-- ============================================================
-     JAVASCRIPT — Database + Logic
-     ============================================================ -->
 <script>
-// ============================================================
-// TEXAS ENERGY PRICE DATABASE
-// Real rates sourced from PowerToChoose.org & public PUCT filings
-// ============================================================
-const DB = {
-  tdu: {
-    ONCOR: { name: "Oncor Electric Delivery", region: "Dallas/Fort Worth, Waco, Midland" },
-    CENTPT: { name: "CenterPoint Energy", region: "Houston Metro" },
-    TNMP: { name: "Texas-New Mexico Power", region: "Various TX cities" },
-    AEP_TCC: { name: "AEP Texas Central", region: "Corpus Christi, Victoria" },
-    AEP_TNC: { name: "AEP Texas North", region: "Abilene, San Angelo, El Paso" }
-  },
-  zip_tdu: {
-    // ONCOR — Dallas/Fort Worth/Waco
-    "75001":"ONCOR","75002":"ONCOR","75006":"ONCOR","75007":"ONCOR","75019":"ONCOR",
-    "75024":"ONCOR","75025":"ONCOR","75034":"ONCOR","75035":"ONCOR","75040":"ONCOR",
-    "75041":"ONCOR","75042":"ONCOR","75043":"ONCOR","75044":"ONCOR","75048":"ONCOR",
-    "75050":"ONCOR","75051":"ONCOR","75052":"ONCOR","75060":"ONCOR","75061":"ONCOR",
-    "75062":"ONCOR","75063":"ONCOR","75070":"ONCOR","75071":"ONCOR","75074":"ONCOR",
-    "75075":"ONCOR","75080":"ONCOR","75081":"ONCOR","75082":"ONCOR","75087":"ONCOR",
-    "75089":"ONCOR","75093":"ONCOR","75094":"ONCOR","75098":"ONCOR","75104":"ONCOR",
-    "75115":"ONCOR","75116":"ONCOR","75134":"ONCOR","75137":"ONCOR","75141":"ONCOR",
-    "75146":"ONCOR","75149":"ONCOR","75150":"ONCOR","75154":"ONCOR","75159":"ONCOR",
-    "75166":"ONCOR","75172":"ONCOR","75180":"ONCOR","75181":"ONCOR","75182":"ONCOR",
-    "75189":"ONCOR","75201":"ONCOR","75202":"ONCOR","75203":"ONCOR","75204":"ONCOR",
-    "75205":"ONCOR","75206":"ONCOR","75207":"ONCOR","75208":"ONCOR","75209":"ONCOR",
-    "75210":"ONCOR","75211":"ONCOR","75212":"ONCOR","75214":"ONCOR","75215":"ONCOR",
-    "75216":"ONCOR","75217":"ONCOR","75218":"ONCOR","75219":"ONCOR","75220":"ONCOR",
-    "75223":"ONCOR","75224":"ONCOR","75225":"ONCOR","75226":"ONCOR","75227":"ONCOR",
-    "75228":"ONCOR","75229":"ONCOR","75230":"ONCOR","75231":"ONCOR","75232":"ONCOR",
-    "75233":"ONCOR","75234":"ONCOR","75235":"ONCOR","75236":"ONCOR","75237":"ONCOR",
-    "75238":"ONCOR","75240":"ONCOR","75241":"ONCOR","75243":"ONCOR","75244":"ONCOR",
-    "75246":"ONCOR","75247":"ONCOR","75248":"ONCOR","75249":"ONCOR","75251":"ONCOR",
-    "75252":"ONCOR","75253":"ONCOR","75254":"ONCOR",
-    "76001":"ONCOR","76002":"ONCOR","76006":"ONCOR","76010":"ONCOR","76011":"ONCOR",
-    "76012":"ONCOR","76013":"ONCOR","76014":"ONCOR","76015":"ONCOR","76016":"ONCOR",
-    "76017":"ONCOR","76018":"ONCOR","76034":"ONCOR","76039":"ONCOR","76040":"ONCOR",
-    "76051":"ONCOR","76052":"ONCOR","76053":"ONCOR","76054":"ONCOR","76060":"ONCOR",
-    "76063":"ONCOR","76092":"ONCOR","76101":"ONCOR","76102":"ONCOR","76103":"ONCOR",
-    "76104":"ONCOR","76105":"ONCOR","76106":"ONCOR","76107":"ONCOR","76108":"ONCOR",
-    "76109":"ONCOR","76110":"ONCOR","76111":"ONCOR","76112":"ONCOR","76116":"ONCOR",
-    "76117":"ONCOR","76118":"ONCOR","76119":"ONCOR","76120":"ONCOR","76123":"ONCOR",
-    "76126":"ONCOR","76127":"ONCOR","76131":"ONCOR","76132":"ONCOR","76133":"ONCOR",
-    "76134":"ONCOR","76135":"ONCOR","76137":"ONCOR","76140":"ONCOR","76148":"ONCOR",
-    "76155":"ONCOR","76164":"ONCOR","76177":"ONCOR","76179":"ONCOR","76180":"ONCOR",
-    "76182":"ONCOR","76244":"ONCOR","76248":"ONCOR","76262":"ONCOR",
-    "76701":"ONCOR","76702":"ONCOR","76704":"ONCOR","76705":"ONCOR","76706":"ONCOR",
-    "76707":"ONCOR","76708":"ONCOR","76710":"ONCOR","76711":"ONCOR","76712":"ONCOR",
-    "76798":"ONCOR",
-    // Rockwall area
-    "75032":"ONCOR","75087":"ONCOR","75189":"ONCOR",
-    // CENTERPOINT — Houston
-    "77001":"CENTPT","77002":"CENTPT","77003":"CENTPT","77004":"CENTPT","77005":"CENTPT",
-    "77006":"CENTPT","77007":"CENTPT","77008":"CENTPT","77009":"CENTPT","77010":"CENTPT",
-    "77011":"CENTPT","77012":"CENTPT","77013":"CENTPT","77014":"CENTPT","77015":"CENTPT",
-    "77016":"CENTPT","77017":"CENTPT","77018":"CENTPT","77019":"CENTPT","77020":"CENTPT",
-    "77021":"CENTPT","77022":"CENTPT","77023":"CENTPT","77024":"CENTPT","77025":"CENTPT",
-    "77026":"CENTPT","77027":"CENTPT","77028":"CENTPT","77029":"CENTPT","77030":"CENTPT",
-    "77031":"CENTPT","77032":"CENTPT","77033":"CENTPT","77034":"CENTPT","77035":"CENTPT",
-    "77036":"CENTPT","77037":"CENTPT","77038":"CENTPT","77039":"CENTPT","77040":"CENTPT",
-    "77041":"CENTPT","77042":"CENTPT","77043":"CENTPT","77044":"CENTPT","77045":"CENTPT",
-    "77046":"CENTPT","77047":"CENTPT","77048":"CENTPT","77049":"CENTPT","77050":"CENTPT",
-    "77051":"CENTPT","77053":"CENTPT","77054":"CENTPT","77055":"CENTPT","77056":"CENTPT",
-    "77057":"CENTPT","77058":"CENTPT","77059":"CENTPT","77060":"CENTPT","77061":"CENTPT",
-    "77062":"CENTPT","77063":"CENTPT","77064":"CENTPT","77065":"CENTPT","77066":"CENTPT",
-    "77067":"CENTPT","77068":"CENTPT","77069":"CENTPT","77070":"CENTPT","77071":"CENTPT",
-    "77072":"CENTPT","77073":"CENTPT","77074":"CENTPT","77075":"CENTPT","77076":"CENTPT",
-    "77077":"CENTPT","77078":"CENTPT","77079":"CENTPT","77080":"CENTPT","77081":"CENTPT",
-    "77082":"CENTPT","77083":"CENTPT","77084":"CENTPT","77085":"CENTPT","77086":"CENTPT",
-    "77087":"CENTPT","77088":"CENTPT","77089":"CENTPT","77090":"CENTPT","77091":"CENTPT",
-    "77092":"CENTPT","77093":"CENTPT","77094":"CENTPT","77095":"CENTPT","77096":"CENTPT",
-    "77098":"CENTPT","77099":"CENTPT",
-    "77301":"CENTPT","77302":"CENTPT","77303":"CENTPT","77304":"CENTPT","77316":"CENTPT",
-    "77339":"CENTPT","77345":"CENTPT","77346":"CENTPT","77354":"CENTPT","77355":"CENTPT",
-    "77356":"CENTPT","77362":"CENTPT","77365":"CENTPT","77373":"CENTPT","77375":"CENTPT",
-    "77377":"CENTPT","77378":"CENTPT","77379":"CENTPT","77380":"CENTPT","77381":"CENTPT",
-    "77382":"CENTPT","77384":"CENTPT","77385":"CENTPT","77386":"CENTPT","77388":"CENTPT",
-    "77389":"CENTPT","77401":"CENTPT","77406":"CENTPT","77407":"CENTPT","77429":"CENTPT",
-    "77433":"CENTPT","77449":"CENTPT","77450":"CENTPT","77459":"CENTPT","77469":"CENTPT",
-    "77471":"CENTPT","77477":"CENTPT","77478":"CENTPT","77479":"CENTPT","77489":"CENTPT",
-    "77494":"CENTPT","77498":"CENTPT","77504":"CENTPT","77505":"CENTPT","77506":"CENTPT",
-    "77507":"CENTPT","77520":"CENTPT","77521":"CENTPT","77530":"CENTPT","77532":"CENTPT",
-    "77536":"CENTPT","77539":"CENTPT","77546":"CENTPT","77550":"CENTPT","77551":"CENTPT",
-    "77563":"CENTPT","77565":"CENTPT","77571":"CENTPT","77573":"CENTPT","77581":"CENTPT",
-    "77583":"CENTPT","77584":"CENTPT","77586":"CENTPT","77587":"CENTPT","77590":"CENTPT",
-    "77591":"CENTPT",
-    // TNMP
-    "75459":"TNMP","75490":"TNMP","76028":"TNMP","76031":"TNMP","76033":"TNMP",
-    "76044":"TNMP","76048":"TNMP","76049":"TNMP","76058":"TNMP","76059":"TNMP",
-    "76065":"TNMP","76066":"TNMP","76070":"TNMP","76084":"TNMP","76093":"TNMP",
-    "76433":"TNMP","76446":"TNMP","76457":"TNMP","76462":"TNMP",
-    // AEP Texas Central — Corpus Christi
-    "78373":"AEP_TCC","78401":"AEP_TCC","78402":"AEP_TCC","78404":"AEP_TCC",
-    "78405":"AEP_TCC","78407":"AEP_TCC","78408":"AEP_TCC","78409":"AEP_TCC",
-    "78410":"AEP_TCC","78411":"AEP_TCC","78412":"AEP_TCC","78413":"AEP_TCC",
-    "78414":"AEP_TCC","78415":"AEP_TCC","78416":"AEP_TCC","78417":"AEP_TCC",
-    "78418":"AEP_TCC","78380":"AEP_TCC","78102":"AEP_TCC","77901":"AEP_TCC",
-    "77904":"AEP_TCC","77905":"AEP_TCC",
-    // AEP Texas North — Abilene, San Angelo, El Paso
-    "79601":"AEP_TNC","79602":"AEP_TNC","79603":"AEP_TNC","79605":"AEP_TNC",
-    "79606":"AEP_TNC","79607":"AEP_TNC","76821":"AEP_TNC","76901":"AEP_TNC",
-    "76903":"AEP_TNC","76904":"AEP_TNC","76905":"AEP_TNC",
-    "79901":"AEP_TNC","79902":"AEP_TNC","79903":"AEP_TNC","79904":"AEP_TNC",
-    "79905":"AEP_TNC","79907":"AEP_TNC","79911":"AEP_TNC","79912":"AEP_TNC",
-    "79915":"AEP_TNC","79924":"AEP_TNC","79925":"AEP_TNC","79927":"AEP_TNC",
-    "79928":"AEP_TNC","79930":"AEP_TNC","79932":"AEP_TNC","79934":"AEP_TNC",
-    "79935":"AEP_TNC","79936":"AEP_TNC","79938":"AEP_TNC"
-  },
-  // Plans by TDU — rates in ¢/kWh at 1000 kWh usage
-  plans: {
-    ONCOR: [
-      {p:"TXU Energy",n:"Simple Rate 12",r:11.9,t:12,re:6,s:4.2,cf:150},
-      {p:"TXU Energy",n:"Free Nights",r:14.3,t:12,re:0,s:3.8,cf:150},
-      {p:"Reliant Energy",n:"Secure Advantage 12",r:11.5,t:12,re:0,s:4.0,cf:150},
-      {p:"Reliant Energy",n:"Truly Free Weekends 12",r:13.8,t:12,re:27,s:3.9,cf:150},
-      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:10.8,t:12,re:0,s:3.5,cf:150},
-      {p:"Gexa Energy",n:"Gexa Green 12",r:11.4,t:12,re:100,s:3.6,cf:150},
-      {p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.1,t:12,re:100,s:4.5,cf:150},
-      {p:"Constellation",n:"12 Month Home Power Plan",r:10.5,t:12,re:0,s:3.7,cf:175},
-      {p:"Constellation",n:"Green Home Power 12",r:11.2,t:12,re:100,s:3.8,cf:175},
-      {p:"4Change Energy",n:"Maxx Saver 12",r:10.2,t:12,re:0,s:3.3,cf:150},
-      {p:"4Change Energy",n:"Earth Day Every Day 12",r:10.9,t:12,re:100,s:3.4,cf:150},
-      {p:"Frontier Utilities",n:"Super Value 12",r:10.6,t:12,re:0,s:3.2,cf:175},
-      {p:"Chariot Energy",n:"Solar 12",r:11.7,t:12,re:100,s:4.1,cf:150},
-      {p:"Pulse Power",n:"Texas Fixed 12",r:10.4,t:12,re:4,s:3.1,cf:150},
-      {p:"Rhythm Energy",n:"Fixed 12",r:11.1,t:12,re:100,s:4.3,cf:0},
-      {p:"Express Energy",n:"Flash 12",r:10.1,t:12,re:0,s:2.9,cf:200},
-      {p:"Discount Power",n:"Saver 12 Plan",r:10.0,t:12,re:0,s:2.8,cf:175},
-      {p:"Veteran Energy",n:"Salute 12",r:11.6,t:12,re:10,s:3.9,cf:150},
-      {p:"TriEagle Energy",n:"Eagle 12",r:10.7,t:12,re:0,s:3.0,cf:199}
-    ],
-    CENTPT: [
-      {p:"TXU Energy",n:"Simple Rate 12",r:12.4,t:12,re:6,s:4.2,cf:150},
-      {p:"TXU Energy",n:"Free Nights",r:14.8,t:12,re:0,s:3.8,cf:150},
-      {p:"Reliant Energy",n:"Secure Advantage 12",r:12.0,t:12,re:0,s:4.0,cf:150},
-      {p:"Reliant Energy",n:"Conservation 12",r:12.6,t:12,re:30,s:4.1,cf:150},
-      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:11.3,t:12,re:0,s:3.5,cf:150},
-      {p:"Gexa Energy",n:"Gexa Green 12",r:11.9,t:12,re:100,s:3.6,cf:150},
-      {p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.7,t:12,re:100,s:4.5,cf:150},
-      {p:"Constellation",n:"12 Month Home Power Plan",r:11.0,t:12,re:0,s:3.7,cf:175},
-      {p:"4Change Energy",n:"Maxx Saver 12",r:10.7,t:12,re:0,s:3.3,cf:150},
-      {p:"Frontier Utilities",n:"Super Value 12",r:11.1,t:12,re:0,s:3.2,cf:175},
-      {p:"Chariot Energy",n:"Solar 12",r:12.2,t:12,re:100,s:4.1,cf:150},
-      {p:"Pulse Power",n:"Texas Fixed 12",r:10.9,t:12,re:4,s:3.1,cf:150},
-      {p:"Rhythm Energy",n:"Fixed 12",r:11.6,t:12,re:100,s:4.3,cf:0},
-      {p:"Express Energy",n:"Flash 12",r:10.6,t:12,re:0,s:2.9,cf:200},
-      {p:"Discount Power",n:"Saver 12 Plan",r:10.5,t:12,re:0,s:2.8,cf:175},
-      {p:"Cirro Energy",n:"Sure Savings 12",r:11.4,t:12,re:8,s:3.4,cf:150}
-    ],
-    TNMP: [
-      {p:"TXU Energy",n:"Simple Rate 12",r:12.8,t:12,re:6,s:4.2,cf:150},
-      {p:"Reliant Energy",n:"Secure Advantage 12",r:12.3,t:12,re:0,s:4.0,cf:150},
-      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:11.7,t:12,re:0,s:3.5,cf:150},
-      {p:"Constellation",n:"12 Month Home Power Plan",r:11.4,t:12,re:0,s:3.7,cf:175},
-      {p:"4Change Energy",n:"Maxx Saver 12",r:11.1,t:12,re:0,s:3.3,cf:150},
-      {p:"Frontier Utilities",n:"Super Value 12",r:11.5,t:12,re:0,s:3.2,cf:175},
-      {p:"Rhythm Energy",n:"Fixed 12",r:12.0,t:12,re:100,s:4.3,cf:0},
-      {p:"Pulse Power",n:"Texas Fixed 12",r:11.2,t:12,re:4,s:3.1,cf:150}
-    ],
-    AEP_TCC: [
-      {p:"TXU Energy",n:"Simple Rate 12",r:13.1,t:12,re:6,s:4.2,cf:150},
-      {p:"Reliant Energy",n:"Secure Advantage 12",r:12.7,t:12,re:0,s:4.0,cf:150},
-      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.0,t:12,re:0,s:3.5,cf:150},
-      {p:"Constellation",n:"12 Month Home Power Plan",r:11.8,t:12,re:0,s:3.7,cf:175},
-      {p:"4Change Energy",n:"Maxx Saver 12",r:11.4,t:12,re:0,s:3.3,cf:150},
-      {p:"Frontier Utilities",n:"Super Value 12",r:11.9,t:12,re:0,s:3.2,cf:175}
-    ],
-    AEP_TNC: [
-      {p:"TXU Energy",n:"Simple Rate 12",r:13.4,t:12,re:6,s:4.2,cf:150},
-      {p:"Reliant Energy",n:"Secure Advantage 12",r:13.0,t:12,re:0,s:4.0,cf:150},
-      {p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.3,t:12,re:0,s:3.5,cf:150},
-      {p:"Constellation",n:"12 Month Home Power Plan",r:12.1,t:12,re:0,s:3.7,cf:175},
-      {p:"4Change Energy",n:"Maxx Saver 12",r:11.7,t:12,re:0,s:3.3,cf:150}
-    ]
-  },
-  polr: { ONCOR:17.8, CENTPT:18.2, TNMP:18.5, AEP_TCC:19.1, AEP_TNC:19.4 },
-  stateAvg: 14.6
-};
+const DB={tdu:{ONCOR:{n:"Oncor Electric Delivery",r:"Dallas/Fort Worth, Waco, Midland"},CENTPT:{n:"CenterPoint Energy",r:"Houston Metro"},TNMP:{n:"Texas-New Mexico Power",r:"Various TX cities"},AEP_TCC:{n:"AEP Texas Central",r:"Corpus Christi, Victoria"},AEP_TNC:{n:"AEP Texas North",r:"Abilene, San Angelo, El Paso"}},
+z2t:{"75001":"ONCOR","75002":"ONCOR","75006":"ONCOR","75007":"ONCOR","75019":"ONCOR","75024":"ONCOR","75025":"ONCOR","75032":"ONCOR","75034":"ONCOR","75035":"ONCOR","75040":"ONCOR","75041":"ONCOR","75042":"ONCOR","75043":"ONCOR","75044":"ONCOR","75048":"ONCOR","75050":"ONCOR","75051":"ONCOR","75052":"ONCOR","75060":"ONCOR","75061":"ONCOR","75062":"ONCOR","75063":"ONCOR","75070":"ONCOR","75071":"ONCOR","75074":"ONCOR","75075":"ONCOR","75080":"ONCOR","75081":"ONCOR","75082":"ONCOR","75087":"ONCOR","75089":"ONCOR","75093":"ONCOR","75094":"ONCOR","75098":"ONCOR","75104":"ONCOR","75115":"ONCOR","75116":"ONCOR","75134":"ONCOR","75137":"ONCOR","75141":"ONCOR","75146":"ONCOR","75149":"ONCOR","75150":"ONCOR","75154":"ONCOR","75159":"ONCOR","75166":"ONCOR","75172":"ONCOR","75180":"ONCOR","75181":"ONCOR","75182":"ONCOR","75189":"ONCOR","75201":"ONCOR","75202":"ONCOR","75203":"ONCOR","75204":"ONCOR","75205":"ONCOR","75206":"ONCOR","75207":"ONCOR","75208":"ONCOR","75209":"ONCOR","75210":"ONCOR","75211":"ONCOR","75212":"ONCOR","75214":"ONCOR","75215":"ONCOR","75216":"ONCOR","75217":"ONCOR","75218":"ONCOR","75219":"ONCOR","75220":"ONCOR","75223":"ONCOR","75224":"ONCOR","75225":"ONCOR","75226":"ONCOR","75227":"ONCOR","75228":"ONCOR","75229":"ONCOR","75230":"ONCOR","75231":"ONCOR","75232":"ONCOR","75233":"ONCOR","75234":"ONCOR","75235":"ONCOR","75236":"ONCOR","75237":"ONCOR","75238":"ONCOR","75240":"ONCOR","75241":"ONCOR","75243":"ONCOR","75244":"ONCOR","75246":"ONCOR","75247":"ONCOR","75248":"ONCOR","75249":"ONCOR","75251":"ONCOR","75252":"ONCOR","75253":"ONCOR","75254":"ONCOR","76001":"ONCOR","76002":"ONCOR","76006":"ONCOR","76010":"ONCOR","76011":"ONCOR","76012":"ONCOR","76013":"ONCOR","76014":"ONCOR","76015":"ONCOR","76016":"ONCOR","76017":"ONCOR","76018":"ONCOR","76034":"ONCOR","76039":"ONCOR","76040":"ONCOR","76051":"ONCOR","76052":"ONCOR","76053":"ONCOR","76054":"ONCOR","76060":"ONCOR","76063":"ONCOR","76092":"ONCOR","76101":"ONCOR","76102":"ONCOR","76103":"ONCOR","76104":"ONCOR","76105":"ONCOR","76106":"ONCOR","76107":"ONCOR","76108":"ONCOR","76109":"ONCOR","76110":"ONCOR","76111":"ONCOR","76112":"ONCOR","76116":"ONCOR","76117":"ONCOR","76118":"ONCOR","76119":"ONCOR","76120":"ONCOR","76123":"ONCOR","76126":"ONCOR","76127":"ONCOR","76131":"ONCOR","76132":"ONCOR","76133":"ONCOR","76134":"ONCOR","76135":"ONCOR","76137":"ONCOR","76140":"ONCOR","76148":"ONCOR","76155":"ONCOR","76164":"ONCOR","76177":"ONCOR","76179":"ONCOR","76180":"ONCOR","76182":"ONCOR","76244":"ONCOR","76248":"ONCOR","76262":"ONCOR","76701":"ONCOR","76702":"ONCOR","76704":"ONCOR","76705":"ONCOR","76706":"ONCOR","76707":"ONCOR","76708":"ONCOR","76710":"ONCOR","76711":"ONCOR","76712":"ONCOR","76798":"ONCOR","77001":"CENTPT","77002":"CENTPT","77003":"CENTPT","77004":"CENTPT","77005":"CENTPT","77006":"CENTPT","77007":"CENTPT","77008":"CENTPT","77009":"CENTPT","77010":"CENTPT","77011":"CENTPT","77012":"CENTPT","77013":"CENTPT","77014":"CENTPT","77015":"CENTPT","77016":"CENTPT","77017":"CENTPT","77018":"CENTPT","77019":"CENTPT","77020":"CENTPT","77021":"CENTPT","77022":"CENTPT","77023":"CENTPT","77024":"CENTPT","77025":"CENTPT","77026":"CENTPT","77027":"CENTPT","77028":"CENTPT","77029":"CENTPT","77030":"CENTPT","77031":"CENTPT","77032":"CENTPT","77033":"CENTPT","77034":"CENTPT","77035":"CENTPT","77036":"CENTPT","77037":"CENTPT","77038":"CENTPT","77039":"CENTPT","77040":"CENTPT","77041":"CENTPT","77042":"CENTPT","77043":"CENTPT","77044":"CENTPT","77045":"CENTPT","77046":"CENTPT","77047":"CENTPT","77048":"CENTPT","77049":"CENTPT","77050":"CENTPT","77051":"CENTPT","77053":"CENTPT","77054":"CENTPT","77055":"CENTPT","77056":"CENTPT","77057":"CENTPT","77058":"CENTPT","77059":"CENTPT","77060":"CENTPT","77061":"CENTPT","77062":"CENTPT","77063":"CENTPT","77064":"CENTPT","77065":"CENTPT","77066":"CENTPT","77067":"CENTPT","77068":"CENTPT","77069":"CENTPT","77070":"CENTPT","77071":"CENTPT","77072":"CENTPT","77073":"CENTPT","77074":"CENTPT","77075":"CENTPT","77076":"CENTPT","77077":"CENTPT","77078":"CENTPT","77079":"CENTPT","77080":"CENTPT","77081":"CENTPT","77082":"CENTPT","77083":"CENTPT","77084":"CENTPT","77085":"CENTPT","77086":"CENTPT","77087":"CENTPT","77088":"CENTPT","77089":"CENTPT","77090":"CENTPT","77091":"CENTPT","77092":"CENTPT","77093":"CENTPT","77094":"CENTPT","77095":"CENTPT","77096":"CENTPT","77098":"CENTPT","77099":"CENTPT","77301":"CENTPT","77302":"CENTPT","77303":"CENTPT","77304":"CENTPT","77316":"CENTPT","77339":"CENTPT","77345":"CENTPT","77346":"CENTPT","77354":"CENTPT","77355":"CENTPT","77356":"CENTPT","77362":"CENTPT","77365":"CENTPT","77373":"CENTPT","77375":"CENTPT","77377":"CENTPT","77378":"CENTPT","77379":"CENTPT","77380":"CENTPT","77381":"CENTPT","77382":"CENTPT","77384":"CENTPT","77385":"CENTPT","77386":"CENTPT","77388":"CENTPT","77389":"CENTPT","77401":"CENTPT","77406":"CENTPT","77407":"CENTPT","77429":"CENTPT","77433":"CENTPT","77449":"CENTPT","77450":"CENTPT","77459":"CENTPT","77469":"CENTPT","77471":"CENTPT","77477":"CENTPT","77478":"CENTPT","77479":"CENTPT","77489":"CENTPT","77494":"CENTPT","77498":"CENTPT","77504":"CENTPT","77505":"CENTPT","77506":"CENTPT","77507":"CENTPT","77520":"CENTPT","77521":"CENTPT","77530":"CENTPT","77532":"CENTPT","77536":"CENTPT","77539":"CENTPT","77546":"CENTPT","77550":"CENTPT","77551":"CENTPT","77563":"CENTPT","77565":"CENTPT","77571":"CENTPT","77573":"CENTPT","77581":"CENTPT","77583":"CENTPT","77584":"CENTPT","77586":"CENTPT","77587":"CENTPT","77590":"CENTPT","77591":"CENTPT","75459":"TNMP","75490":"TNMP","76028":"TNMP","76031":"TNMP","76033":"TNMP","76044":"TNMP","76048":"TNMP","76049":"TNMP","76058":"TNMP","76059":"TNMP","76065":"TNMP","76066":"TNMP","76070":"TNMP","76084":"TNMP","76093":"TNMP","76433":"TNMP","76446":"TNMP","76457":"TNMP","76462":"TNMP","78373":"AEP_TCC","78401":"AEP_TCC","78402":"AEP_TCC","78404":"AEP_TCC","78405":"AEP_TCC","78407":"AEP_TCC","78408":"AEP_TCC","78409":"AEP_TCC","78410":"AEP_TCC","78411":"AEP_TCC","78412":"AEP_TCC","78413":"AEP_TCC","78414":"AEP_TCC","78415":"AEP_TCC","78416":"AEP_TCC","78417":"AEP_TCC","78418":"AEP_TCC","78380":"AEP_TCC","78102":"AEP_TCC","77901":"AEP_TCC","77904":"AEP_TCC","77905":"AEP_TCC","79601":"AEP_TNC","79602":"AEP_TNC","79603":"AEP_TNC","79605":"AEP_TNC","79606":"AEP_TNC","79607":"AEP_TNC","76821":"AEP_TNC","76901":"AEP_TNC","76903":"AEP_TNC","76904":"AEP_TNC","76905":"AEP_TNC","79901":"AEP_TNC","79902":"AEP_TNC","79903":"AEP_TNC","79904":"AEP_TNC","79905":"AEP_TNC","79907":"AEP_TNC","79911":"AEP_TNC","79912":"AEP_TNC","79915":"AEP_TNC","79924":"AEP_TNC","79925":"AEP_TNC","79927":"AEP_TNC","79928":"AEP_TNC","79930":"AEP_TNC","79932":"AEP_TNC","79934":"AEP_TNC","79935":"AEP_TNC","79936":"AEP_TNC","79938":"AEP_TNC"},
+p:{ONCOR:[{p:"TXU Energy",n:"Simple Rate 12",r:11.9,t:12,re:6,s:4.2,cf:150},{p:"TXU Energy",n:"Free Nights",r:14.3,t:12,re:0,s:3.8,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:11.5,t:12,re:0,s:4.0,cf:150},{p:"Reliant Energy",n:"Truly Free Weekends 12",r:13.8,t:12,re:27,s:3.9,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:10.8,t:12,re:0,s:3.5,cf:150},{p:"Gexa Energy",n:"Gexa Green 12",r:11.4,t:12,re:100,s:3.6,cf:150},{p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.1,t:12,re:100,s:4.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:10.5,t:12,re:0,s:3.7,cf:175},{p:"Constellation",n:"Green Home Power 12",r:11.2,t:12,re:100,s:3.8,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:10.2,t:12,re:0,s:3.3,cf:150},{p:"4Change Energy",n:"Earth Day Every Day 12",r:10.9,t:12,re:100,s:3.4,cf:150},{p:"Frontier Utilities",n:"Super Value 12",r:10.6,t:12,re:0,s:3.2,cf:175},{p:"Chariot Energy",n:"Solar 12",r:11.7,t:12,re:100,s:4.1,cf:150},{p:"Pulse Power",n:"Texas Fixed 12",r:10.4,t:12,re:4,s:3.1,cf:150},{p:"Rhythm Energy",n:"Fixed 12",r:11.1,t:12,re:100,s:4.3,cf:0},{p:"Express Energy",n:"Flash 12",r:10.1,t:12,re:0,s:2.9,cf:200},{p:"Discount Power",n:"Saver 12 Plan",r:10.0,t:12,re:0,s:2.8,cf:175},{p:"Veteran Energy",n:"Salute 12",r:11.6,t:12,re:10,s:3.9,cf:150},{p:"TriEagle Energy",n:"Eagle 12",r:10.7,t:12,re:0,s:3.0,cf:199}],
+CENTPT:[{p:"TXU Energy",n:"Simple Rate 12",r:12.4,t:12,re:6,s:4.2,cf:150},{p:"TXU Energy",n:"Free Nights",r:14.8,t:12,re:0,s:3.8,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:12.0,t:12,re:0,s:4.0,cf:150},{p:"Reliant Energy",n:"Conservation 12",r:12.6,t:12,re:30,s:4.1,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:11.3,t:12,re:0,s:3.5,cf:150},{p:"Gexa Energy",n:"Gexa Green 12",r:11.9,t:12,re:100,s:3.6,cf:150},{p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.7,t:12,re:100,s:4.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:11.0,t:12,re:0,s:3.7,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:10.7,t:12,re:0,s:3.3,cf:150},{p:"Frontier Utilities",n:"Super Value 12",r:11.1,t:12,re:0,s:3.2,cf:175},{p:"Chariot Energy",n:"Solar 12",r:12.2,t:12,re:100,s:4.1,cf:150},{p:"Pulse Power",n:"Texas Fixed 12",r:10.9,t:12,re:4,s:3.1,cf:150},{p:"Rhythm Energy",n:"Fixed 12",r:11.6,t:12,re:100,s:4.3,cf:0},{p:"Express Energy",n:"Flash 12",r:10.6,t:12,re:0,s:2.9,cf:200},{p:"Discount Power",n:"Saver 12 Plan",r:10.5,t:12,re:0,s:2.8,cf:175},{p:"Cirro Energy",n:"Sure Savings 12",r:11.4,t:12,re:8,s:3.4,cf:150}],
+TNMP:[{p:"TXU Energy",n:"Simple Rate 12",r:12.8,t:12,re:6,s:4.2,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:12.3,t:12,re:0,s:4.0,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:11.7,t:12,re:0,s:3.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:11.4,t:12,re:0,s:3.7,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:11.1,t:12,re:0,s:3.3,cf:150},{p:"Frontier Utilities",n:"Super Value 12",r:11.5,t:12,re:0,s:3.2,cf:175},{p:"Rhythm Energy",n:"Fixed 12",r:12.0,t:12,re:100,s:4.3,cf:0},{p:"Pulse Power",n:"Texas Fixed 12",r:11.2,t:12,re:4,s:3.1,cf:150}],
+AEP_TCC:[{p:"TXU Energy",n:"Simple Rate 12",r:13.1,t:12,re:6,s:4.2,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:12.7,t:12,re:0,s:4.0,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.0,t:12,re:0,s:3.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:11.8,t:12,re:0,s:3.7,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:11.4,t:12,re:0,s:3.3,cf:150},{p:"Frontier Utilities",n:"Super Value 12",r:11.9,t:12,re:0,s:3.2,cf:175}],
+AEP_TNC:[{p:"TXU Energy",n:"Simple Rate 12",r:13.4,t:12,re:6,s:4.2,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:13.0,t:12,re:0,s:4.0,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.3,t:12,re:0,s:3.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:12.1,t:12,re:0,s:3.7,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:11.7,t:12,re:0,s:3.3,cf:150}]},
+po:{ONCOR:17.8,CENTPT:18.2,TNMP:18.5,AEP_TCC:19.1,AEP_TNC:19.4},sa:14.6};
 
-// ============================================================
-// STATE
-// ============================================================
-let currentResults = null;
-let currentSort = "rate";
-let showAll = false;
-let selectedTipAmount = null;
+let R=null,cSort="rate",sAll=false,tpAmt=null,uCR=null,sPlan=null;
+const tP=Object.values(DB.p).reduce((s,p)=>s+p.length,0),tZ=Object.keys(DB.z2t).length;
+document.getElementById('tpCnt').textContent=tP;document.getElementById('tzCnt').textContent=tZ;document.getElementById('dbC').textContent=tP;
+document.getElementById('zInp').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch()});
 
-// Count stats
-const totalPlans = Object.values(DB.plans).reduce((s,p) => s + p.length, 0);
-const totalZips = Object.keys(DB.zip_tdu).length;
-document.getElementById('totalPlans').textContent = totalPlans;
-document.getElementById('totalZips').textContent = totalZips;
-document.getElementById('dbPlanCount').textContent = totalPlans;
+function gCR(){return uCR||R.polr}
+function gCL(){return uCR?'your current rate':'default TDU rate'}
 
-// Enter key support
-document.getElementById('zipInput').addEventListener('keydown', e => { if(e.key==='Enter') handleSearch(); });
+function updCR(){const v=parseFloat(document.getElementById('crInp').value);uCR=(v&&v>0&&v<100)?v:null;if(R)updDisp()}
+function updDisp(){const cr=gCR(),u=R.usage,ms=((cr-R.best.r)/100)*u,as=ms*12;R.ms=ms;R.as=as;
+  document.getElementById('mSav').textContent='$'+Math.max(0,ms).toFixed(0);
+  document.getElementById('aSav').textContent='$'+Math.max(0,as).toFixed(0);
+  document.getElementById('savLbl').textContent='vs '+gCL();
+  document.getElementById('ctaS').textContent='$'+Math.max(0,as).toFixed(0);
+  rBars();rPlans()}
 
-// ============================================================
-// SEARCH & SAVINGS ENGINE
-// ============================================================
-function handleSearch() {
-  const zip = document.getElementById('zipInput').value.trim();
-  const usage = parseInt(document.getElementById('usageInput').value) || 1000;
-  const errEl = document.getElementById('errorMsg');
-  const btn = document.getElementById('searchBtn');
+function doSearch(){const z=document.getElementById('zInp').value.trim(),u=parseInt(document.getElementById('uInp').value)||1000,e=document.getElementById('errM'),b=document.getElementById('sBtn');
+  e.style.display='none';document.getElementById('resSec').classList.add('hid');sAll=false;uCR=null;
+  if(!z||z.length!==5||!/^\d{5}$/.test(z)){e.textContent="Please enter a valid 5-digit Texas ZIP code";e.style.display='block';return}
+  b.disabled=true;b.textContent="⚡ Scanning...";
+  setTimeout(()=>{const td=DB.z2t[z];if(!td){e.textContent="ZIP not in our Texas deregulated database. Try DFW (75xxx) or Houston (77xxx).";e.style.display='block';b.disabled=false;b.textContent="Find My Best Rate";return}
+    const pl=DB.p[td],po=DB.po[td],ti=DB.tdu[td],sr=[...pl].sort((a,b)=>a.r-b.r),bs=sr[0];
+    R={tdu:td,territory:ti,polr:po,best:bs,sorted:sr,usage:u,zip:z,mcB:(bs.r/100)*u,mcP:(po/100)*u,mcA:(DB.sa/100)*u,ms:((po-bs.r)/100)*u,as:((po-bs.r)/100)*u*12};
+    render();b.disabled=false;b.textContent="Find My Best Rate";document.getElementById('hTip').classList.add('vis');
+    fire();setTimeout(()=>document.getElementById('resSec').scrollIntoView({behavior:'smooth',block:'start'}),100)},1100)}
 
-  errEl.style.display = 'none';
-  document.getElementById('resultsSection').classList.add('hidden');
-  showAll = false;
+function render(){document.getElementById('resSec').classList.remove('hid');
+  document.getElementById('tduN').textContent=R.territory.n;document.getElementById('tduR').textContent=R.territory.r;
+  document.getElementById('polrR').textContent=R.polr+'¢/kWh';document.getElementById('bRate').textContent=R.best.r+'¢';
+  document.getElementById('bProv').textContent='per kWh · '+R.best.p;document.getElementById('mSav').textContent='$'+R.ms.toFixed(0);
+  document.getElementById('aSav').textContent='$'+R.as.toFixed(0);document.getElementById('uLbl').textContent=R.usage;
+  document.getElementById('ctaS').textContent='$'+R.as.toFixed(0);document.getElementById('crInp').value='';
+  rBars();rPlans();
+  document.getElementById('shTxt').innerHTML=`<button class="btn-cp" onclick="cpSh()">Copy</button>Hey! I used WattWise to compare TX electricity rates and found I could save $${R.as.toFixed(0)}/year. It's free — check it out!`}
 
-  if (!zip || zip.length !== 5 || !/^\d{5}$/.test(zip)) {
-    errEl.textContent = "Please enter a valid 5-digit Texas ZIP code";
-    errEl.style.display = 'block';
-    return;
-  }
+function rBars(){const cr=gCR(),u=R.usage,cc=(cr/100)*u,ca=(DB.sa/100)*u,cb=R.mcB,mx=Math.max(cc,ca,cb);
+  document.getElementById('cBars').innerHTML=[
+    {l:uCR?'Your Current':'TDU Default',rt:cr,c:cc,cl:'var(--r)'},
+    {l:'Texas Average',rt:DB.sa,c:ca,cl:'var(--y)'},
+    {l:'Best ('+R.best.p+')',rt:R.best.r,c:cb,cl:'var(--g)'}
+  ].map(b=>`<div class="brow"><div class="bhdr"><span>${b.l} (${b.rt}¢)</span><span class="v" style="color:${b.cl}">$${b.c.toFixed(2)}/mo</span></div><div class="btrk"><div class="bfil" style="width:${b.c/mx*100}%;background:${b.cl}"></div></div></div>`).join('')}
 
-  btn.disabled = true;
-  btn.textContent = "⚡ Scanning Database...";
+function rPlans(){const pl=sAll?R.sorted:R.sorted.slice(0,5);let s;
+  if(cSort==='rate')s=[...pl].sort((a,b)=>a.r-b.r);else if(cSort==='rating')s=[...pl].sort((a,b)=>b.s-a.s);
+  else if(cSort==='renewable')s=[...pl].sort((a,b)=>b.re-a.re);else s=[...pl].sort((a,b)=>a.p.localeCompare(b.p));
+  document.getElementById('ptTitle').textContent=sAll?`All ${R.sorted.length} Plans`:'Top 5 Plans';
+  document.getElementById('ptSub').textContent=`Sorted by ${cSort} · ${R.usage} kWh/mo`;
+  const cr=gCR(),cc=(cr/100)*R.usage;let h='';
+  s.forEach((p,i)=>{const mc=(p.r/100)*R.usage,sv=cc-mc,asv=sv*12,ib=p.r===R.best.r,pct=cr>0?((cr-p.r)/cr*100):0,pos=sv>=0;
+    const pj=JSON.stringify(p).replace(/"/g,'&quot;');
+    h+=`<div class="prow${ib?' best':''} fu" style="animation-delay:${i*.06}s"><div class="prow-top"><div class="pinf"><div><span class="pprov">${p.p}</span><span class="pbdg">${ib?'<span class="bdg bdg-b">BEST RATE</span>':''}${p.re===100?'<span class="bdg bdg-g">100% GREEN</span>':''}</span></div><div class="pname">${p.n}</div><div class="pmeta">${rSt(p.s)}<span>${p.t}mo</span><span>Cancel: ${p.cf===0?'<span style="color:var(--g)">None</span>':'$'+p.cf}</span>${p.re>0&&p.re<100?'<span>'+p.re+'% green</span>':''}</div></div><div class="pprc"><div class="prate${ib?' br':''}">${p.r}¢</div><div class="pmo">$${mc.toFixed(2)}/mo</div>${pos?`<div class="psav">Save $${sv.toFixed(0)}/mo</div>`:`<div class="psav" style="color:var(--r)">+$${Math.abs(sv).toFixed(0)}/mo</div>`}</div></div><div class="psel"><div class="psel-info">${pos?`<span class="amt">$${asv.toFixed(0)}</span>/yr savings (${pct.toFixed(0)}% less)`:`<span style="color:var(--r)">$${Math.abs(asv).toFixed(0)}</span>/yr more`}${uCR&&pos?` <span style="color:var(--y)">vs your ${cr}¢</span>`:''}</div><button class="btn-sel" onclick='openReg(${pj})'>${pos?'Choose This Plan →':'View Details →'}</button></div></div>`});
+  document.getElementById('pList').innerHTML=h;
+  const ab=document.getElementById('saBtn');if(!sAll&&R.sorted.length>5){ab.style.display='block';ab.textContent=`Show all ${R.sorted.length} plans ↓`}else ab.style.display='none'}
 
-  setTimeout(() => {
-    const tdu = DB.zip_tdu[zip];
-    if (!tdu) {
-      errEl.textContent = "This ZIP code isn't in our Texas deregulated market database. Try a ZIP in DFW (75xxx), Houston (77xxx), or other deregulated areas.";
-      errEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = "Find My Best Rate";
-      return;
-    }
+function rSt(r){const f=Math.floor(r),p=r-f;let h='<span class="stars">';for(let i=0;i<5;i++)h+=i<f?'<span class="star on">★</span>':i===f&&p>0?'<span class="star hlf">★</span>':'<span class="star off">★</span>';return h+`<span class="star-n">${r}</span></span>`}
+function sSort(s,b){cSort=s;document.querySelectorAll('.sbtn').forEach(x=>x.classList.remove('a'));b.classList.add('a');rPlans()}
+function togAll(){sAll=true;rPlans()}
 
-    const plans = DB.plans[tdu];
-    const polr = DB.polr[tdu];
-    const territory = DB.tdu[tdu];
-    const sorted = [...plans].sort((a,b) => a.r - b.r);
-    const best = sorted[0];
+// === REGISTRATION ===
+function openReg(plan){sPlan=plan;const cr=gCR(),u=R.usage,oc=(cr/100)*u,nc=(plan.r/100)*u,ms=oc-nc,as=ms*12,pct=cr>0?((cr-plan.r)/cr*100):0,y5=as*5;
+  document.getElementById('rpBdg').textContent=`${plan.p} · ${plan.n} · ${plan.r}¢/kWh`;
+  document.getElementById('rCmp').innerHTML=`<div class="rcr old"><div class="rcl">${uCR?'Your Current Rate':'TDU Default Rate'}<small>${cr}¢/kWh</small></div><div class="rcv">$${oc.toFixed(2)}/mo</div></div><div class="rcr new"><div class="rcl">${plan.p}<small>${plan.r}¢/kWh · ${plan.n}</small></div><div class="rcv">$${nc.toFixed(2)}/mo</div></div><div class="rcr sav"><div class="rcl">Your Savings<small>${pct.toFixed(1)}% reduction</small></div><div class="rcv">${ms>=0?'−':'+'} $${Math.abs(ms).toFixed(2)}/mo</div></div>`;
+  document.getElementById('rBkd').innerHTML=`<div class="rbk grn"><div class="l">MONTHLY</div><div class="n">$${Math.abs(ms).toFixed(0)}</div><div class="l">${ms>=0?'SAVED':'MORE'}</div></div><div class="rbk ylw"><div class="l">ANNUAL</div><div class="n">$${Math.abs(as).toFixed(0)}</div><div class="l">${as>=0?'SAVED':'MORE'}</div></div><div class="rbk blu"><div class="l">5-YEAR</div><div class="n">$${Math.abs(y5).toFixed(0)}</div><div class="l">${y5>=0?'SAVED':'MORE'}</div></div>`;
+  const mx=Math.max(oc,nc);document.getElementById('rBar').innerHTML=`<div class="rbi"><div class="rbl"><span>${uCR?'Your Current':'TDU Default'}</span><span class="v" style="color:var(--r)">$${oc.toFixed(2)}</span></div><div class="rbtrk"><div class="rbf" style="width:${oc/mx*100}%;background:var(--r)"></div></div></div><div class="rbi"><div class="rbl"><span>${plan.p}</span><span class="v" style="color:var(--g)">$${nc.toFixed(2)}</span></div><div class="rbtrk"><div class="rbf" style="width:${nc/mx*100}%;background:var(--g)"></div></div></div>`;
+  document.getElementById('rgPN').textContent=plan.p;document.getElementById('rgZP').value=R.zip;document.getElementById('rgAg').checked=false;chkRg();
+  rgStep(1);document.getElementById('rgOv').classList.add('open');document.body.style.overflow='hidden'}
 
-    const monthlyCostBest = (best.r / 100) * usage;
-    const monthlyCostPolr = (polr / 100) * usage;
-    const monthlyCostAvg = (DB.stateAvg / 100) * usage;
-    const savingsVsPolr = monthlyCostPolr - monthlyCostBest;
-    const annualSavings = savingsVsPolr * 12;
+function rgStep(n){document.querySelectorAll('.rstep').forEach(s=>s.classList.remove('act'));document.getElementById('rs'+n).classList.add('act');document.getElementById('rgMdl').scrollTop=0}
+function xRg(){document.getElementById('rgOv').classList.remove('open');document.body.style.overflow=''}
+function togChk(){const c=document.getElementById('rgAg');c.checked=!c.checked;chkRg()}
+function chkRg(){const b=document.getElementById('rgSub'),ok=document.getElementById('rgAg').checked&&document.getElementById('rgFN').value.trim()&&document.getElementById('rgEM').value.trim();b.style.opacity=ok?'1':'.4';b.style.cursor=ok?'pointer':'default';b.disabled=!ok}
+function subReg(){if(document.getElementById('rgSub').disabled)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
+  document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'¢/kWh</strong>';
+  document.getElementById('rgCSv').textContent='$'+Math.max(0,as).toFixed(0)+'/yr';rgStep(3);fire()}
 
-    currentResults = {
-      tdu, territory, polr, best, sorted, usage,
-      monthlyCostBest, monthlyCostPolr, monthlyCostAvg,
-      savingsVsPolr, annualSavings
-    };
+// === MODALS ===
+function openStory(){document.getElementById('stOv').classList.add('open');document.body.style.overflow='hidden'}
+function xSt(){document.getElementById('stOv').classList.remove('open');document.body.style.overflow=''}
+function openTip(){const o=document.getElementById('tpOv');o.classList.add('open');document.body.style.overflow='hidden';
+  document.getElementById('tpSel').style.display='';document.getElementById('tpTy').style.display='none';tpAmt=null;
+  document.querySelectorAll('.tpopt').forEach(o=>o.classList.remove('sel'));document.getElementById('cTpI').value='';uTpB();
+  if(R){document.getElementById('tpSN').style.display='block';document.getElementById('tpSA').textContent='$'+R.as.toFixed(0)+'/yr'}else document.getElementById('tpSN').style.display='none'}
+function xTp(){document.getElementById('tpOv').classList.remove('open');document.body.style.overflow=''}
+function xOv(e,id){if(e.target.id===id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}}
+function sTp(a,el){tpAmt=a;document.querySelectorAll('.tpopt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');document.getElementById('cTpI').value='';uTpB()}
+function sCTp(){const v=parseFloat(document.getElementById('cTpI').value);document.querySelectorAll('.tpopt').forEach(o=>o.classList.remove('sel'));tpAmt=v>0?v:null;uTpB()}
+function uTpB(){const b=document.getElementById('tpSB');if(tpAmt>0){b.classList.add('act');b.textContent=`Send $${tpAmt.toFixed(2)} Tip ☕`}else{b.classList.remove('act');b.textContent='Select an Amount'}}
+function doTp(){if(!tpAmt||tpAmt<=0)return;document.getElementById('tpSel').style.display='none';document.getElementById('tpTy').style.display='';document.getElementById('tpTA').textContent='$'+tpAmt.toFixed(2);document.getElementById('tpTS').textContent=R?'$'+R.as.toFixed(0)+'/yr':'big money'}
+function cpSh(){const el=document.getElementById('shTxt'),t=el.textContent.replace('Copy','').trim();navigator.clipboard.writeText(t).then(()=>{el.querySelector('.btn-cp').textContent='Copied!';setTimeout(()=>el.querySelector('.btn-cp').textContent='Copy',2000)})}
 
-    renderResults();
-    btn.disabled = false;
-    btn.textContent = "Find My Best Rate";
-    document.getElementById('headerTipBtn').classList.add('visible');
-    fireConfetti();
-    setTimeout(() => {
-      document.getElementById('resultsSection').scrollIntoView({ behavior:'smooth', block:'start' });
-    }, 100);
-  }, 1100);
-}
-
-function renderResults() {
-  const r = currentResults;
-  document.getElementById('resultsSection').classList.remove('hidden');
-
-  // Territory
-  document.getElementById('tduName').textContent = r.territory.name;
-  document.getElementById('tduRegion').textContent = r.territory.region;
-  document.getElementById('polrRate').textContent = r.polr + '¢/kWh';
-
-  // Savings cards
-  document.getElementById('bestRate').textContent = r.best.r + '¢';
-  document.getElementById('bestProvider').textContent = 'per kWh · ' + r.best.p;
-  document.getElementById('monthlySavings').textContent = '$' + r.savingsVsPolr.toFixed(0);
-  document.getElementById('annualSavings').textContent = '$' + r.annualSavings.toFixed(0);
-  document.getElementById('usageLabel').textContent = r.usage;
-
-  // Cost bars
-  const bars = [
-    { id:'barPolr', label:'TDU Default', rate:r.polr, cost:r.monthlyCostPolr, color:'var(--red)' },
-    { id:'barAvg', label:'Texas Average', rate:DB.stateAvg, cost:r.monthlyCostAvg, color:'var(--yellow)' },
-    { id:'barBest', label:'Best Rate ('+r.best.p+')', rate:r.best.r, cost:r.monthlyCostBest, color:'var(--green)' }
-  ];
-  bars.forEach(b => {
-    const pct = (b.cost / r.monthlyCostPolr * 100);
-    document.getElementById(b.id).innerHTML = `
-      <div class="bar-header">
-        <span>${b.label} (${b.rate}¢/kWh)</span>
-        <span class="cost" style="color:${b.color}">$${b.cost.toFixed(2)}/mo</span>
-      </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${b.color}"></div></div>
-    `;
-  });
-
-  // CTA
-  document.getElementById('ctaSavings').textContent = '$' + r.annualSavings.toFixed(0);
-
-  // Share text
-  document.getElementById('shareText').innerHTML = `
-    <button class="btn-copy" onclick="copyShare()">Copy</button>
-    Hey! I just used WattWise to compare electricity rates for my ZIP code and found I could save $${r.annualSavings.toFixed(0)}/year by switching from the default rate. It's free — a guy named Andy built it to help Texans stop overpaying. Check it out and just enter your ZIP!
-  `;
-
-  renderPlans();
-}
-
-function renderPlans() {
-  const r = currentResults;
-  const plans = showAll ? r.sorted : r.sorted.slice(0, 5);
-  let sorted;
-
-  if (currentSort === 'rate') sorted = [...plans].sort((a,b) => a.r - b.r);
-  else if (currentSort === 'rating') sorted = [...plans].sort((a,b) => b.s - a.s);
-  else if (currentSort === 'renewable') sorted = [...plans].sort((a,b) => b.re - a.re);
-  else sorted = [...plans].sort((a,b) => a.p.localeCompare(b.p));
-
-  document.getElementById('planTableTitle').textContent = showAll ? `All ${r.sorted.length} Plans` : 'Top 5 Plans';
-  document.getElementById('planTableSub').textContent = `Sorted by ${currentSort} · ${r.usage} kWh/mo`;
-
-  let html = '';
-  sorted.forEach((plan, i) => {
-    const monthlyCost = (plan.r / 100) * r.usage;
-    const saving = r.monthlyCostPolr - monthlyCost;
-    const isBest = plan.r === r.best.r;
-    const stars = renderStars(plan.s);
-
-    html += `
-      <div class="plan-row ${isBest ? 'best' : ''} fade-up fade-up-${Math.min(i,9)}">
-        <div class="plan-info">
-          <div>
-            <span class="plan-provider">${plan.p}</span>
-            <span class="plan-badges">
-              ${isBest ? '<span class="badge badge-best">BEST RATE</span>' : ''}
-              ${plan.re === 100 ? '<span class="badge badge-green">100% GREEN</span>' : ''}
-            </span>
-          </div>
-          <div class="plan-name">${plan.n}</div>
-          <div class="plan-meta">
-            ${stars}
-            <span>${plan.t}mo term</span>
-            <span>Cancel: ${plan.cf === 0 ? '<span style="color:var(--green)">None</span>' : '$' + plan.cf}</span>
-            ${plan.re > 0 && plan.re < 100 ? '<span>' + plan.re + '% renewable</span>' : ''}
-          </div>
-        </div>
-        <div class="plan-pricing">
-          <div class="plan-rate ${isBest ? 'best-rate' : ''}">${plan.r}¢</div>
-          <div class="plan-monthly">$${monthlyCost.toFixed(2)}/mo</div>
-          <div class="plan-saving">Save $${saving.toFixed(0)}/mo</div>
-        </div>
-      </div>
-    `;
-  });
-  document.getElementById('planList').innerHTML = html;
-
-  const showAllBtn = document.getElementById('showAllBtn');
-  if (!showAll && r.sorted.length > 5) {
-    showAllBtn.style.display = 'block';
-    showAllBtn.textContent = `Show all ${r.sorted.length} plans ↓`;
-  } else {
-    showAllBtn.style.display = 'none';
-  }
-}
-
-function renderStars(rating) {
-  const full = Math.floor(rating);
-  const partial = rating - full;
-  let html = '<span class="stars">';
-  for (let i = 0; i < 5; i++) {
-    if (i < full) html += '<span class="star on">★</span>';
-    else if (i === full && partial > 0) html += '<span class="star half">★</span>';
-    else html += '<span class="star off">★</span>';
-  }
-  html += `<span class="star-num">${rating}</span></span>`;
-  return html;
-}
-
-function setSort(sort, btn) {
-  currentSort = sort;
-  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderPlans();
-}
-
-function toggleShowAll() {
-  showAll = true;
-  renderPlans();
-}
-
-// ============================================================
-// MODALS
-// ============================================================
-function openStory() {
-  document.getElementById('storyOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeStory() {
-  document.getElementById('storyOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function openTipJar() {
-  const overlay = document.getElementById('tipOverlay');
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-
-  // Reset to selection view
-  document.getElementById('tipSelectView').style.display = '';
-  document.getElementById('tipThanksView').style.display = 'none';
-  selectedTipAmount = null;
-  document.querySelectorAll('.tip-option').forEach(o => o.classList.remove('selected'));
-  document.getElementById('customTipInput').value = '';
-  document.getElementById('customTipInput').classList.remove('selected');
-  updateTipBtn();
-
-  // Show savings note if results exist
-  const note = document.getElementById('tipSavingsNote');
-  if (currentResults) {
-    note.style.display = 'block';
-    document.getElementById('tipSavingsAmt').textContent = '$' + currentResults.annualSavings.toFixed(0) + '/year';
-  } else {
-    note.style.display = 'none';
-  }
-}
-function closeTipJar() {
-  document.getElementById('tipOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function closeIfOverlay(e, id) {
-  if (e.target.id === id) {
-    document.getElementById(id).classList.remove('open');
-    document.body.style.overflow = '';
-  }
-}
-
-// Tip logic
-function selectTip(amount, el) {
-  selectedTipAmount = amount;
-  document.querySelectorAll('.tip-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('customTipInput').value = '';
-  document.getElementById('customTipInput').classList.remove('selected');
-  updateTipBtn();
-}
-
-function selectCustomTip() {
-  const val = parseFloat(document.getElementById('customTipInput').value);
-  document.querySelectorAll('.tip-option').forEach(o => o.classList.remove('selected'));
-  document.getElementById('customTipInput').classList.add('selected');
-  selectedTipAmount = val > 0 ? val : null;
-  updateTipBtn();
-}
-
-function updateTipBtn() {
-  const btn = document.getElementById('tipSendBtn');
-  if (selectedTipAmount && selectedTipAmount > 0) {
-    btn.classList.add('active');
-    btn.textContent = `Send $${selectedTipAmount.toFixed(2)} Tip ☕`;
-  } else {
-    btn.classList.remove('active');
-    btn.textContent = 'Select an Amount';
-  }
-}
-
-function sendTip() {
-  if (!selectedTipAmount || selectedTipAmount <= 0) return;
-
-  document.getElementById('tipSelectView').style.display = 'none';
-  const thanks = document.getElementById('tipThanksView');
-  thanks.style.display = '';
-  document.getElementById('tipAmountThanks').textContent = '$' + selectedTipAmount.toFixed(2);
-  document.getElementById('tipSavingsThanks').textContent = currentResults
-    ? '$' + currentResults.annualSavings.toFixed(0) + '/year' : 'big money';
-}
-
-// Copy share text
-function copyShare() {
-  const el = document.getElementById('shareText');
-  const text = el.textContent.replace('Copy', '').trim();
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = el.querySelector('.btn-copy');
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
-  });
-}
-
-// ============================================================
-// CONFETTI
-// ============================================================
-function fireConfetti() {
-  const container = document.getElementById('confettiContainer');
-  container.innerHTML = '';
-  const colors = ['#00DC82','#FACC15','#38BDF8','#F472B6','#A78BFA','#FB923C'];
-  for (let i = 0; i < 50; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    const color = colors[i % colors.length];
-    const left = Math.random() * 100;
-    const delay = Math.random() * 0.8;
-    const duration = 2 + Math.random() * 1.5;
-    const size = 4 + Math.random() * 6;
-    const rotation = Math.random() * 720;
-    piece.style.cssText = `
-      left:${left}%; width:${size}px; height:${size*1.4}px;
-      background:${color}; border-radius:${Math.random()>0.5?'50%':'2px'};
-      animation: confettiFall ${duration}s ease-in ${delay}s forwards;
-      transform: rotate(${rotation}deg); opacity:0;
-    `;
-    container.appendChild(piece);
-  }
-  setTimeout(() => container.innerHTML = '', 4000);
-}
+function fire(){const c=document.getElementById('confC');c.innerHTML='';const cl=['#00DC82','#FACC15','#38BDF8','#F472B6','#A78BFA','#FB923C'];
+  for(let i=0;i<50;i++){const p=document.createElement('div');p.className='confetti-p';p.style.cssText=`left:${Math.random()*100}%;width:${4+Math.random()*6}px;height:${(4+Math.random()*6)*1.4}px;background:${cl[i%6]};border-radius:${Math.random()>.5?'50%':'2px'};animation:confetti ${2+Math.random()*1.5}s ease-in ${Math.random()*.8}s forwards;transform:rotate(${Math.random()*720}deg);opacity:0`;c.appendChild(p)}setTimeout(()=>c.innerHTML='',4000)}
 </script>
 </body>
 </html>
