@@ -456,62 +456,45 @@ let dbUpdated = 'Feb 20, 2026';
 
 // Try to load live data from Supabase
 async function loadFromSupabase() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return false;
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) { console.log('WattWise: No Supabase config'); return false; }
   try {
-    // Fetch plans
-    const resp = await fetch(`${SUPABASE_URL}/rest/v1/plans?select=*&order=rate_kwh.asc`, {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/plans?select=*&order=rate_kwh.asc&limit=1000`, {
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
     });
-    if (!resp.ok) return false;
+    console.log('WattWise: Supabase response status:', resp.status);
+    if (!resp.ok) { const err = await resp.text(); console.log('WattWise: Supabase error:', err); return false; }
     const plans = await resp.json();
+    console.log('WattWise: Got', plans.length, 'plans from Supabase');
     if (!plans.length) return false;
 
-    // Convert Supabase rows to DB.p format grouped by TDU
     const grouped = {};
     plans.forEach(p => {
       if (!grouped[p.tdu]) grouped[p.tdu] = [];
       grouped[p.tdu].push({
         p: p.provider, n: p.plan_name, r: parseFloat(p.rate_kwh),
-        t: p.term_months, re: p.renewable_pct, s: 3.5, cf: parseFloat(p.cancel_fee) || 0,
-        url: p.signup_url || ''
+        t: p.term_months || 12, re: p.renewable_pct || 0, s: 3.5, cf: parseFloat(p.cancel_fee) || 0,
+        url: p.signup_url || p.enroll_url || ''
       });
     });
 
-    // Only replace if we got data
     if (Object.keys(grouped).length > 0) {
       DB.p = grouped;
       dbSource = 'live';
-
-      // Fetch last scrape time
-      try {
-        const logResp = await fetch(`${SUPABASE_URL}/rest/v1/latest_scrape?select=*`, {
-          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-        });
-        if (logResp.ok) {
-          const logs = await logResp.json();
-          if (logs.length) {
-            const d = new Date(logs[0].scraped_at);
-            dbUpdated = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          }
-        }
-      } catch(e) {}
-
-      // Update counts and UI
+      dbUpdated = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const tP = Object.values(DB.p).reduce((s, p) => s + p.length, 0);
       document.getElementById('tpCnt').textContent = tP;
       document.getElementById('dbC').textContent = tP;
       document.getElementById('dbDate').textContent = dbUpdated;
       document.getElementById('dbSrc').textContent = '🟢 Live from PowerToChoose.org';
-      console.log(`⚡ WattWise: Loaded ${tP} live plans from Supabase (updated ${dbUpdated})`);
+      console.log('WattWise: Loaded ' + tP + ' live plans across ' + Object.keys(grouped).length + ' TDUs');
       return true;
     }
   } catch (e) {
-    console.log('⚡ WattWise: Supabase unavailable, using local data', e);
+    console.log('WattWise: Supabase error:', e);
   }
   return false;
 }
 
-// Initialize
 loadFromSupabase();
 
 let R=null,cSort="rate",sAll=false,tpAmt=null,uCR=null,sPlan=null;
