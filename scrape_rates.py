@@ -60,6 +60,8 @@ def fetch_csv():
 
 
 def safe_float(val):
+    if not val:
+        return None
     try:
         return float(str(val).strip().replace("$", "").replace(",", ""))
     except (ValueError, TypeError):
@@ -67,25 +69,21 @@ def safe_float(val):
 
 
 def safe_int(val):
+    if not val:
+        return None
     try:
         return int(float(str(val).strip()))
     except (ValueError, TypeError):
         return None
 
 
-def find_col(row, candidates):
-    """Find a column value by trying multiple possible header names."""
-    for c in candidates:
-        for key in row:
-            if key and c.lower() in key.lower().replace(" ", "_").replace("-", "_"):
-                val = row[key]
-                if val and str(val).strip():
-                    return str(val).strip()
-    return ""
+def get(row, key):
+    """Get value from row, trying both [bracketed] and plain key."""
+    val = row.get(f"[{key}]", "") or row.get(key, "")
+    return str(val).strip() if val else ""
 
 
 def match_tdu(raw):
-    """Match a TDU string to our codes."""
     raw_upper = raw.upper()
     for key, code in TDU_MAP.items():
         if key in raw_upper:
@@ -95,8 +93,6 @@ def match_tdu(raw):
 
 def parse_plans(csv_text):
     reader = csv.DictReader(io.StringIO(csv_text))
-
-    # Print headers for debugging
     print(f"  CSV Headers: {reader.fieldnames}")
 
     plans = []
@@ -105,8 +101,8 @@ def parse_plans(csv_text):
 
     for row in reader:
         try:
-            # Find TDU
-            tdu_raw = find_col(row, ["tdu", "tdsp", "TDU_Company", "tdsp_company"])
+            # TDU
+            tdu_raw = get(row, "TduCompanyName")
             tdu = match_tdu(tdu_raw) if tdu_raw else None
             if not tdu:
                 errors["no_tdu"] = errors.get("no_tdu", 0) + 1
@@ -114,39 +110,38 @@ def parse_plans(csv_text):
                 continue
 
             # Provider
-            provider = find_col(row, ["rep_company", "Rep_Company", "company", "provider", "rep_name"])
+            provider = get(row, "RepCompany")
             if not provider:
                 errors["no_provider"] = errors.get("no_provider", 0) + 1
                 skipped += 1
                 continue
 
             # Plan name
-            plan_name = find_col(row, ["product_name", "Product_Name", "plan_name", "plan"])
+            plan_name = get(row, "Product")
             if not plan_name:
                 errors["no_plan_name"] = errors.get("no_plan_name", 0) + 1
                 skipped += 1
                 continue
 
             # Rate at 1000 kWh
-            rate_str = find_col(row, ["kwh1000", "1000", "price_kwh1000", "Price_per_kWh_1000", "rate_1000"])
-            rate_1000 = safe_float(rate_str)
+            rate_1000 = safe_float(get(row, "kwh1000"))
             if not rate_1000 or rate_1000 <= 0 or rate_1000 > 100:
                 errors["no_rate"] = errors.get("no_rate", 0) + 1
                 skipped += 1
                 continue
 
-            # Rate at 500 and 2000
-            rate_500 = safe_float(find_col(row, ["kwh500", "500", "price_kwh500", "rate_500"]))
-            rate_2000 = safe_float(find_col(row, ["kwh2000", "2000", "price_kwh2000", "rate_2000"]))
+            # Other rates
+            rate_500 = safe_float(get(row, "kwh500"))
+            rate_2000 = safe_float(get(row, "kwh2000"))
 
             # Term
-            term_str = find_col(row, ["term", "contract", "term_value", "Contract_Length"])
+            term_str = get(row, "TermValue")
             term = safe_int(re.sub(r'[^\d]', '', term_str)) if term_str else 12
             if not term or term <= 0:
                 term = 12
 
             # Renewable
-            renew_str = find_col(row, ["renewable", "percent_renew", "Renewable_Energy"])
+            renew_str = get(row, "Renewable")
             renewable = safe_int(re.sub(r'[^\d]', '', renew_str)) if renew_str else 0
             if not renewable:
                 renewable = 0
@@ -154,36 +149,42 @@ def parse_plans(csv_text):
                 renewable = 100
 
             # Cancel fee
-            cancel_str = find_col(row, ["cancel", "termination", "etf", "Cancellation"])
+            cancel_str = get(row, "CancelFee")
             cancel_fee = safe_float(re.sub(r'[^\d.]', '', cancel_str)) if cancel_str else 0
             if not cancel_fee:
                 cancel_fee = 0
 
             # Plan type
             plan_type = "fixed"
-            pt_raw = find_col(row, ["plan_type", "product_type", "rate_type", "Plan_Type"]).lower()
-            if "variable" in pt_raw:
+            fixed_val = get(row, "Fixed").lower()
+            rate_type = get(row, "RateType").lower()
+            if "variable" in rate_type or fixed_val == "false":
                 plan_type = "variable"
-            elif "indexed" in pt_raw:
+            elif "indexed" in rate_type:
                 plan_type = "indexed"
 
             # Prepaid
-            prepaid_raw = find_col(row, ["prepaid", "Prepaid"]).lower()
+            prepaid_raw = get(row, "PrePaid").lower()
             prepaid = prepaid_raw in ("true", "yes", "1")
 
             # Time of use
-            tou_raw = find_col(row, ["time_of_use", "tou", "Time_of_Use"]).lower()
+            tou_raw = get(row, "TimeOfUse").lower()
             tou = tou_raw in ("true", "yes", "1")
 
             # Fact sheet
-            fact_sheet = find_col(row, ["fact_sheet", "Fact_Sheet", "efl"])
+            fact_sheet = get(row, "FactsURL")
 
-            # Signup URL
+            # Enroll URL from CSV
+            enroll_url = get(row, "EnrollURL") or get(row, "Website")
+
+            # Signup URL - prefer our mapped URLs, fall back to CSV
             signup_url = ""
             for pname, url in SIGNUP_URLS.items():
                 if pname.lower() in provider.lower():
                     signup_url = url
                     break
+            if not signup_url:
+                signup_url = enroll_url
 
             plans.append({
                 "tdu": tdu,
@@ -211,8 +212,6 @@ def parse_plans(csv_text):
     print(f"  Parsed {len(plans)} plans, skipped {skipped} rows")
     if errors:
         print(f"  Skip reasons: {errors}")
-
-    # Print first parsed plan for debugging
     if plans:
         print(f"  Sample plan: {plans[0]}")
 
@@ -291,7 +290,7 @@ def main():
         print("ERROR: Set SUPABASE_URL and SUPABASE_KEY environment variables")
         sys.exit(1)
 
-    print(f"=== WattWise Rate Scraper ===")
+    print("=== WattWise Rate Scraper ===")
     print(f"Time: {datetime.now(timezone.utc).isoformat()}")
 
     # Fetch CSV
