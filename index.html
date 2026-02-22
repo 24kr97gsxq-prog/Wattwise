@@ -133,7 +133,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 /* === MODALS === */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .ov.open{display:flex}
-.mdl{background:linear-gradient(165deg,#1a1a2e,#0f0f1a 50%,#1a0f2e);border:1px solid rgba(0,220,130,.2);border-radius:20px;max-height:85vh;overflow:auto;box-shadow:0 25px 80px rgba(0,220,130,.15)}
+.mdl{background:linear-gradient(165deg,#1a1a2e,#0f0f1a 50%,#1a0f2e);border:1px solid rgba(0,220,130,.2);border-radius:20px;max-height:85vh;overflow:auto;box-shadow:0 25px 80px rgba(0,220,130,.15);-webkit-overflow-scrolling:touch}
 .mdl-x{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#aaa;border-radius:50%;width:32px;height:32px;font-size:18px;display:flex;align-items:center;justify-content:center}
 .mdl-x:hover{background:rgba(255,255,255,.1);color:#fff}
 
@@ -255,9 +255,23 @@ button{font-family:inherit;border:none;cursor:pointer}
   .rbkd{grid-template-columns:1fr 1fr 1fr}
   .rsh,.rsb{padding-left:16px;padding-right:16px}
   .rs1-sticky{padding-left:16px;padding-right:16px}
-  .rcnf{padding-left:16px;padding-right:16px}
-  .rsh,.rsb,.rfb,.rcnf{padding-left:20px;padding-right:20px}
+  .rcnf{padding:24px 16px 20px}
+  .rsh,.rsb,.rfb{padding-left:20px;padding-right:20px}
   .st-mdl{padding:24px 20px}.st-mdl h2{font-size:24px}
+  .ov{padding:8px;align-items:flex-start}
+  .mdl{max-height:95vh;border-radius:16px;margin-top:8px}
+  .rmdl{max-width:100%}
+  .mdl-x{width:36px;height:36px;font-size:22px;position:sticky;top:0;z-index:5}
+  .rcnf h3{font-size:22px}
+  .rcnf .rchk-i{width:44px;height:44px}
+  .rcns{margin:14px 0}
+  .nsi{padding:8px 10px;gap:10px}
+  .nsn{width:22px;height:22px;font-size:11px;flex-shrink:0}
+  .nst{font-size:13px}
+  .rcsav{padding:14px;margin:12px 0}
+  .rcsav .big{font-size:28px}
+  .btn-rn{padding:14px;font-size:15px}
+  .tipnudge{margin:14px 0 8px}
 }
 </style>
 </head>
@@ -359,7 +373,7 @@ button{font-family:inherit;border:none;cursor:pointer}
   </div>
   <!-- Step 2: Ready to Switch -->
   <div class="rstep" id="rs2">
-    <div style="display:flex;justify-content:flex-end;padding:16px 20px 0"><button class="mdl-x" onclick="xRg()">×</button></div>
+    <div style="display:flex;justify-content:flex-end;padding:12px 16px 0;position:sticky;top:0;z-index:5;background:linear-gradient(to bottom,#1a1a2e 60%,transparent)"><button class="mdl-x" onclick="xRg()">×</button></div>
     <div class="rcnf">
       <div class="rchk-i"><svg viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
       <h3>Ready to Switch!</h3>
@@ -367,14 +381,12 @@ button{font-family:inherit;border:none;cursor:pointer}
       <div class="pd" id="rgCPv"></div>
       <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
       <div class="rcns"><h4>How to Get This Plan</h4>
-        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click below</strong> to go to PowerToChoose.org, then enter ZIP code <strong id="rgZipShow"></strong></div></div>
-        <div class="nsi" id="rgPlanTip" style="background:rgba(0,220,130,.06);border-radius:8px;padding:10px 12px"><div class="nsn" style="background:var(--g);color:#0a0a0a">★</div><div class="nst">Search for <strong style="color:var(--g)" id="rgPlanFind"></strong> by <strong id="rgProvFind"></strong> at <strong style="color:var(--g)"><span id="rgRateFind"></span>&#162;/kWh</strong></div></div>
-        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Click "Sign Up"</strong> on that plan to enroll directly with the provider</div></div>
+        <div class="nsi" id="rgPlanTip" style="background:rgba(0,220,130,.06);border-radius:8px;padding:10px 12px"><div class="nsn" style="background:var(--g);color:#0a0a0a">★</div><div class="nst"><strong style="color:var(--g)" id="rgPlanFind"></strong> by <strong id="rgProvFind"></strong> at <strong style="color:var(--g)"><span id="rgRateFind"></span>&#162;/kWh</strong></div></div>
+        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click "Sign Up"</strong> below to go to the provider's enrollment page</div></div>
+        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Enter ZIP code <span id="rgZipShow"></span></strong> on their site and select the plan above</div></div>
         <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>Have your ESID ready</strong> — it's on your current electric bill</div></div>
         <div class="nsi"><div class="nsn">4</div><div class="nst"><strong>No interruption</strong> — same wires, same meter, new rate in 1-2 billing cycles</div></div>
       </div>
-      <button class="btn-rn" id="rgGoBtn" onclick="goProvider()" style="font-size:16px">Find This Plan on PowerToChoose.org →</button>
-      <div style="text-align:center;margin-top:8px"><button class="btn-ghost" id="rgDirectBtn" onclick="goDirect()" style="display:none;font-size:13px;color:var(--g);background:none;border:1px solid rgba(0,220,130,.3);border-radius:8px;padding:8px 16px">Or go directly to <span id="rgGoProv"></span>'s site →</button></div>
       <div class="tipnudge">
         <div class="tipnudge-line"></div>
         <div class="tipnudge-inner">
@@ -382,6 +394,9 @@ button{font-family:inherit;border:none;cursor:pointer}
           <button class="tipnudge-btn" onclick="xRg();openTip()">☕ Buy him a coffee?</button>
         </div>
       </div>
+    </div>
+    <div style="position:sticky;bottom:0;background:linear-gradient(to top,#0f0f1a 80%,transparent);padding:10px 20px 16px;z-index:3">
+      <button class="btn-rn" id="rgGoBtn" onclick="goProvider()" style="font-size:16px">Sign Up for This Plan →</button>
       <button class="btn-rb" onclick="rgStep(1)">← Back to Savings</button>
     </div>
   </div>
@@ -572,16 +587,13 @@ const PURLS={"TXU Energy":"https://www.txu.com/enrollment","Reliant Energy":"htt
 function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
   document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'&#162;/kWh</strong>';
   document.getElementById('rgCSv').textContent='$'+Math.max(0,as).toFixed(0)+'/yr';
-  document.getElementById('rgGoProv').textContent=pl.p;
   document.getElementById('rgPlanFind').textContent=pl.n;
   document.getElementById('rgProvFind').textContent=pl.p;
   document.getElementById('rgRateFind').textContent=pl.r;
-  const directUrl=pl.url||PURLS[pl.p]||'';
-  if(directUrl){document.getElementById('rgDirectBtn').style.display='inline-block'}else{document.getElementById('rgDirectBtn').style.display='none'}
   document.getElementById('rgZipShow').textContent=R.zip;
   rgStep(2);stats.planClicks++;fire()}
 
-function goProvider(){if(!sPlan||!R)return;stats.provClicks++;window.open('http://www.powertochoose.org/en-us/Plan/Results?zip_code='+R.zip,'_blank')}
+function goProvider(){if(!sPlan||!R)return;stats.provClicks++;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 
 // === MODALS ===
