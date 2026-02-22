@@ -366,13 +366,15 @@ button{font-family:inherit;border:none;cursor:pointer}
       <div class="pd">You chose <strong id="rgCPl"></strong></div>
       <div class="pd" id="rgCPv"></div>
       <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
-      <div class="rcns"><h4>How Switching Works</h4>
-        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click below</strong> to go to the provider's signup page</div></div>
-        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Look for "<span id="rgPlanFind"></span>"</strong> — enter your ZIP code on their site and find this exact plan at <span id="rgRateFind"></span>&#162;/kWh</div></div>
+      <div class="rcns"><h4>How to Get This Plan</h4>
+        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click below</strong> to go to the official Texas enrollment site</div></div>
+        <div class="nsi" id="rgPlanTip" style="background:rgba(0,220,130,.06);border-radius:8px;padding:10px 12px"><div class="nsn" style="background:var(--g);color:#0a0a0a">★</div><div class="nst">Search for <strong style="color:var(--g)" id="rgPlanFind"></strong> by <strong id="rgProvFind"></strong> at <strong style="color:var(--g)"><span id="rgRateFind"></span>&#162;/kWh</strong></div></div>
+        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Click "Sign Up"</strong> on that plan to enroll directly with the provider</div></div>
         <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>Have your ESID ready</strong> — it's on your current electric bill</div></div>
-        <div class="nsi"><div class="nsn">4</div><div class="nst"><strong>No interruption</strong> — same wires, same meter, new rate in 1–2 billing cycles</div></div>
+        <div class="nsi"><div class="nsn">4</div><div class="nst"><strong>No interruption</strong> — same wires, same meter, new rate in 1-2 billing cycles</div></div>
       </div>
-      <button class="btn-rn" id="rgGoBtn" onclick="goProvider()" style="font-size:16px">Sign Up at <span id="rgGoProv"></span> →</button>
+      <button class="btn-rn" id="rgGoBtn" onclick="goProvider()" style="font-size:16px">Find This Plan on PowerToChoose.org →</button>
+      <div style="text-align:center;margin-top:8px"><button class="btn-ghost" id="rgDirectBtn" onclick="goDirect()" style="display:none;font-size:13px;color:var(--g);background:none;border:1px solid rgba(0,220,130,.3);border-radius:8px;padding:8px 16px">Or go directly to <span id="rgGoProv"></span>'s site →</button></div>
       <div class="tipnudge">
         <div class="tipnudge-line"></div>
         <div class="tipnudge-inner">
@@ -568,14 +570,18 @@ function xRg(){document.getElementById('rgOv').classList.remove('open');document
 const PURLS={"TXU Energy":"https://www.txu.com/enrollment","Reliant Energy":"https://www.reliant.com/en/public/residential/electricity-plans.jsp","Gexa Energy":"https://www.gexaenergy.com/electricity-plans","Green Mountain":"https://www.greenmountainenergy.com/plans","Constellation":"https://www.constellation.com/solutions/for-your-home/electricity-plans.html","4Change Energy":"https://www.4changeenergy.com/plans","Frontier Utilities":"https://www.frontierutilities.com/plans","Chariot Energy":"https://chariotenergy.com/plans","Pulse Power":"https://pulsepower.com/plans","Rhythm Energy":"https://www.gotrhythm.com/electricity-plans","Express Energy":"https://www.myexpressenergy.com","Discount Power":"https://www.discountpowertx.com","Veteran Energy":"https://www.veteranenergy.us/plans","TriEagle Energy":"https://www.trieagleenergy.com/plans","Cirro Energy":"https://www.cirroenergy.com/plans"};
 
 function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
-  document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'¢/kWh</strong>';
+  document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'&#162;/kWh</strong>';
   document.getElementById('rgCSv').textContent='$'+Math.max(0,as).toFixed(0)+'/yr';
   document.getElementById('rgGoProv').textContent=pl.p;
   document.getElementById('rgPlanFind').textContent=pl.n;
+  document.getElementById('rgProvFind').textContent=pl.p;
   document.getElementById('rgRateFind').textContent=pl.r;
-  rgStep(2);fire()}
+  const directUrl=pl.url||PURLS[pl.p]||'';
+  if(directUrl){document.getElementById('rgDirectBtn').style.display='inline-block'}else{document.getElementById('rgDirectBtn').style.display='none'}
+  rgStep(2);stats.planClicks++;fire()}
 
-function goProvider(){if(!sPlan)return;stats.provClicks++;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
+function goProvider(){if(!sPlan||!R)return;stats.provClicks++;window.open('https://www.powertochoose.org/en-us/Plan/CompareByZip?zip='+R.zip,'_blank')}
+function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 
 // === MODALS ===
 function openStory(){document.getElementById('stOv').classList.add('open');document.body.style.overflow='hidden'}
