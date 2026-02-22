@@ -367,7 +367,7 @@ button{font-family:inherit;border:none;cursor:pointer}
       <div class="pd" id="rgCPv"></div>
       <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
       <div class="rcns"><h4>How to Get This Plan</h4>
-        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click below</strong> to go to the official Texas enrollment site</div></div>
+        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click below</strong> to go to PowerToChoose.org, then enter ZIP code <strong id="rgZipShow"></strong></div></div>
         <div class="nsi" id="rgPlanTip" style="background:rgba(0,220,130,.06);border-radius:8px;padding:10px 12px"><div class="nsn" style="background:var(--g);color:#0a0a0a">★</div><div class="nst">Search for <strong style="color:var(--g)" id="rgPlanFind"></strong> by <strong id="rgProvFind"></strong> at <strong style="color:var(--g)"><span id="rgRateFind"></span>&#162;/kWh</strong></div></div>
         <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Click "Sign Up"</strong> on that plan to enroll directly with the provider</div></div>
         <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>Have your ESID ready</strong> — it's on your current electric bill</div></div>
@@ -578,9 +578,10 @@ function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.
   document.getElementById('rgRateFind').textContent=pl.r;
   const directUrl=pl.url||PURLS[pl.p]||'';
   if(directUrl){document.getElementById('rgDirectBtn').style.display='inline-block'}else{document.getElementById('rgDirectBtn').style.display='none'}
+  document.getElementById('rgZipShow').textContent=R.zip;
   rgStep(2);stats.planClicks++;fire()}
 
-function goProvider(){if(!sPlan||!R)return;stats.provClicks++;window.open('https://www.powertochoose.org/en-us/Plan/CompareByZip?zip='+R.zip,'_blank')}
+function goProvider(){if(!sPlan||!R)return;stats.provClicks++;window.open('https://www.powertochoose.org/','_blank')}
 function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 
 // === MODALS ===
