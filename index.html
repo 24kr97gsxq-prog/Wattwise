@@ -177,27 +177,24 @@ button{font-family:inherit;border:none;cursor:pointer}
 .rstep{display:none;animation:slideUp .4s ease-out}.rstep.act{display:block}
 
 /* Step 1 */
-.rsh{padding:28px 28px 0}.rsh h3{font-family:var(–fd);font-size:24px;color:#fff;margin:0 0 4px}
-.rpb{display:inline-block;background:rgba(0,220,130,.12);border:1px solid rgba(0,220,130,.25);border-radius:8px;padding:6px 14px;margin-top:10px;font-family:var(–fm);font-size:12px;color:var(–g)}
-.rsb{padding:20px 28px 28px}
-.rcmp{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:20px}
-.rcr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px}
+.rsh{padding:20px 24px 0}.rsh h3{font-family:var(–fd);font-size:24px;color:#fff;margin:0 0 4px}
+.rpb{display:inline-block;background:rgba(0,220,130,.12);border:1px solid rgba(0,220,130,.25);border-radius:8px;padding:6px 14px;margin-top:8px;font-family:var(–fm);font-size:12px;color:var(–g)}
+.rsb{padding:16px 24px 8px}
+.rs1-sticky{position:sticky;bottom:0;background:linear-gradient(to top,#0f0f1a 70%,transparent);padding:12px 24px 20px;z-index:2}
+.rcmp{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.rcr{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
 .rcr+.rcr{border-top:1px solid rgba(255,255,255,.04)}
 .rcl{font-size:13px;color:#aaa}.rcl small{display:block;font-size:10px;color:#666;margin-top:1px;font-family:var(–fm)}
-.rcv{font-family:var(–fm);font-weight:700;font-size:18px}
+.rcv{font-family:var(–fm);font-weight:700;font-size:17px}
 .rcr.old .rcv{color:var(–r);text-decoration:line-through;text-decoration-color:rgba(255,107,107,.4)}
 .rcr.new .rcv{color:var(–g)}
 .rcr.sav{background:linear-gradient(135deg,rgba(0,220,130,.08),rgba(250,204,21,.04))}
-.rcr.sav .rcv{color:var(–y);font-size:22px}
-.rbkd{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
-.rbk{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 12px;text-align:center}
-.rbk .n{font-size:22px;font-weight:700;font-family:var(–fm);margin:4px 0}
-.rbk .l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#777;font-family:var(–fm)}
+.rcr.sav .rcv{color:var(–y);font-size:20px}
+.rbkd{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.rbk{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px 8px;text-align:center}
+.rbk .n{font-size:20px;font-weight:700;font-family:var(–fm);margin:2px 0}
+.rbk .l{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:#777;font-family:var(–fm)}
 .rbk.grn .n{color:var(–g)}.rbk.ylw .n{color:var(–y)}.rbk.blu .n{color:var(–b)}
-.rbar{margin-bottom:20px}.rbi{margin-bottom:10px}.rbi:last-child{margin-bottom:0}
-.rbl{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}.rbl span:first-child{color:#aaa}.rbl .v{font-family:var(–fm);font-weight:600}
-.rbtrk{height:10px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden}
-.rbf{height:100%;border-radius:5px;animation:barGrow 1s ease-out both}
 .btn-rn{width:100%;padding:15px;background:linear-gradient(135deg,var(–g),var(–gd));color:#0a0a0a;border-radius:12px;font-size:15px;font-weight:700;font-family:var(–fm)}
 .tipnudge{margin:20px 0 10px;text-align:center;position:relative}
 .tipnudge-line{height:1px;background:rgba(255,255,255,.06);margin-bottom:16px}
@@ -256,7 +253,10 @@ button{font-family:inherit;border:none;cursor:pointer}
 .prow-top{flex-direction:column}.pprc{text-align:left;margin-top:8px}
 .tbar{flex-direction:column;text-align:left}.tbar>div:last-child{text-align:left}
 .crbar{flex-direction:column;align-items:flex-start}
-.rbkd{grid-template-columns:1fr}
+.rbkd{grid-template-columns:1fr 1fr 1fr}
+.rsh,.rsb{padding-left:16px;padding-right:16px}
+.rs1-sticky{padding-left:16px;padding-right:16px}
+.rcnf{padding-left:16px;padding-right:16px}
 .rsh,.rsb,.rfb,.rcnf{padding-left:20px;padding-right:20px}
 .st-mdl{padding:24px 20px}.st-mdl h2{font-size:24px}
 }
@@ -278,7 +278,7 @@ button{font-family:inherit;border:none;cursor:pointer}
     <div class="srow"><div class="f1"><div class="lb">Texas ZIP Code</div><input type="text" id="zInp" class="inp" placeholder="e.g. 75087" maxlength="5"></div><div class="fs"><div class="lb">Monthly kWh</div><input type="number" id="uInp" class="inp inp-u" value="1000" min="100"></div></div>
     <button class="btn-s" id="sBtn" onclick="doSearch()">Find My Best Rate</button>
     <div id="errM" class="errmsg" style="display:none"></div>
-    <div class="smeta">Database: <span id="dbC">54</span> plans · Updated Feb 20, 2026 · Source: PowerToChoose.org</div>
+    <div class="smeta">Database: <span id="dbC">54</span> plans · Updated <span id="dbDate">Feb 20, 2026</span> · <span id="dbSrc">Source: PowerToChoose.org</span></div>
   </div>
 </section>
 
@@ -351,12 +351,13 @@ button{font-family:inherit;border:none;cursor:pointer}
 <div class="ov" id="rgOv" onclick="xOv(event,'rgOv')"><div class="mdl rmdl" id="rgMdl">
   <!-- Step 1: Savings -->
   <div class="rstep act" id="rs1">
-    <div style="display:flex;justify-content:flex-end;padding:16px 20px 0"><button class="mdl-x" onclick="xRg()">×</button></div>
-    <div class="rsh"><div class="lb" style="color:var(--g);margin-bottom:8px">YOUR PERSONALIZED SAVINGS</div><h3>Here's What You'll Save</h3><div class="rpb" id="rpBdg"></div></div>
+    <div style="display:flex;justify-content:flex-end;padding:12px 20px 0"><button class="mdl-x" onclick="xRg()">×</button></div>
+    <div class="rsh"><div class="lb" style="color:var(--g);margin-bottom:6px">YOUR PERSONALIZED SAVINGS</div><h3 style="font-size:22px">Here's What You'll Save</h3><div class="rpb" id="rpBdg"></div></div>
     <div class="rsb">
       <div class="rcmp" id="rCmp"></div>
       <div class="rbkd" id="rBkd"></div>
-      <div class="rbar" id="rBar"></div>
+    </div>
+    <div class="rs1-sticky">
       <button class="btn-rn" onclick="subReg()">I Want This Plan →</button>
       <button class="btn-rb" onclick="xRg()">← Back to Plans</button>
     </div>
@@ -435,7 +436,16 @@ button{font-family:inherit;border:none;cursor:pointer}
 <div id="confC"></div>
 
 <script>
-const DB={tdu:{ONCOR:{n:"Oncor Electric Delivery",r:"Dallas/Fort Worth, Waco, Midland"},CENTPT:{n:"CenterPoint Energy",r:"Houston Metro"},TNMP:{n:"Texas-New Mexico Power",r:"Various TX cities"},AEP_TCC:{n:"AEP Texas Central",r:"Corpus Christi, Victoria"},AEP_TNC:{n:"AEP Texas North",r:"Abilene, San Angelo, El Paso"}},
+// ============================================================
+// SUPABASE CONFIG
+// Replace with your Supabase project URL and anon (public) key
+// Get these from: Supabase Dashboard → Settings → API
+// ============================================================
+const SUPABASE_URL = ''; // e.g. 'https://xxxxx.supabase.co'
+const SUPABASE_ANON_KEY = ''; // your anon/public key (safe to expose)
+
+// Hardcoded fallback data (used when Supabase is not configured)
+const DB_FALLBACK={tdu:{ONCOR:{n:"Oncor Electric Delivery",r:"Dallas/Fort Worth, Waco, Midland"},CENTPT:{n:"CenterPoint Energy",r:"Houston Metro"},TNMP:{n:"Texas-New Mexico Power",r:"Various TX cities"},AEP_TCC:{n:"AEP Texas Central",r:"Corpus Christi, Victoria"},AEP_TNC:{n:"AEP Texas North",r:"Abilene, San Angelo, El Paso"}},
 z2t:{"75001":"ONCOR","75002":"ONCOR","75006":"ONCOR","75007":"ONCOR","75019":"ONCOR","75024":"ONCOR","75025":"ONCOR","75032":"ONCOR","75034":"ONCOR","75035":"ONCOR","75040":"ONCOR","75041":"ONCOR","75042":"ONCOR","75043":"ONCOR","75044":"ONCOR","75048":"ONCOR","75050":"ONCOR","75051":"ONCOR","75052":"ONCOR","75060":"ONCOR","75061":"ONCOR","75062":"ONCOR","75063":"ONCOR","75070":"ONCOR","75071":"ONCOR","75074":"ONCOR","75075":"ONCOR","75080":"ONCOR","75081":"ONCOR","75082":"ONCOR","75087":"ONCOR","75089":"ONCOR","75093":"ONCOR","75094":"ONCOR","75098":"ONCOR","75104":"ONCOR","75115":"ONCOR","75116":"ONCOR","75134":"ONCOR","75137":"ONCOR","75141":"ONCOR","75146":"ONCOR","75149":"ONCOR","75150":"ONCOR","75154":"ONCOR","75159":"ONCOR","75166":"ONCOR","75172":"ONCOR","75180":"ONCOR","75181":"ONCOR","75182":"ONCOR","75189":"ONCOR","75201":"ONCOR","75202":"ONCOR","75203":"ONCOR","75204":"ONCOR","75205":"ONCOR","75206":"ONCOR","75207":"ONCOR","75208":"ONCOR","75209":"ONCOR","75210":"ONCOR","75211":"ONCOR","75212":"ONCOR","75214":"ONCOR","75215":"ONCOR","75216":"ONCOR","75217":"ONCOR","75218":"ONCOR","75219":"ONCOR","75220":"ONCOR","75223":"ONCOR","75224":"ONCOR","75225":"ONCOR","75226":"ONCOR","75227":"ONCOR","75228":"ONCOR","75229":"ONCOR","75230":"ONCOR","75231":"ONCOR","75232":"ONCOR","75233":"ONCOR","75234":"ONCOR","75235":"ONCOR","75236":"ONCOR","75237":"ONCOR","75238":"ONCOR","75240":"ONCOR","75241":"ONCOR","75243":"ONCOR","75244":"ONCOR","75246":"ONCOR","75247":"ONCOR","75248":"ONCOR","75249":"ONCOR","75251":"ONCOR","75252":"ONCOR","75253":"ONCOR","75254":"ONCOR","76001":"ONCOR","76002":"ONCOR","76006":"ONCOR","76010":"ONCOR","76011":"ONCOR","76012":"ONCOR","76013":"ONCOR","76014":"ONCOR","76015":"ONCOR","76016":"ONCOR","76017":"ONCOR","76018":"ONCOR","76034":"ONCOR","76039":"ONCOR","76040":"ONCOR","76051":"ONCOR","76052":"ONCOR","76053":"ONCOR","76054":"ONCOR","76060":"ONCOR","76063":"ONCOR","76092":"ONCOR","76101":"ONCOR","76102":"ONCOR","76103":"ONCOR","76104":"ONCOR","76105":"ONCOR","76106":"ONCOR","76107":"ONCOR","76108":"ONCOR","76109":"ONCOR","76110":"ONCOR","76111":"ONCOR","76112":"ONCOR","76116":"ONCOR","76117":"ONCOR","76118":"ONCOR","76119":"ONCOR","76120":"ONCOR","76123":"ONCOR","76126":"ONCOR","76127":"ONCOR","76131":"ONCOR","76132":"ONCOR","76133":"ONCOR","76134":"ONCOR","76135":"ONCOR","76137":"ONCOR","76140":"ONCOR","76148":"ONCOR","76155":"ONCOR","76164":"ONCOR","76177":"ONCOR","76179":"ONCOR","76180":"ONCOR","76182":"ONCOR","76244":"ONCOR","76248":"ONCOR","76262":"ONCOR","76701":"ONCOR","76702":"ONCOR","76704":"ONCOR","76705":"ONCOR","76706":"ONCOR","76707":"ONCOR","76708":"ONCOR","76710":"ONCOR","76711":"ONCOR","76712":"ONCOR","76798":"ONCOR","77001":"CENTPT","77002":"CENTPT","77003":"CENTPT","77004":"CENTPT","77005":"CENTPT","77006":"CENTPT","77007":"CENTPT","77008":"CENTPT","77009":"CENTPT","77010":"CENTPT","77011":"CENTPT","77012":"CENTPT","77013":"CENTPT","77014":"CENTPT","77015":"CENTPT","77016":"CENTPT","77017":"CENTPT","77018":"CENTPT","77019":"CENTPT","77020":"CENTPT","77021":"CENTPT","77022":"CENTPT","77023":"CENTPT","77024":"CENTPT","77025":"CENTPT","77026":"CENTPT","77027":"CENTPT","77028":"CENTPT","77029":"CENTPT","77030":"CENTPT","77031":"CENTPT","77032":"CENTPT","77033":"CENTPT","77034":"CENTPT","77035":"CENTPT","77036":"CENTPT","77037":"CENTPT","77038":"CENTPT","77039":"CENTPT","77040":"CENTPT","77041":"CENTPT","77042":"CENTPT","77043":"CENTPT","77044":"CENTPT","77045":"CENTPT","77046":"CENTPT","77047":"CENTPT","77048":"CENTPT","77049":"CENTPT","77050":"CENTPT","77051":"CENTPT","77053":"CENTPT","77054":"CENTPT","77055":"CENTPT","77056":"CENTPT","77057":"CENTPT","77058":"CENTPT","77059":"CENTPT","77060":"CENTPT","77061":"CENTPT","77062":"CENTPT","77063":"CENTPT","77064":"CENTPT","77065":"CENTPT","77066":"CENTPT","77067":"CENTPT","77068":"CENTPT","77069":"CENTPT","77070":"CENTPT","77071":"CENTPT","77072":"CENTPT","77073":"CENTPT","77074":"CENTPT","77075":"CENTPT","77076":"CENTPT","77077":"CENTPT","77078":"CENTPT","77079":"CENTPT","77080":"CENTPT","77081":"CENTPT","77082":"CENTPT","77083":"CENTPT","77084":"CENTPT","77085":"CENTPT","77086":"CENTPT","77087":"CENTPT","77088":"CENTPT","77089":"CENTPT","77090":"CENTPT","77091":"CENTPT","77092":"CENTPT","77093":"CENTPT","77094":"CENTPT","77095":"CENTPT","77096":"CENTPT","77098":"CENTPT","77099":"CENTPT","77301":"CENTPT","77302":"CENTPT","77303":"CENTPT","77304":"CENTPT","77316":"CENTPT","77339":"CENTPT","77345":"CENTPT","77346":"CENTPT","77354":"CENTPT","77355":"CENTPT","77356":"CENTPT","77362":"CENTPT","77365":"CENTPT","77373":"CENTPT","77375":"CENTPT","77377":"CENTPT","77378":"CENTPT","77379":"CENTPT","77380":"CENTPT","77381":"CENTPT","77382":"CENTPT","77384":"CENTPT","77385":"CENTPT","77386":"CENTPT","77388":"CENTPT","77389":"CENTPT","77401":"CENTPT","77406":"CENTPT","77407":"CENTPT","77429":"CENTPT","77433":"CENTPT","77449":"CENTPT","77450":"CENTPT","77459":"CENTPT","77469":"CENTPT","77471":"CENTPT","77477":"CENTPT","77478":"CENTPT","77479":"CENTPT","77489":"CENTPT","77494":"CENTPT","77498":"CENTPT","77504":"CENTPT","77505":"CENTPT","77506":"CENTPT","77507":"CENTPT","77520":"CENTPT","77521":"CENTPT","77530":"CENTPT","77532":"CENTPT","77536":"CENTPT","77539":"CENTPT","77546":"CENTPT","77550":"CENTPT","77551":"CENTPT","77563":"CENTPT","77565":"CENTPT","77571":"CENTPT","77573":"CENTPT","77581":"CENTPT","77583":"CENTPT","77584":"CENTPT","77586":"CENTPT","77587":"CENTPT","77590":"CENTPT","77591":"CENTPT","75459":"TNMP","75490":"TNMP","76028":"TNMP","76031":"TNMP","76033":"TNMP","76044":"TNMP","76048":"TNMP","76049":"TNMP","76058":"TNMP","76059":"TNMP","76065":"TNMP","76066":"TNMP","76070":"TNMP","76084":"TNMP","76093":"TNMP","76433":"TNMP","76446":"TNMP","76457":"TNMP","76462":"TNMP","78373":"AEP_TCC","78401":"AEP_TCC","78402":"AEP_TCC","78404":"AEP_TCC","78405":"AEP_TCC","78407":"AEP_TCC","78408":"AEP_TCC","78409":"AEP_TCC","78410":"AEP_TCC","78411":"AEP_TCC","78412":"AEP_TCC","78413":"AEP_TCC","78414":"AEP_TCC","78415":"AEP_TCC","78416":"AEP_TCC","78417":"AEP_TCC","78418":"AEP_TCC","78380":"AEP_TCC","78102":"AEP_TCC","77901":"AEP_TCC","77904":"AEP_TCC","77905":"AEP_TCC","79601":"AEP_TNC","79602":"AEP_TNC","79603":"AEP_TNC","79605":"AEP_TNC","79606":"AEP_TNC","79607":"AEP_TNC","76821":"AEP_TNC","76901":"AEP_TNC","76903":"AEP_TNC","76904":"AEP_TNC","76905":"AEP_TNC","79901":"AEP_TNC","79902":"AEP_TNC","79903":"AEP_TNC","79904":"AEP_TNC","79905":"AEP_TNC","79907":"AEP_TNC","79911":"AEP_TNC","79912":"AEP_TNC","79915":"AEP_TNC","79924":"AEP_TNC","79925":"AEP_TNC","79927":"AEP_TNC","79928":"AEP_TNC","79930":"AEP_TNC","79932":"AEP_TNC","79934":"AEP_TNC","79935":"AEP_TNC","79936":"AEP_TNC","79938":"AEP_TNC"},
 p:{ONCOR:[{p:"TXU Energy",n:"Simple Rate 12",r:11.9,t:12,re:6,s:4.2,cf:150},{p:"TXU Energy",n:"Free Nights",r:14.3,t:12,re:0,s:3.8,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:11.5,t:12,re:0,s:4.0,cf:150},{p:"Reliant Energy",n:"Truly Free Weekends 12",r:13.8,t:12,re:27,s:3.9,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:10.8,t:12,re:0,s:3.5,cf:150},{p:"Gexa Energy",n:"Gexa Green 12",r:11.4,t:12,re:100,s:3.6,cf:150},{p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.1,t:12,re:100,s:4.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:10.5,t:12,re:0,s:3.7,cf:175},{p:"Constellation",n:"Green Home Power 12",r:11.2,t:12,re:100,s:3.8,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:10.2,t:12,re:0,s:3.3,cf:150},{p:"4Change Energy",n:"Earth Day Every Day 12",r:10.9,t:12,re:100,s:3.4,cf:150},{p:"Frontier Utilities",n:"Super Value 12",r:10.6,t:12,re:0,s:3.2,cf:175},{p:"Chariot Energy",n:"Solar 12",r:11.7,t:12,re:100,s:4.1,cf:150},{p:"Pulse Power",n:"Texas Fixed 12",r:10.4,t:12,re:4,s:3.1,cf:150},{p:"Rhythm Energy",n:"Fixed 12",r:11.1,t:12,re:100,s:4.3,cf:0},{p:"Express Energy",n:"Flash 12",r:10.1,t:12,re:0,s:2.9,cf:200},{p:"Discount Power",n:"Saver 12 Plan",r:10.0,t:12,re:0,s:2.8,cf:175},{p:"Veteran Energy",n:"Salute 12",r:11.6,t:12,re:10,s:3.9,cf:150},{p:"TriEagle Energy",n:"Eagle 12",r:10.7,t:12,re:0,s:3.0,cf:199}],
 CENTPT:[{p:"TXU Energy",n:"Simple Rate 12",r:12.4,t:12,re:6,s:4.2,cf:150},{p:"TXU Energy",n:"Free Nights",r:14.8,t:12,re:0,s:3.8,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:12.0,t:12,re:0,s:4.0,cf:150},{p:"Reliant Energy",n:"Conservation 12",r:12.6,t:12,re:30,s:4.1,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:11.3,t:12,re:0,s:3.5,cf:150},{p:"Gexa Energy",n:"Gexa Green 12",r:11.9,t:12,re:100,s:3.6,cf:150},{p:"Green Mountain",n:"Pollution Free e-Plus 12",r:12.7,t:12,re:100,s:4.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:11.0,t:12,re:0,s:3.7,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:10.7,t:12,re:0,s:3.3,cf:150},{p:"Frontier Utilities",n:"Super Value 12",r:11.1,t:12,re:0,s:3.2,cf:175},{p:"Chariot Energy",n:"Solar 12",r:12.2,t:12,re:100,s:4.1,cf:150},{p:"Pulse Power",n:"Texas Fixed 12",r:10.9,t:12,re:4,s:3.1,cf:150},{p:"Rhythm Energy",n:"Fixed 12",r:11.6,t:12,re:100,s:4.3,cf:0},{p:"Express Energy",n:"Flash 12",r:10.6,t:12,re:0,s:2.9,cf:200},{p:"Discount Power",n:"Saver 12 Plan",r:10.5,t:12,re:0,s:2.8,cf:175},{p:"Cirro Energy",n:"Sure Savings 12",r:11.4,t:12,re:8,s:3.4,cf:150}],
@@ -443,6 +453,71 @@ TNMP:[{p:"TXU Energy",n:"Simple Rate 12",r:12.8,t:12,re:6,s:4.2,cf:150},{p:"Reli
 AEP_TCC:[{p:"TXU Energy",n:"Simple Rate 12",r:13.1,t:12,re:6,s:4.2,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:12.7,t:12,re:0,s:4.0,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.0,t:12,re:0,s:3.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:11.8,t:12,re:0,s:3.7,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:11.4,t:12,re:0,s:3.3,cf:150},{p:"Frontier Utilities",n:"Super Value 12",r:11.9,t:12,re:0,s:3.2,cf:175}],
 AEP_TNC:[{p:"TXU Energy",n:"Simple Rate 12",r:13.4,t:12,re:6,s:4.2,cf:150},{p:"Reliant Energy",n:"Secure Advantage 12",r:13.0,t:12,re:0,s:4.0,cf:150},{p:"Gexa Energy",n:"Gexa Saver Deluxe 12",r:12.3,t:12,re:0,s:3.5,cf:150},{p:"Constellation",n:"12 Month Home Power",r:12.1,t:12,re:0,s:3.7,cf:175},{p:"4Change Energy",n:"Maxx Saver 12",r:11.7,t:12,re:0,s:3.3,cf:150}]},
 po:{ONCOR:17.8,CENTPT:18.2,TNMP:18.5,AEP_TCC:19.1,AEP_TNC:19.4},sa:14.6};
+
+// Active database (starts as fallback, replaced by Supabase if available)
+let DB = JSON.parse(JSON.stringify(DB_FALLBACK));
+let dbSource = 'local';
+let dbUpdated = 'Feb 20, 2026';
+
+// Try to load live data from Supabase
+async function loadFromSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return false;
+  try {
+    // Fetch plans
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/plans?select=*&order=rate_kwh.asc`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if (!resp.ok) return false;
+    const plans = await resp.json();
+    if (!plans.length) return false;
+
+    // Convert Supabase rows to DB.p format grouped by TDU
+    const grouped = {};
+    plans.forEach(p => {
+      if (!grouped[p.tdu]) grouped[p.tdu] = [];
+      grouped[p.tdu].push({
+        p: p.provider, n: p.plan_name, r: parseFloat(p.rate_kwh),
+        t: p.term_months, re: p.renewable_pct, s: 3.5, cf: parseFloat(p.cancel_fee) || 0,
+        url: p.signup_url || ''
+      });
+    });
+
+    // Only replace if we got data
+    if (Object.keys(grouped).length > 0) {
+      DB.p = grouped;
+      dbSource = 'live';
+
+      // Fetch last scrape time
+      try {
+        const logResp = await fetch(`${SUPABASE_URL}/rest/v1/latest_scrape?select=*`, {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        });
+        if (logResp.ok) {
+          const logs = await logResp.json();
+          if (logs.length) {
+            const d = new Date(logs[0].scraped_at);
+            dbUpdated = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          }
+        }
+      } catch(e) {}
+
+      // Update counts and UI
+      const tP = Object.values(DB.p).reduce((s, p) => s + p.length, 0);
+      document.getElementById('tpCnt').textContent = tP;
+      document.getElementById('dbC').textContent = tP;
+      document.getElementById('dbDate').textContent = dbUpdated;
+      document.getElementById('dbSrc').textContent = '🟢 Live from PowerToChoose.org';
+      console.log(`⚡ WattWise: Loaded ${tP} live plans from Supabase (updated ${dbUpdated})`);
+      return true;
+    }
+  } catch (e) {
+    console.log('⚡ WattWise: Supabase unavailable, using local data', e);
+  }
+  return false;
+}
+
+// Initialize
+loadFromSupabase();
 
 let R=null,cSort="rate",sAll=false,tpAmt=null,uCR=null,sPlan=null;
 const tP=Object.values(DB.p).reduce((s,p)=>s+p.length,0),tZ=Object.keys(DB.z2t).length;
@@ -507,7 +582,6 @@ function openReg(plan){sPlan=plan;stats.planClicks++;const cr=gCR(),u=R.usage,oc
   document.getElementById('rpBdg').textContent=`${plan.p} · ${plan.n} · ${plan.r}¢/kWh`;
   document.getElementById('rCmp').innerHTML=`<div class="rcr old"><div class="rcl">${uCR?'Your Current Rate':'TDU Default Rate'}<small>${cr}¢/kWh</small></div><div class="rcv">$${oc.toFixed(2)}/mo</div></div><div class="rcr new"><div class="rcl">${plan.p}<small>${plan.r}¢/kWh · ${plan.n}</small></div><div class="rcv">$${nc.toFixed(2)}/mo</div></div><div class="rcr sav"><div class="rcl">Your Savings<small>${pct.toFixed(1)}% reduction</small></div><div class="rcv">${ms>=0?'−':'+'} $${Math.abs(ms).toFixed(2)}/mo</div></div>`;
   document.getElementById('rBkd').innerHTML=`<div class="rbk grn"><div class="l">MONTHLY</div><div class="n">$${Math.abs(ms).toFixed(0)}</div><div class="l">${ms>=0?'SAVED':'MORE'}</div></div><div class="rbk ylw"><div class="l">ANNUAL</div><div class="n">$${Math.abs(as).toFixed(0)}</div><div class="l">${as>=0?'SAVED':'MORE'}</div></div><div class="rbk blu"><div class="l">5-YEAR</div><div class="n">$${Math.abs(y5).toFixed(0)}</div><div class="l">${y5>=0?'SAVED':'MORE'}</div></div>`;
-  const mx=Math.max(oc,nc);document.getElementById('rBar').innerHTML=`<div class="rbi"><div class="rbl"><span>${uCR?'Your Current':'TDU Default'}</span><span class="v" style="color:var(--r)">$${oc.toFixed(2)}</span></div><div class="rbtrk"><div class="rbf" style="width:${oc/mx*100}%;background:var(--r)"></div></div></div><div class="rbi"><div class="rbl"><span>${plan.p}</span><span class="v" style="color:var(--g)">$${nc.toFixed(2)}</span></div><div class="rbtrk"><div class="rbf" style="width:${nc/mx*100}%;background:var(--g)"></div></div></div>`;
   rgStep(1);document.getElementById('rgOv').classList.add('open');document.body.style.overflow='hidden'}
 
 function rgStep(n){document.querySelectorAll('.rstep').forEach(s=>s.classList.remove('act'));document.getElementById('rs'+n).classList.add('act');document.getElementById('rgMdl').scrollTop=0}
