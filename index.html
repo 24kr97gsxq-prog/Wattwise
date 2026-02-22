@@ -368,8 +368,9 @@ button{font-family:inherit;border:none;cursor:pointer}
       <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
       <div class="rcns"><h4>How Switching Works</h4>
         <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click below</strong> to go to the provider's signup page</div></div>
-        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Have your ESID ready</strong> — it's on your current electric bill</div></div>
-        <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>No interruption</strong> — same wires, same meter, new rate in 1–2 billing cycles</div></div>
+        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Look for "<span id="rgPlanFind"></span>"</strong> — enter your ZIP code on their site and find this exact plan at <span id="rgRateFind"></span>&#162;/kWh</div></div>
+        <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>Have your ESID ready</strong> — it's on your current electric bill</div></div>
+        <div class="nsi"><div class="nsn">4</div><div class="nst"><strong>No interruption</strong> — same wires, same meter, new rate in 1–2 billing cycles</div></div>
       </div>
       <button class="btn-rn" id="rgGoBtn" onclick="goProvider()" style="font-size:16px">Sign Up at <span id="rgGoProv"></span> →</button>
       <div class="tipnudge">
@@ -587,9 +588,11 @@ function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.
   document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'¢/kWh</strong>';
   document.getElementById('rgCSv').textContent='$'+Math.max(0,as).toFixed(0)+'/yr';
   document.getElementById('rgGoProv').textContent=pl.p;
+  document.getElementById('rgPlanFind').textContent=pl.n;
+  document.getElementById('rgRateFind').textContent=pl.r;
   rgStep(2);fire()}
 
-function goProvider(){if(!sPlan)return;stats.provClicks++;const url=PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
+function goProvider(){if(!sPlan)return;stats.provClicks++;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 
 // === MODALS ===
 function openStory(){document.getElementById('stOv').classList.add('open');document.body.style.overflow='hidden'}
