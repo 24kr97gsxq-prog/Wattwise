@@ -581,7 +581,7 @@ function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.
   document.getElementById('rgZipShow').textContent=R.zip;
   rgStep(2);stats.planClicks++;fire()}
 
-function goProvider(){if(!sPlan||!R)return;stats.provClicks++;window.open('https://www.powertochoose.org/','_blank')}
+function goProvider(){if(!sPlan||!R)return;stats.provClicks++;window.open('http://www.powertochoose.org/en-us/Plan/Results?zip_code='+R.zip,'_blank')}
 function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 
 // === MODALS ===
