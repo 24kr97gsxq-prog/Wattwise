@@ -1,0 +1,49 @@
+# ============================================================
+# WattWise Rate Scraper - GitHub Actions Workflow
+# Runs weekly on Sunday at 6AM UTC (midnight CST)
+# Also supports manual trigger from GitHub UI
+# ============================================================
+# 
+# SETUP:
+# 1. Add this file to your repo at: .github/workflows/scrape-rates.yml
+# 2. Add these secrets in GitHub (Settings → Secrets → Actions):
+#    - SUPABASE_URL: Your Supabase project URL
+#    - SUPABASE_KEY: Your service_role key (Settings → API in Supabase)
+# 3. Add scrape_rates.py to the root of your repo
+# 4. That's it! It'll run every Sunday automatically.
+#
+# To run manually: Go to Actions tab → "Scrape Electricity Rates" → Run workflow
+# ============================================================
+
+name: Scrape Electricity Rates
+
+on:
+  # Weekly schedule: Sunday at 6:00 AM UTC (midnight CST)
+  schedule:
+    - cron: '0 6 * * 0'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python scrape_rates.py
+
+      - name: Report status
+        if: failure()
+        run: echo "::error::Rate scraping failed. Check the logs above."
