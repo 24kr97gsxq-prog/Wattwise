@@ -403,16 +403,120 @@ button{font-family:inherit;border:none;cursor:pointer}
 </div></div>
 
 <!-- ADMIN PANEL (access: add #admin to URL or triple-click logo) -->
-<div class="ov" id="adOv" onclick="xOv(event,'adOv')"><div class="mdl admdl" id="adMdl">
+<div class="ov" id="adOv" onclick="xOv(event,'adOv')"><div class="mdl admdl" id="adMdl" style="max-width:600px">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 24px 0">
     <div><div class="lb" style="color:var(--o);margin-bottom:6px">ADMIN PANEL</div><h3 style="font-family:var(--fd);font-size:22px;color:#fff;margin:0">WattWise Settings</h3></div>
     <button class="mdl-x" onclick="xAd()">×</button>
   </div>
   <div style="padding:20px 24px 28px">
+    <!-- Affiliate Programs -->
+    <div class="ad-sec">
+      <div class="ad-title">🤝 Affiliate Programs</div>
+      <div class="ad-desc">Track affiliate partnership applications and integration status. Commissions: $15-100 per enrollment.</div>
+      <table style="width:100%;font-size:11px;font-family:var(--fm);border-collapse:collapse">
+        <tr style="color:#666;text-align:left;border-bottom:1px solid rgba(255,255,255,.06)">
+          <th style="padding:6px 4px">Partner</th><th style="padding:6px 4px">Status</th><th style="padding:6px 4px">Commission</th><th style="padding:6px 4px">Notes</th>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px"><a href="https://friends.comparepower.com/affiliates/" target="_blank" style="color:var(--g)">Compare Power</a></td>
+          <td style="padding:8px 4px"><span style="background:rgba(250,204,21,.15);color:var(--y);padding:2px 8px;border-radius:4px;font-size:10px">Applied</span></td>
+          <td style="padding:8px 4px">Per enrollment</td>
+          <td style="padding:8px 4px;font-size:10px;color:#666">"Friends of Compare Power" program</td>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px"><a href="https://www.choosetexaspower.org/affiliates/" target="_blank" style="color:var(--g)">Choose Texas Power</a></td>
+          <td style="padding:8px 4px"><span style="background:rgba(255,255,255,.08);color:#888;padding:2px 8px;border-radius:4px;font-size:10px">To Apply</span></td>
+          <td style="padding:8px 4px">Per enrollment + tiers</td>
+          <td style="padding:8px 4px;font-size:10px;color:#666">Email: partnerships@saveonenergy.com</td>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px"><a href="https://www.electricchoice.com/electricity-affiliate-program/" target="_blank" style="color:var(--g)">Electric Choice</a></td>
+          <td style="padding:8px 4px"><span style="background:rgba(255,255,255,.08);color:#888;padding:2px 8px;border-radius:4px;font-size:10px">To Apply</span></td>
+          <td style="padding:8px 4px">Per enrollment</td>
+          <td style="padding:8px 4px;font-size:10px;color:#666">Custom banners, A/B testing support</td>
+        </tr>
+        <tr style="color:#aaa">
+          <td style="padding:8px 4px"><a href="https://www.directenergy.com/partner" target="_blank" style="color:var(--g)">Direct Energy</a></td>
+          <td style="padding:8px 4px"><span style="background:rgba(255,255,255,.08);color:#888;padding:2px 8px;border-radius:4px;font-size:10px">To Apply</span></td>
+          <td style="padding:8px 4px">Per enrollment</td>
+          <td style="padding:8px 4px;font-size:10px;color:#666">Channel Partner — single REP, zero investment</td>
+        </tr>
+      </table>
+      <div style="font-size:10px;color:#555;margin-top:8px;font-family:var(--fm)">No broker license needed for affiliate links — acting as marketing publisher only.</div>
+    </div>
+    <!-- Broker Data Sources -->
+    <div class="ad-sec">
+      <div class="ad-title">🔑 Broker Data Sources (Andy's License)</div>
+      <div class="ad-desc">With a PUCT broker license, Andy can access additional rate data beyond PowerToChoose.org public CSV.</div>
+      <table style="width:100%;font-size:11px;font-family:var(--fm);border-collapse:collapse">
+        <tr style="color:#666;text-align:left;border-bottom:1px solid rgba(255,255,255,.06)">
+          <th style="padding:6px 4px">Source</th><th style="padding:6px 4px">Access</th><th style="padding:6px 4px">Data Type</th>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px">PowerToChoose.org CSV</td>
+          <td style="padding:8px 4px"><span style="background:rgba(0,220,130,.15);color:var(--g);padding:2px 8px;border-radius:4px;font-size:10px">Active</span></td>
+          <td style="padding:8px 4px">1,200+ residential plans, all TDUs</td>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px"><a href="https://www.ercot.com/mktinfo" target="_blank" style="color:var(--b)">ERCOT Market Data</a></td>
+          <td style="padding:8px 4px"><span style="background:rgba(59,130,246,.15);color:var(--b);padding:2px 8px;border-radius:4px;font-size:10px">Available</span></td>
+          <td style="padding:8px 4px">Real-time wholesale LMPs, load forecasts</td>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px">REP Direct Pricing Portals</td>
+          <td style="padding:8px 4px"><span style="background:rgba(250,204,21,.15);color:var(--y);padding:2px 8px;border-radius:4px;font-size:10px">Broker Access</span></td>
+          <td style="padding:8px 4px">Custom residential quotes, unpublished rates</td>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px">REP Broker Commission Portals</td>
+          <td style="padding:8px 4px"><span style="background:rgba(250,204,21,.15);color:var(--y);padding:2px 8px;border-radius:4px;font-size:10px">Broker Access</span></td>
+          <td style="padding:8px 4px">Direct commissions per enrollment, tracking</td>
+        </tr>
+        <tr style="color:#aaa;border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:8px 4px"><a href="https://www.eia.gov/electricity/wholesalemarkets/ercot.php" target="_blank" style="color:var(--b)">EIA / ERCOT Reports</a></td>
+          <td style="padding:8px 4px"><span style="background:rgba(59,130,246,.15);color:var(--b);padding:2px 8px;border-radius:4px;font-size:10px">Available</span></td>
+          <td style="padding:8px 4px">Historical wholesale rates, demand trends</td>
+        </tr>
+        <tr style="color:#aaa">
+          <td style="padding:8px 4px">Commercial Rate Quotes</td>
+          <td style="padding:8px 4px"><span style="background:rgba(250,204,21,.15);color:var(--y);padding:2px 8px;border-radius:4px;font-size:10px">Broker Access</span></td>
+          <td style="padding:8px 4px">Business rates not on PowerToChoose (no public site exists)</td>
+        </tr>
+      </table>
+      <!-- Broker Connection Settings -->
+      <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:12px;margin-top:12px">
+        <div style="font-size:11px;color:#aaa;margin-bottom:10px;font-weight:600">🔌 Broker Portal Credentials</div>
+        <div style="font-size:10px;color:var(--y);margin-bottom:10px;padding:8px;background:rgba(250,204,21,.06);border:1px solid rgba(250,204,21,.1);border-radius:6px">💡 Andy contacts each REP's channel partner team with his PUCT broker license # to request portal access. Credentials go here once received.</div>
+        <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#555;font-family:var(--fm);margin:12px 0 6px;font-weight:700">PUCT Broker Registration</div>
+        <div class="ad-field"><label>PUCT License Number</label><input class="rinp" id="adBrkLicense" placeholder="BR######" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Broker Business Name</label><input class="rinp" id="adBrkName" placeholder="e.g. WattWise Energy LLC" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Broker Contact Email</label><input class="rinp" id="adBrkEmail" placeholder="andy@wattwiseenergy.com" oninput="saveBroker()"></div>
+        <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#555;font-family:var(--fm);margin:16px 0 6px;font-weight:700">REP Broker Portals</div>
+        <div class="ad-field"><label>TXU Energy — <a href="https://www.txu.com/business-electricity/channel-partners" target="_blank" style="color:var(--g)">Apply Here</a></label><input class="rinp" id="adRepTXU" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Reliant Energy — <a href="https://www.reliant.com" target="_blank" style="color:var(--g)">Contact Channel Team</a></label><input class="rinp" id="adRepReliant" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Direct Energy — <a href="https://www.directenergy.com/partner" target="_blank" style="color:var(--g)">Apply Here</a></label><input class="rinp" id="adRepDirect" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Gexa Energy — <a href="https://www.gexaenergy.com" target="_blank" style="color:var(--g)">Contact Channel Team</a></label><input class="rinp" id="adRepGexa" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Constellation — Contact Channel Team</label><input class="rinp" id="adRepConstellation" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Frontier Utilities — Contact Channel Team</label><input class="rinp" id="adRepFrontier" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Rhythm Energy — Contact Channel Team</label><input class="rinp" id="adRepRhythm" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Chariot Energy — Contact Channel Team</label><input class="rinp" id="adRepChariot" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Payless Power — Contact Channel Team</label><input class="rinp" id="adRepPayless" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Cirro Energy — Contact Channel Team</label><input class="rinp" id="adRepCirro" placeholder="Portal URL / username" oninput="saveBroker()"></div>
+        <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#555;font-family:var(--fm);margin:16px 0 6px;font-weight:700">Data Feeds &amp; APIs</div>
+        <div class="ad-field"><label>ERCOT Public API — <a href="https://www.ercot.com/services/mdt/data-portal" target="_blank" style="color:var(--b)">Data Portal</a></label><input class="rinp" id="adErcotKey" placeholder="API key (free registration)" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Smart Meter Texas — <a href="https://www.smartmetertexas.com" target="_blank" style="color:var(--b)">SMT Portal</a></label><input class="rinp" id="adSMT" placeholder="Username (broker can pull customer usage with consent)" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>PowerToChoose.org CSV — <span style="color:var(--g)">Active via GitHub Actions scraper</span></label><input class="rinp" value="http://www.powertochoose.org/en-us/Plan/ExportToCsv" disabled style="color:#555"></div>
+        <div class="ad-field"><label>EIA Open Data API — <a href="https://www.eia.gov/opendata/" target="_blank" style="color:var(--b)">Register for Key</a></label><input class="rinp" id="adEIA" placeholder="API key (free)" oninput="saveBroker()"></div>
+        <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#555;font-family:var(--fm);margin:16px 0 6px;font-weight:700">Supabase (Live Database)</div>
+        <div class="ad-field"><label>Supabase Project URL</label><input class="rinp" id="adSupaURL" placeholder="https://xxxxx.supabase.co" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Supabase Anon Key (public reads)</label><input class="rinp" id="adSupaAnon" placeholder="eyJ..." oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Supabase Service Key (scraper writes — keep secret)</label><input class="rinp" id="adSupaService" type="password" placeholder="eyJ... (stored in GitHub Secrets)" oninput="saveBroker()"></div>
+      </div>
+    </div>
     <!-- Stripe Config -->
     <div class="ad-sec">
-      <div class="ad-title">💳 Stripe Payment Links</div>
-      <div class="ad-desc">Create Payment Links at <a href="https://dashboard.stripe.com/payment-links" target="_blank" style="color:var(--g)">dashboard.stripe.com/payment-links</a> and paste the URLs below.</div>
+      <div class="ad-title">💳 Stripe Tip Links</div>
+      <div class="ad-desc">Create Payment Links at <a href="https://dashboard.stripe.com/payment-links" target="_blank" style="color:var(--g)">dashboard.stripe.com/payment-links</a></div>
       <div class="ad-field"><label>$3 Tip Link</label><input class="rinp" id="adS3" placeholder="https://buy.stripe.com/..." oninput="saveAdmin()"></div>
       <div class="ad-field"><label>$7 Tip Link</label><input class="rinp" id="adS7" placeholder="https://buy.stripe.com/..." oninput="saveAdmin()"></div>
       <div class="ad-field"><label>$15 Tip Link</label><input class="rinp" id="adS15" placeholder="https://buy.stripe.com/..." oninput="saveAdmin()"></div>
@@ -430,16 +534,40 @@ button{font-family:inherit;border:none;cursor:pointer}
       </div>
       <div style="font-size:10px;color:#555;margin-top:8px;font-family:var(--fm)">Session-only. For persistent analytics, add Google Analytics or Plausible.</div>
     </div>
-    <!-- Quick Actions -->
+    <!-- Commission Dashboard -->
     <div class="ad-sec">
-      <div class="ad-title">⚡ Quick Setup Guide</div>
-      <div class="ad-steps">
-        <div class="ad-step"><span class="ad-step-n">1</span><span>Create a free <a href="https://dashboard.stripe.com/register" target="_blank" style="color:var(--g)">Stripe account</a></span></div>
-        <div class="ad-step"><span class="ad-step-n">2</span><span>Go to Payment Links → Create new</span></div>
-        <div class="ad-step"><span class="ad-step-n">3</span><span>Make one link for $3, one for $7, one for $15</span></div>
-        <div class="ad-step"><span class="ad-step-n">4</span><span>Make one "customer chooses price" link for custom tips</span></div>
-        <div class="ad-step"><span class="ad-step-n">5</span><span>Paste the URLs above and you're live!</span></div>
+      <div class="ad-title">💰 Commission Dashboard</div>
+      <div class="ad-desc">Revenue split between Andy and Robert. Enter commissions manually as they come in from affiliate partners.</div>
+      <div id="adCommStats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div class="ad-stat"><span class="ad-stat-n" id="adTotalRev">$0</span><span class="ad-stat-l">Total Revenue</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adAndyRev" style="color:var(--g)">$0</span><span class="ad-stat-l">Andy's Share</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adRobertRev" style="color:var(--b)">$0</span><span class="ad-stat-l">Robert's Share</span></div>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <div class="ad-stat"><span class="ad-stat-n" id="adTotalClicks">0</span><span class="ad-stat-l">Total Clicks</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adPendingComm">$0</span><span class="ad-stat-l">Pending</span></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#555;font-family:var(--fm);margin-bottom:4px">Revenue Split (Andy %)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="rinp" id="adSplitPct" type="number" min="0" max="100" value="50" style="width:80px" oninput="saveSplit()">
+          <span style="font-size:11px;color:#888;font-family:var(--fm)">Andy: <span id="adSplitA">50</span>% / Robert: <span id="adSplitR">50</span>%</span>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:12px;margin-top:8px">
+        <div style="font-size:11px;color:#aaa;margin-bottom:8px;font-weight:600">Add Commission</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+          <div class="ad-field" style="margin:0"><label>Partner</label><select class="rinp" id="adCommPartner" style="padding:8px"><option>Compare Power</option><option>Choose Texas Power</option><option>Electric Choice</option><option>Direct Energy</option><option>REP Direct</option><option>Tips</option><option>Other</option></select></div>
+          <div class="ad-field" style="margin:0"><label>Amount ($)</label><input class="rinp" id="adCommAmt" type="number" step="0.01" placeholder="50.00"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+          <div class="ad-field" style="margin:0"><label>Customer ZIP</label><input class="rinp" id="adCommZip" placeholder="75087"></div>
+          <div class="ad-field" style="margin:0"><label>Status</label><select class="rinp" id="adCommStatus" style="padding:8px"><option>pending</option><option>confirmed</option><option>paid</option></select></div>
+        </div>
+        <div class="ad-field" style="margin-bottom:8px"><label>Notes</label><input class="rinp" id="adCommNotes" placeholder="e.g. Discount Power Saver 12 enrollment"></div>
+        <button class="btn-rn" onclick="addCommission()" style="font-size:13px;padding:10px">+ Add Commission Entry</button>
+      </div>
+      <div id="adCommLog" style="margin-top:12px;max-height:200px;overflow-y:auto"></div>
     </div>
     <button class="btn-rn" onclick="xAd()" style="margin-top:10px">Close Admin Panel</button>
   </div>
@@ -593,7 +721,17 @@ function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.
   document.getElementById('rgZipShow').textContent=R.zip;
   rgStep(2);stats.planClicks++;fire()}
 
-function goProvider(){if(!sPlan||!R)return;stats.provClicks++;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
+function goProvider(){if(!sPlan||!R)return;stats.provClicks++;
+  const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';
+  // Track click in Supabase
+  if(SB_URL&&SB_KEY){
+    const sid=sessionStorage.getItem('ww_sid')||Math.random().toString(36).substr(2,9);
+    sessionStorage.setItem('ww_sid',sid);
+    fetch(SB_URL+'/rest/v1/click_tracking',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({zip:R.zip,tdu:R.tdu,provider:sPlan.p,plan_name:sPlan.n,rate_kwh:sPlan.r,destination:url,affiliate_partner:'direct',session_id:sid,user_agent:navigator.userAgent.substr(0,200)})
+    }).catch(()=>{});
+  }
+  window.open(url,'_blank')}
 function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 
 // === MODALS ===
@@ -698,9 +836,89 @@ function openAd(){
     document.getElementById('adS3').value=d.s3||'';document.getElementById('adS7').value=d.s7||'';
     document.getElementById('adS15').value=d.s15||'';document.getElementById('adSC').value=d.sc||'';
   }}catch(e){}
-  updStripeStatus();updStats();
+  updStripeStatus();updStats();loadSplit();loadBroker();loadCommissions();
 }
 function xAd(){document.getElementById('adOv').classList.remove('open');document.body.style.overflow=''}
+
+// COMMISSION TRACKING
+const BROKER_FIELDS=['adBrkLicense','adBrkName','adBrkEmail','adRepTXU','adRepReliant','adRepDirect','adRepGexa','adRepConstellation','adRepFrontier','adRepRhythm','adRepChariot','adRepPayless','adRepCirro','adErcotKey','adSMT','adEIA','adSupaURL','adSupaAnon','adSupaService'];
+function saveBroker(){
+  const d={};BROKER_FIELDS.forEach(f=>{const el=document.getElementById(f);if(el)d[f]=el.value});
+  try{localStorage.setItem('ww_broker',JSON.stringify(d))}catch(e){}
+}
+function loadBroker(){
+  try{const s=localStorage.getItem('ww_broker');if(s){const d=JSON.parse(s);
+    BROKER_FIELDS.forEach(f=>{const el=document.getElementById(f);if(el&&d[f])el.value=d[f]});
+  }}catch(e){}
+}
+function saveSplit(){
+  const pct=parseInt(document.getElementById('adSplitPct').value)||50;
+  document.getElementById('adSplitA').textContent=pct;
+  document.getElementById('adSplitR').textContent=100-pct;
+  try{localStorage.setItem('ww_split',pct)}catch(e){}
+}
+function loadSplit(){
+  try{const s=localStorage.getItem('ww_split');if(s){const p=parseInt(s);
+    document.getElementById('adSplitPct').value=p;
+    document.getElementById('adSplitA').textContent=p;
+    document.getElementById('adSplitR').textContent=100-p;
+  }}catch(e){}
+}
+async function addCommission(){
+  if(!SB_URL||!SB_KEY){alert('Supabase not configured');return}
+  const amt=parseFloat(document.getElementById('adCommAmt').value);
+  if(!amt||amt<=0){alert('Enter a valid amount');return}
+  const pct=parseInt(document.getElementById('adSplitPct').value)||50;
+  const entry={
+    affiliate_partner:document.getElementById('adCommPartner').value,
+    gross_amount:amt,
+    andy_share:+(amt*pct/100).toFixed(2),
+    robert_share:+(amt*(100-pct)/100).toFixed(2),
+    split_pct:pct,
+    customer_zip:document.getElementById('adCommZip').value.trim()||null,
+    status:document.getElementById('adCommStatus').value,
+    notes:document.getElementById('adCommNotes').value.trim()||null,
+    enrollment_date:new Date().toISOString().split('T')[0]
+  };
+  try{
+    const res=await fetch(SB_URL+'/rest/v1/commissions',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=representation'},body:JSON.stringify(entry)});
+    if(res.ok){
+      document.getElementById('adCommAmt').value='';
+      document.getElementById('adCommZip').value='';
+      document.getElementById('adCommNotes').value='';
+      loadCommissions();
+    }else{const e=await res.text();alert('Error: '+e)}
+  }catch(e){alert('Network error: '+e.message)}
+}
+async function loadCommissions(){
+  if(!SB_URL||!SB_KEY)return;
+  try{
+    // Load commissions
+    const res=await fetch(SB_URL+'/rest/v1/commissions?order=created_at.desc&limit=50',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+    if(res.ok){
+      const data=await res.json();
+      let totalGross=0,totalAndy=0,totalRobert=0,pending=0;
+      data.forEach(c=>{totalGross+=c.gross_amount;totalAndy+=c.andy_share;totalRobert+=c.robert_share;if(c.status==='pending')pending+=c.gross_amount});
+      document.getElementById('adTotalRev').textContent='$'+totalGross.toFixed(0);
+      document.getElementById('adAndyRev').textContent='$'+totalAndy.toFixed(0);
+      document.getElementById('adRobertRev').textContent='$'+totalRobert.toFixed(0);
+      document.getElementById('adPendingComm').textContent='$'+pending.toFixed(0);
+      // Render log
+      const log=document.getElementById('adCommLog');
+      if(data.length===0){log.innerHTML='<div style="text-align:center;padding:12px;color:#555;font-size:11px">No commissions yet. They\'ll appear here as you add them.</div>';return}
+      log.innerHTML=data.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;font-family:var(--fm)">
+        <div><span style="color:#fff">$${c.gross_amount.toFixed(2)}</span> <span style="color:#666">from</span> <span style="color:var(--g)">${c.affiliate_partner}</span>
+        ${c.customer_zip?'<span style="color:#555"> · ZIP '+c.customer_zip+'</span>':''}
+        ${c.notes?'<br><span style="color:#555;font-size:10px">'+c.notes+'</span>':''}</div>
+        <div style="text-align:right"><span style="padding:2px 6px;border-radius:3px;font-size:9px;${c.status==='paid'?'background:rgba(0,220,130,.15);color:var(--g)':c.status==='confirmed'?'background:rgba(59,130,246,.15);color:var(--b)':'background:rgba(250,204,21,.1);color:var(--y)'}">${c.status}</span>
+        <br><span style="color:#444;font-size:9px">${c.enrollment_date||''}</span></div>
+      </div>`).join('');
+    }
+    // Load click count
+    const cRes=await fetch(SB_URL+'/rest/v1/click_tracking?select=id&limit=1',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'count=exact'}});
+    if(cRes.ok){const ct=cRes.headers.get('content-range');if(ct){const total=ct.split('/')[1];document.getElementById('adTotalClicks').textContent=total||'0'}}
+  }catch(e){console.log('Commission load error:',e)}
+}
 
 // Triple-click logo to open admin
 let logoClicks=0,logoTimer=null;
