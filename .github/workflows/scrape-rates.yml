@@ -40,8 +40,8 @@ jobs:
 
       - name: Run scraper
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_URL: ${{https://gmxckbdnaegnbynyrkts.supabase.co}}
+          SUPABASE_KEY: ${{sb_secret_fasgBxzCB7Nc2CrMedTffA_q_EMbXv6}}
         run: python scrape_rates.py
 
       - name: Report status
