@@ -199,20 +199,38 @@ button{font-family:inherit;border:none;cursor:pointer}
 .rbtrk{height:10px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden}
 .rbf{height:100%;border-radius:5px;animation:barGrow 1s ease-out both}
 .btn-rn{width:100%;padding:15px;background:linear-gradient(135deg,var(–g),var(–gd));color:#0a0a0a;border-radius:12px;font-size:15px;font-weight:700;font-family:var(–fm)}
+.tipnudge{margin:20px 0 10px;text-align:center;position:relative}
+.tipnudge-line{height:1px;background:rgba(255,255,255,.06);margin-bottom:16px}
+.tipnudge-inner{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.tipnudge-txt{font-size:12px;color:#666}
+.tipnudge-btn{background:none;border:1px solid rgba(250,204,21,.2);color:var(–y);border-radius:20px;padding:5px 14px;font-size:12px;font-family:var(–fm);transition:all .2s;white-space:nowrap}
+.tipnudge-btn:hover{background:rgba(250,204,21,.08);border-color:rgba(250,204,21,.4)}
 .btn-rn:hover{opacity:.9}
 .btn-rb{width:100%;padding:12px;background:none;color:#777;font-size:13px;margin-top:8px}
 
-/* Step 2 */
-.rfb{padding:28px}.rfb h3{font-family:var(–fd);font-size:22px;color:#fff;margin:0 0 4px}
-.rfb .sub{font-size:13px;color:#888;margin-bottom:20px}
-.rfd{margin-bottom:14px}
-.rfd label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#666;font-family:var(–fm);margin-bottom:5px}
-.rinp{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 15px;color:#fff;font-size:15px;font-family:var(–fb);outline:none;transition:border .2s}
-.rinp:focus{border-color:rgba(0,220,130,.4)}.rinp::placeholder{color:#444}
-.rrow{display:flex;gap:12px}.rrow .rfd{flex:1}
-.rchk{display:flex;align-items:flex-start;gap:10px;margin:18px 0;cursor:pointer}
-.rchk input{margin-top:3px;accent-color:var(–g);width:16px;height:16px}
-.rchk span{font-size:12px;color:#888;line-height:1.5}.rchk a{color:var(–g)}
+/* Step 2 - Switch page */
+.rfb{padding:28px}
+
+/* Admin Panel */
+.admdl{max-width:540px;width:100%}
+.ad-sec{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:14px}
+.ad-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px}
+.ad-desc{font-size:11px;color:#777;line-height:1.5;margin-bottom:12px}
+.ad-field{margin-bottom:10px}
+.ad-field label{display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#555;font-family:var(–fm);margin-bottom:4px}
+.ad-field .rinp{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;color:#fff;font-size:12px;font-family:var(–fm);outline:none}
+.ad-field .rinp:focus{border-color:rgba(0,220,130,.4)}
+.ad-field .rinp::placeholder{color:#444}
+.ad-status{font-size:11px;font-family:var(–fm);padding:8px 12px;border-radius:8px;margin-top:10px}
+.ad-status.live{background:rgba(0,220,130,.08);color:var(–g);border:1px solid rgba(0,220,130,.2)}
+.ad-status.demo{background:rgba(250,204,21,.06);color:var(–y);border:1px solid rgba(250,204,21,.15)}
+.ad-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ad-stat{text-align:center;padding:10px 6px;background:rgba(0,0,0,.2);border-radius:8px}
+.ad-stat-n{display:block;font-size:20px;font-weight:700;color:#fff;font-family:var(–fm)}
+.ad-stat-l{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px;font-family:var(–fm)}
+.ad-steps{display:flex;flex-direction:column;gap:8px}
+.ad-step{display:flex;align-items:center;gap:10px;font-size:12px;color:#aaa}
+.ad-step-n{width:22px;height:22px;border-radius:50%;background:rgba(0,220,130,.12);color:var(–g);font-size:11px;font-weight:700;font-family:var(–fm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
 /* Step 3 */
 .rcnf{padding:36px 28px;text-align:center}
@@ -228,8 +246,6 @@ button{font-family:inherit;border:none;cursor:pointer}
 .nsi{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
 .nsn{width:24px;height:24px;border-radius:50%;background:rgba(0,220,130,.12);color:var(–g);font-size:12px;font-weight:700;font-family:var(–fm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nst{font-size:13px;color:#aaa;line-height:1.5}.nst strong{color:#ddd}
-.btn-tipf{background:linear-gradient(135deg,var(–y),var(–o));color:#0a0a0a;margin-bottom:8px}
-
 /* Footer */
 .ftr{padding:36px 20px;border-top:1px solid rgba(255,255,255,.04);text-align:center;max-width:640px;margin:0 auto}
 .ftr p{font-size:12px;color:#444;line-height:1.8}
@@ -240,7 +256,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 .prow-top{flex-direction:column}.pprc{text-align:left;margin-top:8px}
 .tbar{flex-direction:column;text-align:left}.tbar>div:last-child{text-align:left}
 .crbar{flex-direction:column;align-items:flex-start}
-.rbkd{grid-template-columns:1fr}.rrow{flex-direction:column;gap:0}
+.rbkd{grid-template-columns:1fr}
 .rsh,.rsb,.rfb,.rcnf{padding-left:20px;padding-right:20px}
 .st-mdl{padding:24px 20px}.st-mdl h2{font-size:24px}
 }
@@ -341,43 +357,78 @@ button{font-family:inherit;border:none;cursor:pointer}
       <div class="rcmp" id="rCmp"></div>
       <div class="rbkd" id="rBkd"></div>
       <div class="rbar" id="rBar"></div>
-      <button class="btn-rn" onclick="rgStep(2)">Lock In This Rate →</button>
+      <button class="btn-rn" onclick="subReg()">I Want This Plan →</button>
       <button class="btn-rb" onclick="xRg()">← Back to Plans</button>
     </div>
   </div>
-  <!-- Step 2: Form -->
+  <!-- Step 2: Ready to Switch -->
   <div class="rstep" id="rs2">
     <div style="display:flex;justify-content:flex-end;padding:16px 20px 0"><button class="mdl-x" onclick="xRg()">×</button></div>
-    <div class="rfb">
-      <div class="lb" style="color:var(--g);margin-bottom:8px">STEP 2 OF 3</div>
-      <h3>Your Information</h3>
-      <div class="sub">We'll send your switch request to <span id="rgPN" style="color:var(--g)"></span></div>
-      <div class="rrow"><div class="rfd"><label>First Name</label><input class="rinp" id="rgFN" placeholder="Andy" oninput="chkRg()"></div><div class="rfd"><label>Last Name</label><input class="rinp" id="rgLN" placeholder="Smith"></div></div>
-      <div class="rfd"><label>Email Address</label><input class="rinp" id="rgEM" type="email" placeholder="andy@email.com" oninput="chkRg()"></div>
-      <div class="rfd"><label>Phone Number</label><input class="rinp" id="rgPH" type="tel" placeholder="(214) 555-1234"></div>
-      <div class="rrow"><div class="rfd"><label>Service Address</label><input class="rinp" id="rgAD" placeholder="123 Main St"></div><div class="rfd" style="max-width:110px"><label>ZIP</label><input class="rinp" id="rgZP" readonly></div></div>
-      <div class="rfd"><label>Current Provider (Optional)</label><input class="rinp" id="rgCP" placeholder="e.g. TXU, Reliant..."></div>
-      <div class="rchk" onclick="togChk()"><input type="checkbox" id="rgAg" onchange="chkRg()"><span>I authorize WattWise to submit a switch request on my behalf. This is a <a href="#">free service</a> — cancel anytime.</span></div>
-      <button class="btn-rn" id="rgSub" onclick="subReg()" style="opacity:.4;cursor:default" disabled>Submit Switch Request</button>
+    <div class="rcnf">
+      <div class="rchk-i"><svg viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h3>Ready to Switch!</h3>
+      <div class="pd">You chose <strong id="rgCPl"></strong></div>
+      <div class="pd" id="rgCPv"></div>
+      <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
+      <div class="rcns"><h4>How Switching Works</h4>
+        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click below</strong> to go to the provider's signup page</div></div>
+        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Have your ESID ready</strong> — it's on your current electric bill</div></div>
+        <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>No interruption</strong> — same wires, same meter, new rate in 1–2 billing cycles</div></div>
+      </div>
+      <button class="btn-rn" id="rgGoBtn" onclick="goProvider()" style="font-size:16px">Sign Up at <span id="rgGoProv"></span> →</button>
+      <div class="tipnudge">
+        <div class="tipnudge-line"></div>
+        <div class="tipnudge-inner">
+          <span class="tipnudge-txt">Andy found you this rate for free.</span>
+          <button class="tipnudge-btn" onclick="xRg();openTip()">☕ Buy him a coffee?</button>
+        </div>
+      </div>
       <button class="btn-rb" onclick="rgStep(1)">← Back to Savings</button>
     </div>
   </div>
-  <!-- Step 3: Confirm -->
-  <div class="rstep" id="rs3">
-    <div class="rcnf">
-      <div class="rchk-i"><svg viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h3>You're All Set!</h3>
-      <div class="pd">Switching to <strong id="rgCPl"></strong></div>
-      <div class="pd" id="rgCPv"></div>
-      <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
-      <div class="rcns"><h4>What Happens Next</h4>
-        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Confirmation email</strong> from the provider within 24 hours</div></div>
-        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Seamless switch</strong> — no power interruption, same wires & meters</div></div>
-        <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>New rate starts</strong> on your next meter read (1–2 billing periods)</div></div>
-      </div>
-      <button class="btn-rn btn-tipf" onclick="xRg();openTip()">☕ Andy saved me money — I want to tip!</button>
-      <button class="btn-rb" onclick="xRg()" style="color:#aaa">Close & share with friends</button>
+</div></div>
+
+<!-- ADMIN PANEL (access: add #admin to URL or triple-click logo) -->
+
+<div class="ov" id="adOv" onclick="xOv(event,'adOv')"><div class="mdl admdl" id="adMdl">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 24px 0">
+    <div><div class="lb" style="color:var(--o);margin-bottom:6px">ADMIN PANEL</div><h3 style="font-family:var(--fd);font-size:22px;color:#fff;margin:0">WattWise Settings</h3></div>
+    <button class="mdl-x" onclick="xAd()">×</button>
+  </div>
+  <div style="padding:20px 24px 28px">
+    <!-- Stripe Config -->
+    <div class="ad-sec">
+      <div class="ad-title">💳 Stripe Payment Links</div>
+      <div class="ad-desc">Create Payment Links at <a href="https://dashboard.stripe.com/payment-links" target="_blank" style="color:var(--g)">dashboard.stripe.com/payment-links</a> and paste the URLs below.</div>
+      <div class="ad-field"><label>$3 Tip Link</label><input class="rinp" id="adS3" placeholder="https://buy.stripe.com/..." oninput="saveAdmin()"></div>
+      <div class="ad-field"><label>$7 Tip Link</label><input class="rinp" id="adS7" placeholder="https://buy.stripe.com/..." oninput="saveAdmin()"></div>
+      <div class="ad-field"><label>$15 Tip Link</label><input class="rinp" id="adS15" placeholder="https://buy.stripe.com/..." oninput="saveAdmin()"></div>
+      <div class="ad-field"><label>Custom Amount Link</label><input class="rinp" id="adSC" placeholder="https://buy.stripe.com/..." oninput="saveAdmin()"></div>
+      <div class="ad-status" id="adStripeStatus">⚠️ Demo mode — tips simulate only</div>
     </div>
+    <!-- Stats -->
+    <div class="ad-sec">
+      <div class="ad-title">📊 Session Stats</div>
+      <div class="ad-stats">
+        <div class="ad-stat"><span class="ad-stat-n" id="adSearches">0</span><span class="ad-stat-l">Searches</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adPlanClicks">0</span><span class="ad-stat-l">Plan Views</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adProvClicks">0</span><span class="ad-stat-l">Provider Clicks</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adTipClicks">0</span><span class="ad-stat-l">Tip Clicks</span></div>
+      </div>
+      <div style="font-size:10px;color:#555;margin-top:8px;font-family:var(--fm)">Session-only. For persistent analytics, add Google Analytics or Plausible.</div>
+    </div>
+    <!-- Quick Actions -->
+    <div class="ad-sec">
+      <div class="ad-title">⚡ Quick Setup Guide</div>
+      <div class="ad-steps">
+        <div class="ad-step"><span class="ad-step-n">1</span><span>Create a free <a href="https://dashboard.stripe.com/register" target="_blank" style="color:var(--g)">Stripe account</a></span></div>
+        <div class="ad-step"><span class="ad-step-n">2</span><span>Go to Payment Links → Create new</span></div>
+        <div class="ad-step"><span class="ad-step-n">3</span><span>Make one link for $3, one for $7, one for $15</span></div>
+        <div class="ad-step"><span class="ad-step-n">4</span><span>Make one "customer chooses price" link for custom tips</span></div>
+        <div class="ad-step"><span class="ad-step-n">5</span><span>Paste the URLs above and you're live!</span></div>
+      </div>
+    </div>
+    <button class="btn-rn" onclick="xAd()" style="margin-top:10px">Close Admin Panel</button>
   </div>
 </div></div>
 
@@ -412,7 +463,7 @@ function updDisp(){const cr=gCR(),u=R.usage,ms=((cr-R.best.r)/100)*u,as=ms*12;R.
 function doSearch(){const z=document.getElementById('zInp').value.trim(),u=parseInt(document.getElementById('uInp').value)||1000,e=document.getElementById('errM'),b=document.getElementById('sBtn');
   e.style.display='none';document.getElementById('resSec').classList.add('hid');sAll=false;uCR=null;
   if(!z||z.length!==5||!/^\d{5}$/.test(z)){e.textContent="Please enter a valid 5-digit Texas ZIP code";e.style.display='block';return}
-  b.disabled=true;b.textContent="⚡ Scanning...";
+  b.disabled=true;b.textContent="⚡ Scanning...";stats.searches++;
   setTimeout(()=>{const td=DB.z2t[z];if(!td){e.textContent="ZIP not in our Texas deregulated database. Try DFW (75xxx) or Houston (77xxx).";e.style.display='block';b.disabled=false;b.textContent="Find My Best Rate";return}
     const pl=DB.p[td],po=DB.po[td],ti=DB.tdu[td],sr=[...pl].sort((a,b)=>a.r-b.r),bs=sr[0];
     R={tdu:td,territory:ti,polr:po,best:bs,sorted:sr,usage:u,zip:z,mcB:(bs.r/100)*u,mcP:(po/100)*u,mcA:(DB.sa/100)*u,ms:((po-bs.r)/100)*u,as:((po-bs.r)/100)*u*12};
@@ -452,21 +503,25 @@ function sSort(s,b){cSort=s;document.querySelectorAll('.sbtn').forEach(x=>x.clas
 function togAll(){sAll=true;rPlans()}
 
 // === REGISTRATION ===
-function openReg(plan){sPlan=plan;const cr=gCR(),u=R.usage,oc=(cr/100)*u,nc=(plan.r/100)*u,ms=oc-nc,as=ms*12,pct=cr>0?((cr-plan.r)/cr*100):0,y5=as*5;
+function openReg(plan){sPlan=plan;stats.planClicks++;const cr=gCR(),u=R.usage,oc=(cr/100)*u,nc=(plan.r/100)*u,ms=oc-nc,as=ms*12,pct=cr>0?((cr-plan.r)/cr*100):0,y5=as*5;
   document.getElementById('rpBdg').textContent=`${plan.p} · ${plan.n} · ${plan.r}¢/kWh`;
   document.getElementById('rCmp').innerHTML=`<div class="rcr old"><div class="rcl">${uCR?'Your Current Rate':'TDU Default Rate'}<small>${cr}¢/kWh</small></div><div class="rcv">$${oc.toFixed(2)}/mo</div></div><div class="rcr new"><div class="rcl">${plan.p}<small>${plan.r}¢/kWh · ${plan.n}</small></div><div class="rcv">$${nc.toFixed(2)}/mo</div></div><div class="rcr sav"><div class="rcl">Your Savings<small>${pct.toFixed(1)}% reduction</small></div><div class="rcv">${ms>=0?'−':'+'} $${Math.abs(ms).toFixed(2)}/mo</div></div>`;
   document.getElementById('rBkd').innerHTML=`<div class="rbk grn"><div class="l">MONTHLY</div><div class="n">$${Math.abs(ms).toFixed(0)}</div><div class="l">${ms>=0?'SAVED':'MORE'}</div></div><div class="rbk ylw"><div class="l">ANNUAL</div><div class="n">$${Math.abs(as).toFixed(0)}</div><div class="l">${as>=0?'SAVED':'MORE'}</div></div><div class="rbk blu"><div class="l">5-YEAR</div><div class="n">$${Math.abs(y5).toFixed(0)}</div><div class="l">${y5>=0?'SAVED':'MORE'}</div></div>`;
   const mx=Math.max(oc,nc);document.getElementById('rBar').innerHTML=`<div class="rbi"><div class="rbl"><span>${uCR?'Your Current':'TDU Default'}</span><span class="v" style="color:var(--r)">$${oc.toFixed(2)}</span></div><div class="rbtrk"><div class="rbf" style="width:${oc/mx*100}%;background:var(--r)"></div></div></div><div class="rbi"><div class="rbl"><span>${plan.p}</span><span class="v" style="color:var(--g)">$${nc.toFixed(2)}</span></div><div class="rbtrk"><div class="rbf" style="width:${nc/mx*100}%;background:var(--g)"></div></div></div>`;
-  document.getElementById('rgPN').textContent=plan.p;document.getElementById('rgZP').value=R.zip;document.getElementById('rgAg').checked=false;chkRg();
   rgStep(1);document.getElementById('rgOv').classList.add('open');document.body.style.overflow='hidden'}
 
 function rgStep(n){document.querySelectorAll('.rstep').forEach(s=>s.classList.remove('act'));document.getElementById('rs'+n).classList.add('act');document.getElementById('rgMdl').scrollTop=0}
 function xRg(){document.getElementById('rgOv').classList.remove('open');document.body.style.overflow=''}
-function togChk(){const c=document.getElementById('rgAg');c.checked=!c.checked;chkRg()}
-function chkRg(){const b=document.getElementById('rgSub'),ok=document.getElementById('rgAg').checked&&document.getElementById('rgFN').value.trim()&&document.getElementById('rgEM').value.trim();b.style.opacity=ok?'1':'.4';b.style.cursor=ok?'pointer':'default';b.disabled=!ok}
-function subReg(){if(document.getElementById('rgSub').disabled)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
+// Provider signup URLs
+const PURLS={"TXU Energy":"https://www.txu.com/enrollment","Reliant Energy":"https://www.reliant.com/en/public/residential/electricity-plans.jsp","Gexa Energy":"https://www.gexaenergy.com/electricity-plans","Green Mountain":"https://www.greenmountainenergy.com/plans","Constellation":"https://www.constellation.com/solutions/for-your-home/electricity-plans.html","4Change Energy":"https://www.4changeenergy.com/plans","Frontier Utilities":"https://www.frontierutilities.com/plans","Chariot Energy":"https://chariotenergy.com/plans","Pulse Power":"https://pulsepower.com/plans","Rhythm Energy":"https://www.gotrhythm.com/electricity-plans","Express Energy":"https://www.myexpressenergy.com","Discount Power":"https://www.discountpowertx.com","Veteran Energy":"https://www.veteranenergy.us/plans","TriEagle Energy":"https://www.trieagleenergy.com/plans","Cirro Energy":"https://www.cirroenergy.com/plans"};
+
+function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
   document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'¢/kWh</strong>';
-  document.getElementById('rgCSv').textContent='$'+Math.max(0,as).toFixed(0)+'/yr';rgStep(3);fire()}
+  document.getElementById('rgCSv').textContent='$'+Math.max(0,as).toFixed(0)+'/yr';
+  document.getElementById('rgGoProv').textContent=pl.p;
+  rgStep(2);fire()}
+
+function goProvider(){if(!sPlan)return;stats.provClicks++;const url=PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
 
 // === MODALS ===
 function openStory(){document.getElementById('stOv').classList.add('open');document.body.style.overflow='hidden'}
@@ -480,11 +535,112 @@ function xOv(e,id){if(e.target.id===id){document.getElementById(id).classList.re
 function sTp(a,el){tpAmt=a;document.querySelectorAll('.tpopt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');document.getElementById('cTpI').value='';uTpB()}
 function sCTp(){const v=parseFloat(document.getElementById('cTpI').value);document.querySelectorAll('.tpopt').forEach(o=>o.classList.remove('sel'));tpAmt=v>0?v:null;uTpB()}
 function uTpB(){const b=document.getElementById('tpSB');if(tpAmt>0){b.classList.add('act');b.textContent=`Send $${tpAmt.toFixed(2)} Tip ☕`}else{b.classList.remove('act');b.textContent='Select an Amount'}}
-function doTp(){if(!tpAmt||tpAmt<=0)return;document.getElementById('tpSel').style.display='none';document.getElementById('tpTy').style.display='';document.getElementById('tpTA').textContent='$'+tpAmt.toFixed(2);document.getElementById('tpTS').textContent=R?'$'+R.as.toFixed(0)+'/yr':'big money'}
+
+// ============================================================
+// STRIPE PAYMENT LINKS
+// Replace these placeholder URLs with your real Stripe Payment Links
+// Create them at: https://dashboard.stripe.com/payment-links
+// ============================================================
+const STRIPE_LINKS = {
+  // Preset amounts — create fixed-price Payment Links in Stripe Dashboard
+  3: 'STRIPE_LINK_3',   // Replace with: https://buy.stripe.com/your_$3_link
+  7: 'STRIPE_LINK_7',   // Replace with: https://buy.stripe.com/your_$7_link
+  15: 'STRIPE_LINK_15', // Replace with: https://buy.stripe.com/your_$15_link
+  // Custom amounts — create a customer-chooses-what-to-pay Payment Link
+  custom: 'STRIPE_LINK_CUSTOM' // Replace with: https://buy.stripe.com/your_custom_link
+};
+
+function doTp(){
+  if(!tpAmt||tpAmt<=0)return;stats.tipClicks++;
+
+  // Check if Stripe links are configured
+  const isConfigured = !STRIPE_LINKS[3].startsWith('STRIPE_LINK');
+
+  if(isConfigured){
+    // Use real Stripe Payment Links
+    const link = STRIPE_LINKS[tpAmt] || STRIPE_LINKS.custom;
+    // For custom links, Stripe handles the amount on their page
+    window.open(link, '_blank');
+    // Show thank you
+    document.getElementById('tpSel').style.display='none';
+    document.getElementById('tpTy').style.display='';
+    document.getElementById('tpTA').textContent='$'+tpAmt.toFixed(2);
+    document.getElementById('tpTS').textContent=R?'$'+R.as.toFixed(0)+'/yr':'big money';
+  } else {
+    // Demo mode — show setup instructions in console, show thank you to user
+    console.log('⚡ WattWise Tip: $'+tpAmt.toFixed(2));
+    console.log('To accept real payments, replace STRIPE_LINKS in the code with your Stripe Payment Link URLs.');
+    console.log('Create them at: https://dashboard.stripe.com/payment-links');
+    document.getElementById('tpSel').style.display='none';
+    document.getElementById('tpTy').style.display='';
+    document.getElementById('tpTA').textContent='$'+tpAmt.toFixed(2);
+    document.getElementById('tpTS').textContent=R?'$'+R.as.toFixed(0)+'/yr':'big money';
+  }
+}
 function cpSh(){const el=document.getElementById('shTxt'),t=el.textContent.replace('Copy','').trim();navigator.clipboard.writeText(t).then(()=>{el.querySelector('.btn-cp').textContent='Copied!';setTimeout(()=>el.querySelector('.btn-cp').textContent='Copy',2000)})}
 
 function fire(){const c=document.getElementById('confC');c.innerHTML='';const cl=['#00DC82','#FACC15','#38BDF8','#F472B6','#A78BFA','#FB923C'];
   for(let i=0;i<50;i++){const p=document.createElement('div');p.className='confetti-p';p.style.cssText=`left:${Math.random()*100}%;width:${4+Math.random()*6}px;height:${(4+Math.random()*6)*1.4}px;background:${cl[i%6]};border-radius:${Math.random()>.5?'50%':'2px'};animation:confetti ${2+Math.random()*1.5}s ease-in ${Math.random()*.8}s forwards;transform:rotate(${Math.random()*720}deg);opacity:0`;c.appendChild(p)}setTimeout(()=>c.innerHTML='',4000)}
+
+// ============================================================
+// ADMIN PANEL & ANALYTICS
+// ============================================================
+let stats={searches:0,planClicks:0,provClicks:0,tipClicks:0};
+
+// Load Stripe links from localStorage
+function loadAdmin(){
+  try{
+    const s=localStorage.getItem('ww_stripe');
+    if(s){const d=JSON.parse(s);
+      if(d.s3)STRIPE_LINKS[3]=d.s3;if(d.s7)STRIPE_LINKS[7]=d.s7;
+      if(d.s15)STRIPE_LINKS[15]=d.s15;if(d.sc)STRIPE_LINKS.custom=d.sc;
+    }
+  }catch(e){}
+  updStripeStatus();
+}
+function saveAdmin(){
+  const d={s3:document.getElementById('adS3').value.trim(),s7:document.getElementById('adS7').value.trim(),
+    s15:document.getElementById('adS15').value.trim(),sc:document.getElementById('adSC').value.trim()};
+  try{localStorage.setItem('ww_stripe',JSON.stringify(d))}catch(e){}
+  if(d.s3)STRIPE_LINKS[3]=d.s3;if(d.s7)STRIPE_LINKS[7]=d.s7;
+  if(d.s15)STRIPE_LINKS[15]=d.s15;if(d.sc)STRIPE_LINKS.custom=d.sc;
+  updStripeStatus();
+}
+function updStripeStatus(){
+  const el=document.getElementById('adStripeStatus');
+  const live=!STRIPE_LINKS[3].startsWith('STRIPE_LINK');
+  el.textContent=live?'✅ Live — tips will process through Stripe':'⚠️ Demo mode — tips simulate only';
+  el.className='ad-status '+(live?'live':'demo');
+}
+function updStats(){
+  document.getElementById('adSearches').textContent=stats.searches;
+  document.getElementById('adPlanClicks').textContent=stats.planClicks;
+  document.getElementById('adProvClicks').textContent=stats.provClicks;
+  document.getElementById('adTipClicks').textContent=stats.tipClicks;
+}
+function openAd(){
+  document.getElementById('adOv').classList.add('open');document.body.style.overflow='hidden';
+  // Populate fields from localStorage
+  try{const s=localStorage.getItem('ww_stripe');if(s){const d=JSON.parse(s);
+    document.getElementById('adS3').value=d.s3||'';document.getElementById('adS7').value=d.s7||'';
+    document.getElementById('adS15').value=d.s15||'';document.getElementById('adSC').value=d.sc||'';
+  }}catch(e){}
+  updStripeStatus();updStats();
+}
+function xAd(){document.getElementById('adOv').classList.remove('open');document.body.style.overflow=''}
+
+// Triple-click logo to open admin
+let logoClicks=0,logoTimer=null;
+document.querySelector('.logo').addEventListener('click',()=>{
+  logoClicks++;if(logoClicks>=3){logoClicks=0;clearTimeout(logoTimer);openAd()}
+  else{clearTimeout(logoTimer);logoTimer=setTimeout(()=>logoClicks=0,600)}
+});
+// URL hash access
+if(location.hash==='#admin')setTimeout(openAd,500);
+window.addEventListener('hashchange',()=>{if(location.hash==='#admin')openAd()});
+
+// Init
+loadAdmin();
 </script>
 
 </body>
