@@ -24,24 +24,6 @@ TDU_MAP = {
     "AEP TEXAS": "AEP_TCC",
 }
 
-SIGNUP_URLS = {
-    "TXU Energy": "https://www.txu.com/enrollment",
-    "Reliant Energy": "https://www.reliant.com/en/public/residential/electricity-plans.jsp",
-    "Gexa Energy": "https://www.gexaenergy.com/electricity-plans",
-    "Green Mountain Energy": "https://www.greenmountainenergy.com/plans",
-    "Constellation": "https://www.constellation.com/solutions/for-your-home/electricity-plans.html",
-    "4Change Energy": "https://www.4changeenergy.com/plans",
-    "Frontier Utilities": "https://www.frontierutilities.com/plans",
-    "Chariot Energy": "https://chariotenergy.com/plans",
-    "Pulse Power": "https://pulsepower.com/plans",
-    "Rhythm Energy": "https://www.gotrhythm.com/electricity-plans",
-    "Express Energy": "https://www.myexpressenergy.com",
-    "Discount Power": "https://www.discountpowertx.com",
-    "Veteran Energy": "https://www.veteranenergy.us/plans",
-    "TriEagle Energy": "https://www.trieagleenergy.com/plans",
-    "Cirro Energy": "https://www.cirroenergy.com/plans",
-}
-
 
 def fetch_csv():
     print(f"Fetching plans from {POWERTOCHOOSE_CSV_URL}...")
@@ -78,7 +60,6 @@ def safe_int(val):
 
 
 def get(row, key):
-    """Get value from row, trying both [bracketed] and plain key."""
     val = row.get(f"[{key}]", "") or row.get(key, "")
     return str(val).strip() if val else ""
 
@@ -98,10 +79,10 @@ def parse_plans(csv_text):
     plans = []
     skipped = 0
     errors = {}
+    enroll_count = 0
 
     for row in reader:
         try:
-            # TDU
             tdu_raw = get(row, "TduCompanyName")
             tdu = match_tdu(tdu_raw) if tdu_raw else None
             if not tdu:
@@ -109,38 +90,32 @@ def parse_plans(csv_text):
                 skipped += 1
                 continue
 
-            # Provider
             provider = get(row, "RepCompany")
             if not provider:
                 errors["no_provider"] = errors.get("no_provider", 0) + 1
                 skipped += 1
                 continue
 
-            # Plan name
             plan_name = get(row, "Product")
             if not plan_name:
                 errors["no_plan_name"] = errors.get("no_plan_name", 0) + 1
                 skipped += 1
                 continue
 
-            # Rate at 1000 kWh
             rate_1000 = safe_float(get(row, "kwh1000"))
             if not rate_1000 or rate_1000 <= 0 or rate_1000 > 100:
                 errors["no_rate"] = errors.get("no_rate", 0) + 1
                 skipped += 1
                 continue
 
-            # Other rates
             rate_500 = safe_float(get(row, "kwh500"))
             rate_2000 = safe_float(get(row, "kwh2000"))
 
-            # Term
             term_str = get(row, "TermValue")
             term = safe_int(re.sub(r'[^\d]', '', term_str)) if term_str else 12
             if not term or term <= 0:
                 term = 12
 
-            # Renewable
             renew_str = get(row, "Renewable")
             renewable = safe_int(re.sub(r'[^\d]', '', renew_str)) if renew_str else 0
             if not renewable:
@@ -148,13 +123,11 @@ def parse_plans(csv_text):
             if renewable > 100:
                 renewable = 100
 
-            # Cancel fee
             cancel_str = get(row, "CancelFee")
             cancel_fee = safe_float(re.sub(r'[^\d.]', '', cancel_str)) if cancel_str else 0
             if not cancel_fee:
                 cancel_fee = 0
 
-            # Plan type
             plan_type = "fixed"
             fixed_val = get(row, "Fixed").lower()
             rate_type = get(row, "RateType").lower()
@@ -163,28 +136,20 @@ def parse_plans(csv_text):
             elif "indexed" in rate_type:
                 plan_type = "indexed"
 
-            # Prepaid
             prepaid_raw = get(row, "PrePaid").lower()
             prepaid = prepaid_raw in ("true", "yes", "1")
 
-            # Time of use
             tou_raw = get(row, "TimeOfUse").lower()
             tou = tou_raw in ("true", "yes", "1")
 
-            # Fact sheet
             fact_sheet = get(row, "FactsURL")
 
-            # Enroll URL from CSV
-            enroll_url = get(row, "EnrollURL") or get(row, "Website")
-
-            # Signup URL - prefer our mapped URLs, fall back to CSV
-            signup_url = ""
-            for pname, url in SIGNUP_URLS.items():
-                if pname.lower() in provider.lower():
-                    signup_url = url
-                    break
-            if not signup_url:
-                signup_url = enroll_url
+            # DIRECT enrollment URL from PowerToChoose - this is plan-specific
+            enroll_url = get(row, "EnrollURL")
+            if not enroll_url:
+                enroll_url = get(row, "Website")
+            if enroll_url:
+                enroll_count += 1
 
             plans.append({
                 "tdu": tdu,
@@ -200,7 +165,7 @@ def parse_plans(csv_text):
                 "prepaid": prepaid,
                 "tou": tou,
                 "fact_sheet_url": fact_sheet,
-                "signup_url": signup_url,
+                "signup_url": enroll_url,
                 "source": "powertochoose",
                 "scraped_at": datetime.now(timezone.utc).isoformat(),
             })
@@ -210,10 +175,12 @@ def parse_plans(csv_text):
             skipped += 1
 
     print(f"  Parsed {len(plans)} plans, skipped {skipped} rows")
+    print(f"  Plans with direct enrollment URL: {enroll_count}")
     if errors:
         print(f"  Skip reasons: {errors}")
     if plans:
-        print(f"  Sample plan: {plans[0]}")
+        p = plans[0]
+        print(f"  Sample: {p['provider']} - {p['plan_name']} @ {p['rate_kwh']}c/kWh | URL: {p['signup_url'][:80] if p['signup_url'] else 'NONE'}")
 
     return plans
 
@@ -221,7 +188,6 @@ def parse_plans(csv_text):
 def upload_plans(plans, url, key):
     print(f"Uploading {len(plans)} plans to Supabase...")
 
-    # Delete existing plans
     delete_url = f"{url}/rest/v1/plans?source=eq.powertochoose"
     headers = {
         "apikey": key,
@@ -235,7 +201,14 @@ def upload_plans(plans, url, key):
     except HTTPError as e:
         print(f"  Warning clearing plans: {e.code}")
 
-    # Insert in batches of 50
+    # Also delete plans with null source (from earlier runs)
+    delete_url2 = f"{url}/rest/v1/plans?source=is.null"
+    req2 = Request(delete_url2, headers=headers, method="DELETE")
+    try:
+        urlopen(req2, timeout=30)
+    except HTTPError:
+        pass
+
     batch_size = 50
     inserted = 0
     for i in range(0, len(plans), batch_size):
@@ -250,7 +223,7 @@ def upload_plans(plans, url, key):
         body = json.dumps(batch).encode("utf-8")
         req = Request(post_url, data=body, headers=post_headers, method="POST")
         try:
-            resp = urlopen(req, timeout=30)
+            urlopen(req, timeout=30)
             inserted += len(batch)
             print(f"  Inserted batch {i // batch_size + 1}: {len(batch)} plans")
         except HTTPError as e:
@@ -293,13 +266,11 @@ def main():
     print("=== WattWise Rate Scraper ===")
     print(f"Time: {datetime.now(timezone.utc).isoformat()}")
 
-    # Fetch CSV
     csv_text = fetch_csv()
     if not csv_text:
         log_scrape(sb_url, sb_key, 0, 0, "error", "Failed to fetch CSV")
         sys.exit(1)
 
-    # Parse
     plans = parse_plans(csv_text)
     if not plans:
         log_scrape(sb_url, sb_key, 0, 0, "error", "No plans parsed")
@@ -313,10 +284,7 @@ def main():
         print("  WARNING: No fixed-rate plans found, uploading all plans instead")
         filtered = plans
 
-    # Upload
     inserted = upload_plans(filtered, sb_url, sb_key)
-
-    # Log
     log_scrape(sb_url, sb_key, len(plans), inserted, "success")
     print(f"\nDone! {inserted} plans updated in Supabase.")
 
