@@ -273,6 +273,52 @@ button{font-family:inherit;border:none;cursor:pointer}
   .btn-rn{padding:14px;font-size:15px}
   .tipnudge{margin:14px 0 8px}
 }
+/* AI FEATURES */
+.ai-card{background:linear-gradient(135deg,rgba(0,220,130,.06),rgba(56,189,248,.06));border:1px solid rgba(0,220,130,.15);border-radius:16px;padding:20px;margin-bottom:22px;position:relative;overflow:hidden}
+.ai-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(0,220,130,.08) 0%,transparent 70%);pointer-events:none}
+.ai-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-family:var(--fm);color:var(--g);background:rgba(0,220,130,.1);padding:3px 10px;border-radius:20px;margin-bottom:10px;font-weight:600}
+.ai-badge .pulse{width:6px;height:6px;background:var(--g);border-radius:50%;animation:aipulse 2s infinite}
+@keyframes aipulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,220,130,.4)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(0,220,130,0)}}
+.ai-insight{font-size:14px;color:#ddd;line-height:1.6;font-family:var(--fb)}
+.ai-insight strong{color:var(--g)}
+.ai-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.ai-tag{font-size:10px;font-family:var(--fm);padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.04);color:#aaa;border:1px solid rgba(255,255,255,.06)}
+.ai-loading{display:flex;align-items:center;gap:8px;font-size:12px;color:#888;font-family:var(--fm)}
+.ai-loading .dots span{animation:dotbounce 1.4s infinite;display:inline-block;font-size:18px;color:var(--g)}
+.ai-loading .dots span:nth-child(2){animation-delay:.2s}.ai-loading .dots span:nth-child(3){animation-delay:.4s}
+@keyframes dotbounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+.ai-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#00DC82,#00b368);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,220,130,.4);z-index:9999;transition:transform .2s,box-shadow .2s}
+.ai-fab:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(0,220,130,.5)}
+.ai-chat{position:fixed;bottom:90px;right:16px;width:360px;max-width:calc(100vw - 32px);max-height:70vh;background:linear-gradient(165deg,#1a1a2e,#0f0f1a);border:1px solid rgba(0,220,130,.2);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:9999;display:none;flex-direction:column;overflow:hidden}
+.ai-chat.open{display:flex}
+.ai-chat-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(0,220,130,.06);border-bottom:1px solid rgba(0,220,130,.1);flex-shrink:0}
+.ai-chat-hdr h4{font-size:14px;color:#fff;font-family:var(--fd);margin:0;display:flex;align-items:center;gap:8px}
+.ai-chat-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px;min-height:200px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;font-family:var(--fb)}
+.ai-msg.bot{background:rgba(0,220,130,.08);border:1px solid rgba(0,220,130,.1);color:#ddd;align-self:flex-start;border-bottom-left-radius:4px}
+.ai-msg.usr{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.15);color:#ddd;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.typing{color:#888;font-style:italic}
+.ai-chat-inp{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;background:rgba(0,0,0,.2)}
+.ai-chat-inp input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;color:#fff;font-size:13px;font-family:var(--fm);outline:none}
+.ai-chat-inp input:focus{border-color:rgba(0,220,130,.3)}
+.ai-chat-inp button{background:var(--g);color:#0a0a0a;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13px;font-family:var(--fm)}
+.ai-chat-quick{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.ai-chat-quick button{font-size:11px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#aaa;font-family:var(--fm)}
+.ai-chat-quick button:hover{border-color:rgba(0,220,130,.3);color:var(--g)}
+.ai-bill{margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ai-bill label{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.15);color:var(--b);font-size:11px;font-family:var(--fm);cursor:pointer;font-weight:600}
+.ai-bill label:hover{background:rgba(56,189,248,.15)}
+.ai-bill input{display:none}
+.ai-forecast{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.ai-fc{flex:1;min-width:80px;text-align:center;padding:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px}
+.ai-fc .mo{font-size:10px;color:#888;font-family:var(--fm);text-transform:uppercase;letter-spacing:1px}
+.ai-fc .pr{font-size:16px;font-weight:700;font-family:var(--fm);margin:4px 0}
+.ai-fc .dir{font-size:10px;font-family:var(--fm);font-weight:600}
+@media(max-width:480px){
+  .ai-fab{bottom:16px;right:16px;width:50px;height:50px;font-size:20px}
+  .ai-chat{bottom:76px;right:8px;max-height:65vh}
+  .ai-forecast{gap:6px}.ai-fc{padding:8px}
+}
 </style>
 </head>
 <body>
@@ -313,12 +359,50 @@ button{font-family:inherit;border:none;cursor:pointer}
     <button class="btn-all" id="saBtn" onclick="togAll()" style="display:none">Show all plans ↓</button>
   </div>
 
+  <!-- AI INSIGHTS CARD -->
+  <div class="ai-card fu" id="aiCard" style="display:none;animation-delay:.39s">
+    <div class="ai-badge"><span class="pulse"></span> AI ENERGY ADVISOR</div>
+    <div id="aiInsight" class="ai-insight"></div>
+    <div class="ai-tags" id="aiTags"></div>
+    <!-- Bill Upload -->
+    <div class="ai-bill">
+      <label for="billUpload">📄 Upload Your Bill for Exact Savings</label>
+      <input type="file" id="billUpload" accept="image/*,.pdf" onchange="analyzeBill(this)">
+      <span id="billStatus" style="font-size:11px;color:#888;font-family:var(--fm)"></span>
+    </div>
+    <!-- Price Forecast -->
+    <div style="margin-top:14px"><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,220,130,.6);font-family:var(--fm);font-weight:600;margin-bottom:8px">⚡ 3-MONTH RATE FORECAST</div>
+    <div class="ai-forecast" id="aiForecast"></div></div>
+  </div>
+
   <div class="tcta fu" style="animation-delay:.42s"><div class="emo">☕</div><h3>Andy just saved you <span class="hl" id="ctaS">$0</span>/year</h3><p>This tool is always free. If you found it helpful, consider buying Andy a coffee.</p><button class="btn-cta" onclick="openTip()">Buy Andy a Coffee ☕</button></div>
 
   <div class="share fu" style="animation-delay:.48s"><div class="lb" style="margin-bottom:10px">Share with Friends & Neighbors</div><p>Know someone in Texas who might be overpaying?</p><div class="shtxt" id="shTxt"><button class="btn-cp" onclick="cpSh()">Copy</button></div></div>
 </section>
 
-<footer class="ftr"><p>Rates sourced from PowerToChoose.org & public PUCT filings. Updated Feb 20, 2026.</p><p>Not affiliated with any REP. No affiliate links. No commissions.</p><p style="margin-top:8px">Built with 💚 by Andy for his friends, family, and every Texan who deserves a fair rate.</p><button class="sl" onclick="openStory()">Read Andy's Story →</button></footer>
+<!-- AI CHAT BUBBLE -->
+<button class="ai-fab" id="aiFab" onclick="toggleAiChat()" title="Ask WattWise AI">⚡</button>
+<div class="ai-chat" id="aiChat">
+  <div class="ai-chat-hdr">
+    <h4><span style="font-size:18px">⚡</span> WattWise AI</h4>
+    <button class="mdl-x" onclick="toggleAiChat()" style="width:28px;height:28px;font-size:14px">×</button>
+  </div>
+  <div class="ai-chat-msgs" id="aiMsgs">
+    <div class="ai-msg bot">Hey! I'm your WattWise AI advisor. Ask me anything about Texas electricity — rates, plans, when to lock in, how to read your bill, or tips to lower usage. 💡</div>
+  </div>
+  <div class="ai-chat-quick" id="aiQuick">
+    <button onclick="aiAsk('Should I lock in a fixed rate now or wait?')">Lock in or wait?</button>
+    <button onclick="aiAsk('How do I read my electricity bill?')">Read my bill</button>
+    <button onclick="aiAsk('Tips to lower my electric bill this summer')">Lower my bill</button>
+    <button onclick="aiAsk('What is a POLR rate?')">What is POLR?</button>
+  </div>
+  <div class="ai-chat-inp">
+    <input type="text" id="aiInput" placeholder="Ask about rates, plans, savings..." onkeydown="if(event.key==='Enter')aiSend()">
+    <button onclick="aiSend()">Send</button>
+  </div>
+</div>
+
+<footer class="ftr"><p>Rates sourced from PowerToChoose.org & public PUCT filings. Updated Feb 2026.</p><p>AI-powered insights · Not affiliated with any REP.</p><p style="margin-top:8px">Built with 💚 by Andy for his friends, family, and every Texan who deserves a fair rate.</p><button class="sl" onclick="openStory()">Read Andy's Story →</button></footer>
 
 <!-- STORY MODAL -->
 <div class="ov" id="stOv" onclick="xOv(event,'stOv')"><div class="mdl st-mdl">
@@ -682,7 +766,7 @@ function render(){document.getElementById('resSec').classList.remove('hid');
   document.getElementById('bProv').textContent='per kWh · '+R.best.p;document.getElementById('mSav').textContent='$'+R.ms.toFixed(0);
   document.getElementById('aSav').textContent='$'+R.as.toFixed(0);document.getElementById('uLbl').textContent=R.usage;
   document.getElementById('ctaS').textContent='$'+R.as.toFixed(0);document.getElementById('crInp').value='';
-  rBars();rPlans();
+  rBars();rPlans();generateAiInsights();
   document.getElementById('shTxt').innerHTML=`<button class="btn-cp" onclick="cpSh()">Copy</button>Hey! I used WattWise to compare TX electricity rates and found I could save $${R.as.toFixed(0)}/year. It's free — check it out!`}
 
 function rBars(){const cr=gCR(),u=R.usage,cc=(cr/100)*u,ca=(DB.sa/100)*u,cb=R.mcB,mx=Math.max(cc,ca,cb);
@@ -1008,7 +1092,250 @@ async function loadCommissions(){
   }catch(e){console.log('Commission load error:',e)}
 }
 
-// Triple-click logo to open admin
+// ============================================================
+// AI FEATURES — Chat, Insights, Bill Analyzer, Price Forecast
+// ============================================================
+let aiChatOpen=false;
+const aiHistory=[];
+
+function toggleAiChat(){
+  aiChatOpen=!aiChatOpen;
+  document.getElementById('aiChat').classList.toggle('open',aiChatOpen);
+  document.getElementById('aiFab').textContent=aiChatOpen?'✕':'⚡';
+  if(aiChatOpen)document.getElementById('aiInput').focus();
+}
+
+function aiSend(){
+  const inp=document.getElementById('aiInput');
+  const q=inp.value.trim();if(!q)return;
+  inp.value='';
+  aiAsk(q);
+}
+
+async function aiAsk(question){
+  const msgs=document.getElementById('aiMsgs');
+  // Add user message
+  msgs.innerHTML+=`<div class="ai-msg usr">${escHtml(question)}</div>`;
+  // Add typing indicator
+  msgs.innerHTML+=`<div class="ai-msg bot typing" id="aiTyping">Thinking<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  // Hide quick buttons after first message
+  document.getElementById('aiQuick').style.display='none';
+
+  // Build context about the user's search
+  let context='You are WattWise AI, a friendly Texas electricity advisor. Be concise (2-4 sentences max). Use specific numbers when you have them.';
+  if(R){
+    context+=` The user searched ZIP ${R.zip} in ${R.territory.n} territory. Best available rate: ${R.best.r}¢/kWh from ${R.best.p} (${R.best.n}). TDU default rate: ${R.polr}¢/kWh. Their usage: ${R.usage}kWh/mo. Estimated annual savings: $${R.as.toFixed(0)}. There are ${R.sorted.length} plans available.`;
+    if(uCR)context+=` They currently pay ${uCR}¢/kWh.`;
+    const top3=R.sorted.slice(0,3).map(p=>`${p.p} ${p.n} at ${p.r}¢ (${p.t}mo, ${p.re}% renewable)`).join('; ');
+    context+=` Top 3 plans: ${top3}.`;
+  }
+  context+=' Texas electricity market is deregulated in ERCOT areas. Always recommend they compare plans and consider contract length, cancellation fees, and renewable content. Never give financial advice — just factual information.';
+
+  aiHistory.push({role:'user',content:question});
+
+  try{
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:context,
+        messages:aiHistory.slice(-6)
+      })
+    });
+    const data=await response.json();
+    const reply=data.content?.map(c=>c.text||'').join('')||'Sorry, I had trouble thinking about that. Try asking again!';
+    aiHistory.push({role:'assistant',content:reply});
+    const typing=document.getElementById('aiTyping');
+    if(typing)typing.remove();
+    msgs.innerHTML+=`<div class="ai-msg bot">${escHtml(reply)}</div>`;
+  }catch(e){
+    const typing=document.getElementById('aiTyping');
+    if(typing)typing.remove();
+    msgs.innerHTML+=`<div class="ai-msg bot">${getOfflineResponse(question)}</div>`;
+  }
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function getOfflineResponse(q){
+  const ql=q.toLowerCase();
+  if(ql.includes('lock in')||ql.includes('wait')){
+    return R?`With rates at <strong>${R.best.r}¢/kWh</strong> in your area, this is a competitive rate. Texas summer demand typically pushes rates up 15-25% from June-August. Locking in a 12-month fixed rate now could protect you from summer spikes.`
+    :'Texas rates tend to rise in summer (June-Aug) due to high AC demand. If you find a rate you like, locking in a 12-month fixed plan before summer is usually smart.';
+  }
+  if(ql.includes('bill')||ql.includes('read')){
+    return 'Your Texas electric bill has three main parts: <strong>energy charge</strong> (what you pay the REP per kWh), <strong>TDU delivery charge</strong> (the wires company fee), and <strong>taxes/fees</strong>. The "price per kWh" on PowerToChoose already includes TDU charges, so you can compare apples-to-apples.';
+  }
+  if(ql.includes('lower')||ql.includes('save')||ql.includes('reduce')){
+    return 'Top ways to cut your bill: <strong>1)</strong> Switch to a better rate (you\'re doing that!). <strong>2)</strong> Set your thermostat to 78°F in summer. <strong>3)</strong> Run dishwasher/laundry at night. <strong>4)</strong> Seal air leaks around doors and windows. <strong>5)</strong> Consider a smart thermostat — can save 10-15%.';
+  }
+  if(ql.includes('polr')||ql.includes('default')){
+    return 'POLR stands for <strong>Provider of Last Resort</strong>. It\'s the expensive default rate you get if you don\'t actively choose a plan. Think of it as the "I didn\'t shop" penalty rate. It\'s almost always the worst deal available — which is why comparing plans matters so much.';
+  }
+  if(ql.includes('renewable')||ql.includes('green')||ql.includes('solar')||ql.includes('wind')){
+    return 'Many Texas plans offer 100% renewable energy at competitive rates. The electricity on your wires is the same either way — but your REP purchases <strong>Renewable Energy Credits (RECs)</strong> to offset your usage with wind/solar generation. Look for plans marked "100% GREEN" in the comparison table.';
+  }
+  if(R){
+    return `Based on your search: the best rate in ZIP ${R.zip} is <strong>${R.best.r}¢/kWh</strong> from ${R.best.p}. That could save you <strong>$${R.as.toFixed(0)}/year</strong> compared to ${uCR?'your current rate':'the default rate'}. Want to know more about a specific plan or topic?`;
+  }
+  return 'I\'m your WattWise AI advisor! Try searching for your ZIP code first, then I can give you personalized insights about the best plans in your area. You can also ask me about reading your bill, when to lock in a rate, or how to reduce usage.';
+}
+
+// INLINE AI INSIGHTS — generated after each search
+function generateAiInsights(){
+  if(!R)return;
+  const card=document.getElementById('aiCard');
+  card.style.display='block';
+  const insight=document.getElementById('aiInsight');
+  const tags=document.getElementById('aiTags');
+
+  // Show loading state
+  insight.innerHTML='<div class="ai-loading">Analyzing your market<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+
+  // Try Claude API first
+  fetchAiInsight().then(text=>{
+    if(text)insight.innerHTML=text;
+    else insight.innerHTML=buildLocalInsight();
+  }).catch(()=>{
+    insight.innerHTML=buildLocalInsight();
+  });
+
+  // Tags
+  const tagList=[R.territory.n,R.sorted.length+' plans',R.best.p];
+  if(R.sorted.filter(p=>p.re===100).length>3)tagList.push('Green options available');
+  const avgRate=(R.sorted.reduce((s,p)=>s+p.r,0)/R.sorted.length).toFixed(1);
+  tagList.push('Avg: '+avgRate+'¢');
+  tags.innerHTML=tagList.map(t=>`<span class="ai-tag">${t}</span>`).join('');
+
+  // Price forecast
+  generateForecast();
+}
+
+async function fetchAiInsight(){
+  try{
+    const top5=R.sorted.slice(0,5).map(p=>`${p.p} "${p.n}" ${p.r}¢ ${p.t}mo ${p.re}%renew`).join(', ');
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:200,
+        system:'You are WattWise AI. Give a 2-3 sentence personalized insight about the user\'s electricity market. Mention the best plan by name, how much they\'d save, and one actionable tip. Use <strong> tags for key numbers. Be warm and direct.',
+        messages:[{role:'user',content:`ZIP: ${R.zip}, TDU: ${R.territory.n}, Usage: ${R.usage}kWh/mo, Current rate: ${uCR||R.polr}¢, Best rate: ${R.best.r}¢ from ${R.best.p}, Annual savings: $${R.as.toFixed(0)}, Total plans: ${R.sorted.length}. Top 5: ${top5}`}]
+      })
+    });
+    const data=await res.json();
+    return data.content?.map(c=>c.text||'').join('')||null;
+  }catch(e){return null}
+}
+
+function buildLocalInsight(){
+  const greenPlans=R.sorted.filter(p=>p.re===100);
+  const pct=((gCR()-R.best.r)/gCR()*100).toFixed(0);
+  let txt=`Great news! In <strong>${R.territory.n}</strong> territory, the best rate right now is <strong>${R.best.r}¢/kWh</strong> from ${R.best.p} — that's <strong>${pct}% less</strong> than ${uCR?'what you\'re paying':'the default rate'}, saving you <strong>$${R.as.toFixed(0)}/year</strong>.`;
+  if(greenPlans.length>3)txt+=` There are also <strong>${greenPlans.length} 100% renewable plans</strong> available if you want to go green without breaking the bank.`;
+  const mo=new Date().getMonth();
+  if(mo>=4&&mo<=8)txt+=' <strong>Pro tip:</strong> Texas summer rates tend to climb — locking in now before peak demand could save you even more.';
+  else if(mo>=9&&mo<=11)txt+=' <strong>Pro tip:</strong> Fall is typically the cheapest time to lock in a rate in Texas as demand drops.';
+  return txt;
+}
+
+function generateForecast(){
+  const fc=document.getElementById('aiForecast');
+  const now=new Date();
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // Seasonal adjustment factors (Texas electricity market patterns)
+  const seasonal=[0.95,0.93,0.94,0.97,1.02,1.08,1.15,1.18,1.10,1.0,0.96,0.94];
+  const baseRate=R.best.r;
+  let html='';
+  for(let i=1;i<=3;i++){
+    const futureMonth=(now.getMonth()+i)%12;
+    const factor=seasonal[futureMonth];
+    const predicted=(baseRate*factor).toFixed(1);
+    const diff=((factor-1)*100).toFixed(0);
+    const dir=factor>1.02?'↑ +'+diff+'%':factor<0.98?'↓ '+diff+'%':'→ Stable';
+    const clr=factor>1.05?'var(--r)':factor<0.97?'var(--g)':'var(--y)';
+    html+=`<div class="ai-fc"><div class="mo">${months[futureMonth]}</div><div class="pr" style="color:${clr}">${predicted}¢</div><div class="dir" style="color:${clr}">${dir}</div></div>`;
+  }
+  fc.innerHTML=html;
+}
+
+// BILL ANALYZER — upload photo of bill, AI extracts data
+async function analyzeBill(input){
+  const file=input.files[0];if(!file)return;
+  const status=document.getElementById('billStatus');
+  status.textContent='📊 Analyzing your bill...';
+  status.style.color='var(--y)';
+
+  try{
+    // Convert to base64
+    const base64=await new Promise((res,rej)=>{
+      const r=new FileReader();
+      r.onload=()=>res(r.result.split(',')[1]);
+      r.onerror=()=>rej(new Error('Read failed'));
+      r.readAsDataURL(file);
+    });
+
+    const mediaType=file.type.startsWith('image/')?file.type:'image/jpeg';
+
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:300,
+        system:'You are a Texas electricity bill analyzer. Extract: provider name, rate per kWh, monthly usage (kWh), total bill amount, and billing period. Return ONLY valid JSON: {"provider":"","rate":0,"usage":0,"total":0,"period":""}. If you cannot read the bill clearly, return {"error":"reason"}.',
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+          {type:'text',text:'Extract electricity bill data from this image.'}
+        ]}]
+      })
+    });
+    const data=await response.json();
+    const text=data.content?.map(c=>c.text||'').join('')||'';
+    const clean=text.replace(/```json|```/g,'').trim();
+    const bill=JSON.parse(clean);
+
+    if(bill.error){
+      status.textContent='⚠️ '+bill.error;
+      status.style.color='var(--o)';
+      return;
+    }
+
+    // Auto-fill the current rate
+    if(bill.rate&&bill.rate>0){
+      document.getElementById('crInp').value=bill.rate;
+      uCR=bill.rate;
+      updDisp();
+    }
+    // Auto-fill usage
+    if(bill.usage&&bill.usage>0){
+      document.getElementById('uInp').value=bill.usage;
+    }
+
+    status.innerHTML=`✅ Found: <strong style="color:var(--g)">${bill.provider||'Provider'}</strong> · ${bill.rate}¢/kWh · ${bill.usage} kWh/mo · $${bill.total}/mo`;
+    status.style.color='var(--g)';
+
+    // Re-run search with extracted data
+    if(bill.usage&&bill.rate){
+      setTimeout(()=>{
+        doSearch();
+        // Add insight to chat
+        const msgs=document.getElementById('aiMsgs');
+        msgs.innerHTML+=`<div class="ai-msg bot">📄 I analyzed your bill! You're paying <strong>${bill.rate}¢/kWh</strong> with ${bill.provider||'your current provider'} and using about <strong>${bill.usage} kWh/mo</strong>. I've updated your search — check the new savings numbers above!</div>`;
+      },500);
+    }
+  }catch(e){
+    console.warn('Bill analysis error:',e);
+    status.textContent='⚠️ Could not analyze bill. Try a clearer photo.';
+    status.style.color='var(--o)';
+  }
+  input.value='';
+}
+
+
 let logoClicks=0,logoTimer=null;
 document.querySelector('.logo').addEventListener('click',()=>{
   logoClicks++;if(logoClicks>=4){logoClicks=0;clearTimeout(logoTimer);openAd()}
