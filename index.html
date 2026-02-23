@@ -974,6 +974,8 @@ document.querySelector('.logo').addEventListener('click',()=>{
 // URL hash access
 if(location.hash==='#admin')setTimeout(openAd,500);
 window.addEventListener('hashchange',()=>{if(location.hash==='#admin')openAd()});
+// Hidden URL access: ?settings=1
+if(new URLSearchParams(location.search).get('settings')==='1')setTimeout(openAd,500);
 
 // Init
 loadAdmin();
