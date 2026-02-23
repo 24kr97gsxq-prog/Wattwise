@@ -173,7 +173,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 .tpty strong{color:var(–g)}
 
 /* === REGISTRATION MODAL === */
-.rmdl{max-width:560px;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column}
+.rmdl{max-width:560px;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;height:100%}
 .rstep{display:none;animation:slideUp .4s ease-out}.rstep.act{display:flex;flex-direction:column;flex:1;min-height:0}
 
 /* Step 1 */
@@ -259,9 +259,9 @@ button{font-family:inherit;border:none;cursor:pointer}
 .rcnf{padding:24px 16px 20px}
 .rsh,.rsb,.rfb{padding-left:20px;padding-right:20px}
 .st-mdl{padding:24px 20px}.st-mdl h2{font-size:24px}
-.ov{padding:0;align-items:stretch}
-.mdl{max-height:100vh;height:100vh;border-radius:0;margin-top:0;overflow:hidden}
-.rmdl{max-width:100%}
+.ov{padding:0;align-items:stretch;justify-content:stretch}
+.mdl{max-height:100vh;max-height:100dvh;height:100%;border-radius:0;margin-top:0;overflow:hidden}
+.rmdl{max-width:100%;height:100%}
 .mdl-x{width:36px;height:36px;font-size:22px}
 .rcnf h3{font-size:22px}
 .rcnf .rchk-i{width:44px;height:44px}
