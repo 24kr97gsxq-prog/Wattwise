@@ -802,7 +802,7 @@ function openReg(plan){sPlan=plan;stats.planClicks++;const cr=gCR(),u=R.usage,oc
 function rgStep(n){document.querySelectorAll('.rstep').forEach(s=>s.classList.remove('act'));document.getElementById('rs'+n).classList.add('act');document.getElementById('rgMdl').scrollTop=0}
 function xRg(){document.getElementById('rgOv').classList.remove('open');document.body.style.overflow=''}
 // Provider signup URLs
-const PURLS={"TXU Energy":"https://www.txu.com/enrollment","Reliant Energy":"https://www.reliant.com/en/public/residential/electricity-plans.jsp","Gexa Energy":"https://www.gexaenergy.com/electricity-plans","Green Mountain":"https://www.greenmountainenergy.com/plans","Constellation":"https://www.constellation.com/solutions/for-your-home/electricity-plans.html","4Change Energy":"https://www.4changeenergy.com/plans","Frontier Utilities":"https://www.frontierutilities.com/plans","Chariot Energy":"https://chariotenergy.com/plans","Pulse Power":"https://pulsepower.com/plans","Rhythm Energy":"https://www.gotrhythm.com/electricity-plans","Express Energy":"https://www.myexpressenergy.com","Discount Power":"https://www.discountpowertx.com","Veteran Energy":"https://www.veteranenergy.us/plans","TriEagle Energy":"https://www.trieagleenergy.com/plans","Cirro Energy":"https://www.cirroenergy.com/plans"};
+const PURLS={"TXU Energy":"https://www.txu.com/enrollment","Reliant Energy":"https://www.reliant.com/en/public/residential/electricity-plans.jsp","Gexa Energy":"https://www.gexaenergy.com/electricity-plans","Green Mountain":"https://www.greenmountainenergy.com/plans","Green Mountain Energy":"https://www.greenmountainenergy.com/plans","Constellation":"https://www.constellation.com/solutions/for-your-home/electricity-plans.html","4Change Energy":"https://www.4changeenergy.com/plans","Frontier Utilities":"https://www.frontierutilities.com/plans","Chariot Energy":"https://chariotenergy.com/plans","Pulse Power":"https://pulsepower.com/plans","Rhythm Energy":"https://www.gotrhythm.com/electricity-plans","Express Energy":"https://www.myexpressenergy.com","Discount Power":"https://www.discountpowertx.com","Veteran Energy":"https://www.veteranenergy.us/plans","TriEagle Energy":"https://www.trieagleenergy.com/plans","Cirro Energy":"https://www.cirroenergy.com/plans","Direct Energy":"https://www.directenergy.com/texas/electricity-plans","Payless Power":"https://www.paylesspower.com/signup","Amigo Energy":"https://www.amigoenergy.com/texas-electricity-plans","Champion Energy":"https://www.championenergyservices.com/Plans","Champion Energy Services":"https://www.championenergyservices.com/Plans","AP Gas & Electric":"https://www.apge.com/residential","Tara Energy":"https://www.taraenergy.com/Plans","Flagship Power":"https://www.flagshippower.com/plans","Indexo Energy":"https://www.indexoenergy.com","Eligo Energy":"https://www.eligoenergy.com","New Power Texas":"https://www.newpowertexas.com/electricity-plans","Spark Energy":"https://www.sparkenergy.com/texas","Value Power":"https://www.valuepower.com","Engie":"https://www.engie.com/en/offers","Just Energy":"https://www.justenergy.com/texas/electricity-plans","Pennywise Power":"https://www.pennywisepower.com"};
 
 function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
   document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'&#162;/kWh</strong>';
@@ -815,16 +815,17 @@ function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.
 
 function goProvider(){if(!sPlan||!R)return;stats.provClicks++;
   const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';
-  // Track click in Supabase
-  if(SB_URL&&SB_KEY){
+  // Track click in Supabase (fire and forget, don't block navigation)
+  if(SUPABASE_URL&&SUPABASE_ANON_KEY){
     const sid=sessionStorage.getItem('ww_sid')||Math.random().toString(36).substr(2,9);
     sessionStorage.setItem('ww_sid',sid);
-    fetch(SB_URL+'/rest/v1/click_tracking',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
+    fetch(SUPABASE_URL+'/rest/v1/click_tracking',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify({zip:R.zip,tdu:R.tdu,provider:sPlan.p,plan_name:sPlan.n,rate_kwh:sPlan.r,destination:url,affiliate_partner:'direct',session_id:sid,user_agent:navigator.userAgent.substr(0,200)})
     }).catch(()=>{});
   }
-  window.open(url,'_blank')}
-function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.open(url,'_blank')}
+  // Use location.href — window.open gets blocked on iOS Safari
+  window.location.href=url}
+function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.location.href=url}
 
 // === MODALS ===
 function openStory(){document.getElementById('stOv').classList.add('open');document.body.style.overflow='hidden'}
@@ -863,7 +864,7 @@ function doTp(){
     // Use real Stripe Payment Links
     const link = STRIPE_LINKS[tpAmt] || STRIPE_LINKS.custom;
     // For custom links, Stripe handles the amount on their page
-    window.open(link, '_blank');
+    window.location.href = link;
     // Show thank you
     document.getElementById('tpSel').style.display='none';
     document.getElementById('tpTy').style.display='';
@@ -1037,7 +1038,7 @@ function loadSplit(){
   }}catch(e){}
 }
 async function addCommission(){
-  if(!SB_URL||!SB_KEY){alert('Supabase not configured');return}
+  if(!SUPABASE_URL||!SUPABASE_ANON_KEY){alert('Supabase not configured');return}
   const amt=parseFloat(document.getElementById('adCommAmt').value);
   if(!amt||amt<=0){alert('Enter a valid amount');return}
   const pct=parseInt(document.getElementById('adSplitPct').value)||50;
@@ -1053,7 +1054,7 @@ async function addCommission(){
     enrollment_date:new Date().toISOString().split('T')[0]
   };
   try{
-    const res=await fetch(SB_URL+'/rest/v1/commissions',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=representation'},body:JSON.stringify(entry)});
+    const res=await fetch(SUPABASE_URL+'/rest/v1/commissions',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=representation'},body:JSON.stringify(entry)});
     if(res.ok){
       document.getElementById('adCommAmt').value='';
       document.getElementById('adCommZip').value='';
@@ -1063,10 +1064,10 @@ async function addCommission(){
   }catch(e){alert('Network error: '+e.message)}
 }
 async function loadCommissions(){
-  if(!SB_URL||!SB_KEY)return;
+  if(!SUPABASE_URL||!SUPABASE_ANON_KEY)return;
   try{
     // Load commissions
-    const res=await fetch(SB_URL+'/rest/v1/commissions?order=created_at.desc&limit=50',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+    const res=await fetch(SUPABASE_URL+'/rest/v1/commissions?order=created_at.desc&limit=50',{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}});
     if(res.ok){
       const data=await res.json();
       let totalGross=0,totalAndy=0,totalRobert=0,pending=0;
@@ -1087,7 +1088,7 @@ async function loadCommissions(){
       </div>`).join('');
     }
     // Load click count
-    const cRes=await fetch(SB_URL+'/rest/v1/click_tracking?select=id&limit=1',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'count=exact'}});
+    const cRes=await fetch(SUPABASE_URL+'/rest/v1/click_tracking?select=id&limit=1',{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'count=exact'}});
     if(cRes.ok){const ct=cRes.headers.get('content-range');if(ct){const total=ct.split('/')[1];document.getElementById('adTotalClicks').textContent=total||'0'}}
   }catch(e){console.log('Commission load error:',e)}
 }
