@@ -1,0 +1,22 @@
+name: Autonomous Broker — Contract Monitor
+on:
+  schedule:
+    - cron: '0 14 * * *'   # 8:00 AM CST daily — primary run
+    - cron: '0 22 * * *'   # 4:00 PM CST daily — catch afternoon expirations
+  workflow_dispatch:
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Run autonomous broker engine
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          ALERT_FROM_EMAIL: ${{ secrets.ALERT_FROM_EMAIL }}
+        run: python contract_monitor.py
