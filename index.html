@@ -204,8 +204,18 @@ button{font-family:inherit;border:none;cursor:pointer}
 .btn-rn:hover{opacity:.9}
 .btn-rb{width:100%;padding:12px;background:none;color:#777;font-size:13px;margin-top:8px}
 
-/* Step 2 - Switch page */
+/* Step 2 - Enrollment Form */
 .rfb{padding:28px}
+.ef-sec{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;margin-bottom:12px}
+.ef-title{font-size:13px;font-weight:600;color:#fff;font-family:var(--fm);margin-bottom:10px}
+.ef-row{display:flex;gap:10px}
+.ef-field{margin-bottom:10px;flex:1}
+.ef-field label{display:block;font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,220,130,.6);font-family:var(--fm);margin-bottom:4px;font-weight:600}
+.ef-field .rinp{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:var(--fm);outline:none;box-sizing:border-box;transition:border-color .2s}
+.ef-field .rinp:focus{border-color:rgba(0,220,130,.5);box-shadow:0 0 8px rgba(0,220,130,.1)}
+.ef-field .rinp::placeholder{color:#555}
+.ef-field select.rinp{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.ef-field select.rinp option{background:#1a1a2e;color:#fff}
 
 /* Admin Panel */
 .admdl{max-width:540px;width:100%;overflow:hidden;display:flex;flex-direction:column}
@@ -469,33 +479,99 @@ button{font-family:inherit;border:none;cursor:pointer}
       <button class="btn-rb" onclick="xRg()">← Back to Plans</button>
     </div>
   </div>
-  <!-- Step 2: Ready to Switch -->
+  <!-- Step 2: Enrollment Form — "Complete Your Switch" -->
   <div class="rstep" id="rs2">
-    <div style="display:flex;justify-content:flex-end;padding:12px 16px 0;flex-shrink:0"><button class="mdl-x" onclick="xRg()">×</button></div>
-    <div class="rcnf" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0">
-      <div class="rchk-i"><svg viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h3>Ready to Switch!</h3>
-      <div class="pd">You chose <strong id="rgCPl"></strong></div>
-      <div class="pd" id="rgCPv"></div>
-      <div class="rcsav"><div class="big" id="rgCSv"></div><div class="lbl">estimated annual savings</div></div>
-      <div class="rcns"><h4>How to Get This Plan</h4>
-        <div class="nsi" id="rgPlanTip" style="background:rgba(0,220,130,.06);border-radius:8px;padding:10px 12px"><div class="nsn" style="background:var(--g);color:#0a0a0a">★</div><div class="nst"><strong style="color:var(--g)" id="rgPlanFind"></strong> by <strong id="rgProvFind"></strong> at <strong style="color:var(--g)"><span id="rgRateFind"></span>&#162;/kWh</strong></div></div>
-        <div class="nsi"><div class="nsn">1</div><div class="nst"><strong>Click "Sign Up"</strong> below to go to the provider's enrollment page</div></div>
-        <div class="nsi"><div class="nsn">2</div><div class="nst"><strong>Enter ZIP code <span id="rgZipShow"></span></strong> on their site and select the plan above</div></div>
-        <div class="nsi"><div class="nsn">3</div><div class="nst"><strong>Have your ESID ready</strong> — it's on your current electric bill</div></div>
-        <div class="nsi"><div class="nsn">4</div><div class="nst"><strong>No interruption</strong> — same wires, same meter, new rate in 1-2 billing cycles</div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px 0;flex-shrink:0">
+      <div><div class="lb" style="color:var(--g);margin-bottom:2px">FREE SERVICE</div><h3 style="font-family:var(--fd);font-size:18px;color:#fff;margin:0">Complete Your Switch</h3></div>
+      <button class="mdl-x" onclick="xRg()">×</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;padding:16px 20px 20px">
+      <!-- Plan summary bar -->
+      <div style="background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-size:11px;color:var(--g);font-family:var(--fm)" id="rgPlanBar"></div><div style="font-size:10px;color:#888;font-family:var(--fm);margin-top:2px" id="rgSavBar"></div></div>
+        <div style="font-size:22px;font-weight:700;color:var(--g);font-family:var(--fm)" id="rgRateBar"></div>
       </div>
-      <div class="tipnudge">
+      <div style="font-size:11px;color:#999;margin-bottom:16px;line-height:1.5;font-family:var(--fb)">We'll submit your enrollment to <strong style="color:#ccc" id="rgProvEnr"></strong> on your behalf — <strong style="color:var(--g)">100% free</strong>. Same wires, same meter. Your new rate starts in 1-2 billing cycles.</div>
+      <!-- Contact Info -->
+      <div class="ef-sec">
+        <div class="ef-title">👤 Your Information</div>
+        <div class="ef-row">
+          <div class="ef-field"><label>First Name *</label><input type="text" id="enrFirst" class="rinp" placeholder="Robert" autocomplete="given-name"></div>
+          <div class="ef-field"><label>Last Name *</label><input type="text" id="enrLast" class="rinp" placeholder="Smith" autocomplete="family-name"></div>
+        </div>
+        <div class="ef-field"><label>Email *</label><input type="email" id="enrEmail" class="rinp" placeholder="you@email.com" autocomplete="email"></div>
+        <div class="ef-field"><label>Phone *</label><input type="tel" id="enrPhone" class="rinp" placeholder="(214) 555-1234" autocomplete="tel"></div>
+      </div>
+      <!-- Service Address -->
+      <div class="ef-sec">
+        <div class="ef-title">🏠 Service Address</div>
+        <div class="ef-field"><label>Street Address *</label><input type="text" id="enrAddr" class="rinp" placeholder="1234 Main St" autocomplete="address-line1"></div>
+        <div class="ef-row">
+          <div class="ef-field" style="flex:2"><label>City *</label><input type="text" id="enrCity" class="rinp" placeholder="Dallas" autocomplete="address-level2"></div>
+          <div class="ef-field" style="flex:1"><label>ZIP *</label><input type="text" id="enrZip" class="rinp" placeholder="75201" maxlength="5" autocomplete="postal-code"></div>
+        </div>
+        <div class="ef-field"><label>ESID # <span style="color:#666;font-weight:400">(on your current bill — optional now)</span></label><input type="text" id="enrEsid" class="rinp" placeholder="10443720009992836"></div>
+      </div>
+      <!-- Switch Preferences -->
+      <div class="ef-sec">
+        <div class="ef-title">📋 Switch Details</div>
+        <div class="ef-field"><label>Preferred Start Date</label>
+          <select id="enrStart" class="rinp"><option value="asap">As soon as possible</option><option value="next_cycle">Next billing cycle</option><option value="specific">Specific date...</option></select>
+        </div>
+        <div class="ef-field" id="enrDateWrap" style="display:none"><label>Start Date</label><input type="date" id="enrDate" class="rinp"></div>
+        <div class="ef-field"><label>Current Provider <span style="color:#666;font-weight:400">(optional)</span></label><input type="text" id="enrCurProv" class="rinp" placeholder="TXU Energy, Reliant, etc."></div>
+        <div class="ef-field"><label>Notes <span style="color:#666;font-weight:400">(optional)</span></label><textarea id="enrNotes" class="rinp" rows="2" placeholder="Anything we should know..." style="resize:vertical"></textarea></div>
+      </div>
+      <!-- Contract Management Upsell -->
+      <div style="background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:14px;margin-top:4px">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <input type="checkbox" id="enrAutoTrack" style="margin-top:3px;accent-color:var(--g);width:18px;height:18px;flex-shrink:0" checked>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;font-family:var(--fm)">🔔 Free Rate Watch</div>
+            <div style="font-size:11px;color:#999;line-height:1.5;margin-top:4px;font-family:var(--fb)">We'll monitor your contract and notify you <strong style="color:var(--b)">30 days before it expires</strong> with the best available rates — so you never roll onto an expensive default plan.</div>
+          </div>
+        </div>
+      </div>
+      <!-- Consent / Legal -->
+      <div style="margin-top:14px;font-size:10px;color:#666;line-height:1.6;font-family:var(--fm)">
+        By submitting, you authorize WattWise to submit this enrollment on your behalf to <span id="rgProvLegal"></span>. This is a <strong>free service</strong> — you pay nothing extra. Your information is kept confidential and only used to process your switch. You can cancel anytime before your switch processes by contacting us.
+      </div>
+      <!-- Error message area -->
+      <div id="enrError" style="display:none;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--r);font-family:var(--fm)"></div>
+    </div>
+    <div style="flex-shrink:0;background:#0f0f1a;padding:10px 20px 16px;border-top:1px solid rgba(255,255,255,.06)">
+      <button class="btn-rn" id="enrSubmitBtn" onclick="submitEnrollment()" style="font-size:16px">Submit My Switch — It's Free →</button>
+      <button class="btn-rb" onclick="rgStep(1)">← Back to Savings</button>
+    </div>
+  </div>
+  <!-- Step 3: Confirmation -->
+  <div class="rstep" id="rs3">
+    <div style="display:flex;justify-content:flex-end;padding:12px 16px 0;flex-shrink:0"><button class="mdl-x" onclick="xRg()">×</button></div>
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;text-align:center;padding:20px 24px">
+      <div style="width:60px;height:60px;background:rgba(0,220,130,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:20px auto 16px"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h3 style="font-family:var(--fd);font-size:24px;color:#fff;margin:0 0 8px">You're All Set!</h3>
+      <div style="font-size:14px;color:#aaa;line-height:1.6;font-family:var(--fb);margin-bottom:20px">Your enrollment request has been submitted. Our team will process your switch to <strong style="color:#fff" id="cnfProv"></strong> at <strong style="color:var(--g)" id="cnfRate"></strong>.</div>
+      <div style="background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.2);border-radius:12px;padding:16px;text-align:left;margin-bottom:20px">
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,220,130,.6);font-family:var(--fm);margin-bottom:10px">WHAT HAPPENS NEXT</div>
+        <div class="nsi"><div class="nsn" style="background:var(--g);color:#0a0a0a">1</div><div class="nst">We submit your enrollment within <strong>24 hours</strong></div></div>
+        <div class="nsi"><div class="nsn">2</div><div class="nst">You receive a <strong>confirmation email</strong> from the provider</div></div>
+        <div class="nsi"><div class="nsn">3</div><div class="nst">Your new rate kicks in <strong>1-2 billing cycles</strong></div></div>
+        <div class="nsi"><div class="nsn">4</div><div class="nst">Same wires, same meter — <strong>zero interruption</strong></div></div>
+      </div>
+      <div id="cnfAutoTrack" style="display:none;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.2);border-radius:10px;padding:14px;text-align:left;margin-bottom:20px">
+        <div style="font-size:12px;color:var(--b);font-weight:600;font-family:var(--fm)">🔔 Rate Watch Active</div>
+        <div style="font-size:11px;color:#999;line-height:1.5;margin-top:4px;font-family:var(--fb)">We'll email you 30 days before your <strong style="color:#fff" id="cnfTerm">12</strong>-month contract expires with the best rates available. You'll never pay a default rate again.</div>
+      </div>
+      <div class="rcr sav" style="border-radius:10px;border:1px solid rgba(0,220,130,.15)"><div class="rcl">Your Estimated Savings<small>Year 1</small></div><div class="rcv" id="cnfSav">$0/yr</div></div>
+      <div class="tipnudge" style="margin-top:24px">
         <div class="tipnudge-line"></div>
-        <div class="tipnudge-inner">
-          <span class="tipnudge-txt">Andy found you this rate for free.</span>
+        <div class="tipnudge-inner"><span class="tipnudge-txt">WattWise is always free. Andy built this for you.</span>
           <button class="tipnudge-btn" onclick="xRg();openTip()">☕ Buy him a coffee?</button>
         </div>
       </div>
     </div>
     <div style="flex-shrink:0;background:#0f0f1a;padding:10px 20px 16px;border-top:1px solid rgba(255,255,255,.06)">
-      <button class="btn-rn" id="rgGoBtn" onclick="goProvider()" style="font-size:16px">Sign Up for This Plan →</button>
-      <button class="btn-rb" onclick="rgStep(1)">← Back to Savings</button>
+      <button class="btn-rn" onclick="xRg()" style="font-size:16px">Done ✓</button>
     </div>
   </div>
 </div></div>
@@ -632,6 +708,23 @@ button{font-family:inherit;border:none;cursor:pointer}
         <div class="ad-stat"><span class="ad-stat-n" id="adTipClicks">0</span><span class="ad-stat-l">Tip Clicks</span></div>
       </div>
       <div style="font-size:10px;color:#555;margin-top:8px;font-family:var(--fm)">Session-only. For persistent analytics, add Google Analytics or Plausible.</div>
+    </div>
+    <!-- Enrollment Lead Queue -->
+    <div class="ad-sec" style="border-color:rgba(56,189,248,.2);background:rgba(56,189,248,.03)">
+      <div class="ad-title">📋 Enrollment Queue</div>
+      <div class="ad-desc">Customer enrollments submitted through WattWise. Process these through your broker portal.</div>
+      <div id="adEnrStats" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px">
+        <div class="ad-stat"><span class="ad-stat-n" id="adEnrPending" style="color:var(--y)">0</span><span class="ad-stat-l">Pending</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adEnrActive" style="color:var(--g)">0</span><span class="ad-stat-l">Active</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adEnrExpiring" style="color:var(--r)">0</span><span class="ad-stat-l">Expiring</span></div>
+        <div class="ad-stat"><span class="ad-stat-n" id="adEnrTotal">0</span><span class="ad-stat-l">Total</span></div>
+      </div>
+      <div id="adEnrSavings" style="background:rgba(0,220,130,.06);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:none">
+        <div style="font-size:10px;color:rgba(0,220,130,.6);font-family:var(--fm);margin-bottom:2px">TOTAL CUSTOMER SAVINGS</div>
+        <div style="font-size:18px;font-weight:700;color:var(--g);font-family:var(--fm)" id="adEnrTotalSav">$0/yr</div>
+      </div>
+      <button class="btn-rn" onclick="loadEnrollments()" style="font-size:12px;padding:8px;margin-bottom:10px;background:rgba(56,189,248,.2);color:var(--b)">🔄 Refresh Enrollment Queue</button>
+      <div id="adEnrList" style="max-height:400px;overflow-y:auto"></div>
     </div>
     <!-- Commission Dashboard -->
     <div class="ad-sec">
@@ -823,13 +916,126 @@ function xRg(){document.getElementById('rgOv').classList.remove('open');document
 const PURLS={"TXU Energy":"https://www.txu.com/enrollment","Reliant Energy":"https://www.reliant.com/en/public/residential/electricity-plans.jsp","Gexa Energy":"https://www.gexaenergy.com/electricity-plans","Green Mountain":"https://www.greenmountainenergy.com/plans","Green Mountain Energy":"https://www.greenmountainenergy.com/plans","Constellation":"https://www.constellation.com/solutions/for-your-home/electricity-plans.html","4Change Energy":"https://www.4changeenergy.com/plans","Frontier Utilities":"https://www.frontierutilities.com/plans","Chariot Energy":"https://chariotenergy.com/plans","Pulse Power":"https://pulsepower.com/plans","Rhythm Energy":"https://www.gotrhythm.com/electricity-plans","Express Energy":"https://www.myexpressenergy.com","Discount Power":"https://www.discountpowertx.com","Veteran Energy":"https://www.veteranenergy.us/plans","TriEagle Energy":"https://www.trieagleenergy.com/plans","Cirro Energy":"https://www.cirroenergy.com/plans","Direct Energy":"https://www.directenergy.com/texas/electricity-plans","Payless Power":"https://www.paylesspower.com/signup","Amigo Energy":"https://www.amigoenergy.com/texas-electricity-plans","Champion Energy":"https://www.championenergyservices.com/Plans","Champion Energy Services":"https://www.championenergyservices.com/Plans","AP Gas & Electric":"https://www.apge.com/residential","Tara Energy":"https://www.taraenergy.com/Plans","Flagship Power":"https://www.flagshippower.com/plans","Indexo Energy":"https://www.indexoenergy.com","Eligo Energy":"https://www.eligoenergy.com","New Power Texas":"https://www.newpowertexas.com/electricity-plans","Spark Energy":"https://www.sparkenergy.com/texas","Value Power":"https://www.valuepower.com","Engie":"https://www.engie.com/en/offers","Just Energy":"https://www.justenergy.com/texas/electricity-plans","Pennywise Power":"https://www.pennywisepower.com"};
 
 function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
-  document.getElementById('rgCPl').textContent=pl.n;document.getElementById('rgCPv').innerHTML='by <strong>'+pl.p+'</strong> at <strong style="color:var(--g)">'+pl.r+'&#162;/kWh</strong>';
-  document.getElementById('rgCSv').textContent='$'+Math.max(0,as).toFixed(0)+'/yr';
-  document.getElementById('rgPlanFind').textContent=pl.n;
-  document.getElementById('rgProvFind').textContent=pl.p;
-  document.getElementById('rgRateFind').textContent=pl.r;
-  document.getElementById('rgZipShow').textContent=R.zip;
+  // Populate enrollment form fields
+  document.getElementById('rgPlanBar').textContent=pl.p+' · '+pl.n;
+  document.getElementById('rgRateBar').textContent=pl.r+'¢';
+  document.getElementById('rgSavBar').textContent='Save $'+Math.max(0,as).toFixed(0)+'/yr vs '+(uCR?'your current rate':'TDU default');
+  document.getElementById('rgProvEnr').textContent=pl.p;
+  document.getElementById('rgProvLegal').textContent=pl.p;
+  document.getElementById('enrZip').value=R.zip||'';
+  // Show/hide specific date
+  document.getElementById('enrStart').onchange=function(){document.getElementById('enrDateWrap').style.display=this.value==='specific'?'block':'none'};
   rgStep(2);stats.planClicks++;fire()}
+
+async function submitEnrollment(){
+  if(!sPlan||!R)return;
+  const btn=document.getElementById('enrSubmitBtn');
+  const errEl=document.getElementById('enrError');
+  errEl.style.display='none';
+  
+  // Collect form data
+  const first=document.getElementById('enrFirst').value.trim();
+  const last=document.getElementById('enrLast').value.trim();
+  const email=document.getElementById('enrEmail').value.trim();
+  const phone=document.getElementById('enrPhone').value.trim();
+  const addr=document.getElementById('enrAddr').value.trim();
+  const city=document.getElementById('enrCity').value.trim();
+  const zip=document.getElementById('enrZip').value.trim();
+  const esid=document.getElementById('enrEsid').value.trim();
+  const startPref=document.getElementById('enrStart').value;
+  const startDate=document.getElementById('enrDate').value;
+  const curProv=document.getElementById('enrCurProv').value.trim();
+  const notes=document.getElementById('enrNotes').value.trim();
+  const autoTrack=document.getElementById('enrAutoTrack').checked;
+  
+  // Validate required fields
+  if(!first||!last){errEl.textContent='Please enter your first and last name.';errEl.style.display='block';return}
+  if(!email||!email.includes('@')){errEl.textContent='Please enter a valid email address.';errEl.style.display='block';return}
+  if(!phone||phone.replace(/\D/g,'').length<10){errEl.textContent='Please enter a valid phone number.';errEl.style.display='block';return}
+  if(!addr||!city||!zip){errEl.textContent='Please enter your full service address.';errEl.style.display='block';return}
+  
+  // Calculate savings and contract dates
+  const cr=gCR(),usage=R.usage;
+  const monthlySav=((cr-sPlan.r)/100)*usage;
+  const annualSav=monthlySav*12;
+  const contractEnd=new Date();
+  contractEnd.setMonth(contractEnd.getMonth()+(sPlan.t||12));
+  const alertDate=new Date(contractEnd);
+  alertDate.setDate(alertDate.getDate()-30);
+  
+  // Build enrollment record
+  const enrollment={
+    // Customer info
+    first_name:first, last_name:last, email:email, phone:phone,
+    service_address:addr, service_city:city, service_zip:zip, service_state:'TX',
+    esid:esid||null,
+    // Plan info
+    provider:sPlan.p, plan_name:sPlan.n, rate_kwh:sPlan.r,
+    term_months:sPlan.t||12, renewable_pct:sPlan.re||0, cancel_fee:sPlan.cf||0,
+    tdu:R.tdu, usage_kwh:usage,
+    // Switch preferences
+    start_preference:startPref, start_date:startPref==='specific'?startDate:null,
+    current_provider:curProv||null, notes:notes||null,
+    // Contract tracking
+    contract_start:new Date().toISOString().split('T')[0],
+    contract_end:contractEnd.toISOString().split('T')[0],
+    expiry_alert_date:alertDate.toISOString().split('T')[0],
+    auto_track:autoTrack,
+    // Revenue tracking
+    previous_rate:cr, monthly_savings:Math.round(monthlySav*100)/100,
+    annual_savings:Math.round(annualSav*100)/100,
+    // Status
+    status:'pending',  // pending → submitted → confirmed → active → expiring → renewed
+    commission_status:'pending',  // pending → earned → paid
+    estimated_commission:null,  // Andy fills in from broker portal
+    // Metadata
+    source:'wattswise_web', session_id:sessionStorage.getItem('ww_sid')||'',
+    created_at:new Date().toISOString()
+  };
+  
+  // Disable button while saving
+  btn.textContent='Submitting...';btn.style.opacity='.6';btn.disabled=true;
+  
+  // Save to Supabase
+  let saved=false;
+  if(SUPABASE_URL&&SUPABASE_ANON_KEY){
+    try{
+      const resp=await fetch(SUPABASE_URL+'/rest/v1/enrollments',{method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=representation'},
+        body:JSON.stringify(enrollment)});
+      if(resp.ok){
+        saved=true;
+        const result=await resp.json();
+        console.log('WattWise: Enrollment saved',result);
+      }else{const err=await resp.text();console.error('Enrollment save error:',err)}
+    }catch(e){console.error('Enrollment error:',e)}
+  }
+  
+  // Also save to localStorage as backup
+  const local=JSON.parse(localStorage.getItem('ww_enrollments')||'[]');
+  local.push(enrollment);
+  localStorage.setItem('ww_enrollments',JSON.stringify(local));
+  
+  // Track click for analytics
+  if(SUPABASE_URL&&SUPABASE_ANON_KEY){
+    fetch(SUPABASE_URL+'/rest/v1/click_tracking',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({zip:R.zip,tdu:R.tdu,provider:sPlan.p,plan_name:sPlan.n,rate_kwh:sPlan.r,destination:'enrollment_form',affiliate_partner:'broker_direct',session_id:enrollment.session_id,user_agent:navigator.userAgent.substr(0,200)})
+    }).catch(()=>{});
+  }
+  
+  // Show confirmation (Step 3)
+  document.getElementById('cnfProv').textContent=sPlan.p;
+  document.getElementById('cnfRate').textContent=sPlan.r+'¢/kWh';
+  document.getElementById('cnfSav').textContent='$'+Math.max(0,annualSav).toFixed(0)+'/yr';
+  if(autoTrack){
+    document.getElementById('cnfAutoTrack').style.display='block';
+    document.getElementById('cnfTerm').textContent=sPlan.t||12;
+  }
+  
+  btn.textContent='Submit My Switch — It\'s Free →';btn.style.opacity='1';btn.disabled=false;
+  stats.provClicks++;fire();
+  rgStep(3);
+}
 
 function goProvider(){if(!sPlan||!R)return;stats.provClicks++;
   const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';
@@ -844,6 +1050,92 @@ function goProvider(){if(!sPlan||!R)return;stats.provClicks++;
   // Use location.href — window.open gets blocked on iOS Safari
   window.location.href=url}
 function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.location.href=url}
+
+// === ENROLLMENT MANAGEMENT (Admin) ===
+async function loadEnrollments(){
+  if(!SUPABASE_URL||!SUPABASE_ANON_KEY)return;
+  try{
+    const resp=await fetch(SUPABASE_URL+'/rest/v1/enrollments?select=*&order=created_at.desc&limit=50',{
+      headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}});
+    if(!resp.ok)return;
+    const enrs=await resp.json();
+    
+    // Update stats
+    const pending=enrs.filter(e=>e.status==='pending').length;
+    const active=enrs.filter(e=>e.status==='active').length;
+    const expiring=enrs.filter(e=>e.status==='expiring'||
+      (e.contract_end&&new Date(e.contract_end)<new Date(Date.now()+30*86400000)&&e.status==='active')).length;
+    document.getElementById('adEnrPending').textContent=pending;
+    document.getElementById('adEnrActive').textContent=active;
+    document.getElementById('adEnrExpiring').textContent=expiring;
+    document.getElementById('adEnrTotal').textContent=enrs.length;
+    
+    const totalSav=enrs.reduce((s,e)=>s+(e.annual_savings||0),0);
+    if(totalSav>0){
+      document.getElementById('adEnrSavings').style.display='block';
+      document.getElementById('adEnrTotalSav').textContent='$'+totalSav.toFixed(0)+'/yr';
+    }
+    
+    // Render list
+    let h='';
+    const statusColors={pending:'var(--y)',submitted:'var(--b)',confirmed:'var(--g)',active:'var(--g)',expiring:'var(--r)',renewed:'var(--g)',churned:'#888'};
+    enrs.forEach(e=>{
+      const clr=statusColors[e.status]||'#888';
+      const dt=new Date(e.created_at).toLocaleDateString();
+      const expDt=e.contract_end?new Date(e.contract_end).toLocaleDateString():'—';
+      h+=`<div style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:13px;color:#fff;font-weight:600;font-family:var(--fm)">${e.first_name} ${e.last_name}</div>
+            <div style="font-size:11px;color:#aaa;font-family:var(--fm)">${e.provider} · ${e.plan_name} · <strong style="color:var(--g)">${e.rate_kwh}¢</strong></div>
+            <div style="font-size:10px;color:#666;font-family:var(--fm);margin-top:2px">${e.service_address}, ${e.service_city} ${e.service_zip} · ${e.phone}</div>
+            <div style="font-size:10px;color:#555;font-family:var(--fm)">${e.email} · Submitted ${dt} · Expires ${expDt}</div>
+            ${e.annual_savings?`<div style="font-size:10px;color:var(--g);font-family:var(--fm)">Saves $${e.annual_savings.toFixed(0)}/yr</div>`:''}
+            ${e.notes?`<div style="font-size:10px;color:var(--y);font-family:var(--fm);margin-top:2px">📝 ${e.notes}</div>`:''}
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <span style="font-size:9px;padding:2px 8px;border-radius:4px;background:${clr}20;color:${clr};font-family:var(--fm);text-transform:uppercase">${e.status}</span>
+            ${e.auto_track?'<div style="font-size:9px;color:var(--b);margin-top:4px">🔔 Tracked</div>':''}
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button onclick="updateEnrollment(${e.id},'submitted')" style="flex:1;padding:5px;font-size:10px;background:rgba(56,189,248,.1);color:var(--b);border:1px solid rgba(56,189,248,.2);border-radius:6px;font-family:var(--fm)">Mark Submitted</button>
+          <button onclick="updateEnrollment(${e.id},'active')" style="flex:1;padding:5px;font-size:10px;background:rgba(0,220,130,.1);color:var(--g);border:1px solid rgba(0,220,130,.2);border-radius:6px;font-family:var(--fm)">Mark Active</button>
+          <button onclick="promptCommission(${e.id},'${e.provider}','${e.first_name} ${e.last_name}')" style="flex:1;padding:5px;font-size:10px;background:rgba(250,204,21,.1);color:var(--y);border:1px solid rgba(250,204,21,.2);border-radius:6px;font-family:var(--fm)">💰 Commission</button>
+        </div>
+      </div>`;
+    });
+    document.getElementById('adEnrList').innerHTML=h||'<div style="color:#555;font-size:12px;text-align:center;padding:20px">No enrollments yet. When customers submit the switch form, they appear here.</div>';
+  }catch(e){console.error('Load enrollments error:',e)}
+}
+
+async function updateEnrollment(id,status){
+  if(!SUPABASE_URL||!SUPABASE_ANON_KEY)return;
+  try{
+    await fetch(SUPABASE_URL+'/rest/v1/enrollments?id=eq.'+id,{method:'PATCH',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({status:status,updated_at:new Date().toISOString()})});
+    loadEnrollments();
+  }catch(e){console.error('Update enrollment error:',e)}
+}
+
+function promptCommission(enrollId,provider,name){
+  const amt=prompt('Commission amount for '+name+' ('+provider+'):','75.00');
+  if(!amt)return;
+  const commission=parseFloat(amt);
+  if(isNaN(commission)||commission<=0)return;
+  updateEnrollmentCommission(enrollId,commission);
+}
+
+async function updateEnrollmentCommission(id,amount){
+  if(!SUPABASE_URL||!SUPABASE_ANON_KEY)return;
+  try{
+    await fetch(SUPABASE_URL+'/rest/v1/enrollments?id=eq.'+id,{method:'PATCH',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({estimated_commission:amount,commission_status:'earned',updated_at:new Date().toISOString()})});
+    loadEnrollments();
+  }catch(e){console.error('Commission update error:',e)}
+}
 
 // === MODALS ===
 function openStory(){document.getElementById('stOv').classList.add('open');document.body.style.overflow='hidden'}
@@ -979,7 +1271,7 @@ function openAd(){
     document.getElementById('adS3').value=d.s3||'';document.getElementById('adS7').value=d.s7||'';
     document.getElementById('adS15').value=d.s15||'';document.getElementById('adSC').value=d.sc||'';
   }}catch(e){}
-  updStripeStatus();updStats();loadSplit();loadBroker();loadCommissions();
+  updStripeStatus();updStats();loadSplit();loadBroker();loadCommissions();loadEnrollments();
 }
 function xAd(){document.getElementById('adOv').classList.remove('open');document.body.style.overflow=''}
 
