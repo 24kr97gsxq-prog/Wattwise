@@ -1,8 +1,10 @@
-name: Scrape Electricity Rates
+name: Scrape Market Intelligence
 on:
   schedule:
-    - cron: '0 6 * * *'
-    - cron: '0 18 * * *'
+    - cron: '15 6 * * *'    # Daily at 6:15 AM UTC (12:15 AM CST)
+    - cron: '15 12 * * *'   # Daily at 12:15 PM UTC (6:15 AM CST)
+    - cron: '15 18 * * *'   # Daily at 6:15 PM UTC (12:15 PM CST)
+    - cron: '15 23 * * *'   # Daily at 11:15 PM UTC (5:15 PM CST)
   workflow_dispatch:
 jobs:
   scrape:
@@ -14,8 +16,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run scraper
+      - name: Run market data scraper
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: python scrape_rates.py
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        run: python scrape_market_data.py
