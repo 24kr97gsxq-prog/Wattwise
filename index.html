@@ -849,6 +849,11 @@ let R=null,cSort="rate",sAll=false,tpAmt=null,uCR=null,sPlan=null;
 const tP=Object.values(DB.p).reduce((s,p)=>s+p.length,0),tZ=Object.keys(DB.z2t).length;
 document.getElementById('tpCnt').textContent=tP;document.getElementById('tzCnt').textContent=tZ;document.getElementById('dbC').textContent=tP;
 document.getElementById('zInp').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch()});
+// zipInput alias for re-enrollment URL handler
+document.getElementById('zipInput')||(document.getElementById('zInp').id='zInp');
+Object.defineProperty(document,'zipInputFallback',{get:()=>document.getElementById('zInp')});
+// Check for re-enrollment on page load
+setTimeout(checkReenroll,800);
 
 function gCR(){return uCR||R.polr}
 function gCL(){return uCR?'your current rate':'default TDU rate'}
@@ -878,6 +883,8 @@ function render(){document.getElementById('resSec').classList.remove('hid');
   document.getElementById('aSav').textContent='$'+R.as.toFixed(0);document.getElementById('uLbl').textContent=R.usage;
   document.getElementById('ctaS').textContent='$'+R.as.toFixed(0);document.getElementById('crInp').value='';
   rBars();rPlans();generateAiInsights();
+  // Check if this is a re-enrollment from expiry email
+  setTimeout(handleReenroll,300);
   document.getElementById('shTxt').innerHTML=`<button class="btn-cp" onclick="cpSh()">Copy</button>Hey! I used WattWise to compare TX electricity rates and found I could save $${R.as.toFixed(0)}/year. It's free — check it out!`}
 
 function rBars(){const cr=gCR(),u=R.usage,cc=(cr/100)*u,ca=(DB.sa/100)*u,cb=R.mcB,mx=Math.max(cc,ca,cb);
@@ -990,6 +997,7 @@ async function submitEnrollment(){
     estimated_commission:null,  // Andy fills in from broker portal
     // Metadata
     source:'wattswise_web', session_id:sessionStorage.getItem('ww_sid')||'',
+    renewal_of: window._reenrollPrevId||null,
     created_at:new Date().toISOString()
   };
   
@@ -1611,6 +1619,72 @@ async function loadMarketData(){
   }catch(e){console.warn('Market data load failed:',e)}
 }
 loadMarketData();
+
+// AUTO RE-ENROLLMENT: Parse URL params from expiry alert emails
+function checkReenroll(){
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('reenroll')!=='1')return;
+  const zip=params.get('zip');
+  if(zip){
+    document.getElementById('zInp').value=zip;
+    // Store re-enrollment data for after search
+    window._reenroll={
+      name:params.get('name')||'', email:params.get('email')||'',
+      phone:params.get('phone')||'', addr:params.get('addr')||'',
+      city:params.get('city')||'', esid:params.get('esid')||'',
+      provider:params.get('provider')||'', plan:params.get('plan')||'',
+      rate:parseFloat(params.get('rate'))||0, prev_id:params.get('prev_id')||''
+    };
+    // Auto-trigger search
+    setTimeout(()=>doSearch(),500);
+  }
+}
+
+// After search completes, auto-select the recommended plan and pre-fill form
+function handleReenroll(){
+  if(!window._reenroll||!R)return;
+  const re=window._reenroll;
+  // Find the recommended plan in results
+  let target=null;
+  if(re.rate>0&&re.provider){
+    target=R.sorted.find(p=>p.p===re.provider&&Math.abs(p.r-re.rate)<0.5);
+  }
+  if(!target) target=R.best; // Fall back to best available
+  if(!target)return;
+  
+  // Open registration with this plan
+  sPlan=target;
+  openReg(target);
+  
+  // Auto-advance to enrollment form (Step 2)
+  setTimeout(()=>{
+    subReg();
+    // Pre-fill form fields
+    const parts=(re.name||'').split(' ');
+    if(parts[0])document.getElementById('enrFirst').value=parts[0];
+    if(parts.length>1)document.getElementById('enrLast').value=parts.slice(1).join(' ');
+    if(re.email)document.getElementById('enrEmail').value=re.email;
+    if(re.phone)document.getElementById('enrPhone').value=re.phone;
+    if(re.addr)document.getElementById('enrAddr').value=re.addr;
+    if(re.city)document.getElementById('enrCity').value=re.city;
+    if(re.esid)document.getElementById('enrEsid').value=re.esid;
+    // Auto-check rate watch
+    document.getElementById('enrAutoTrack').checked=true;
+    // Track renewal linkage
+    window._reenrollPrevId=parseInt(re.prev_id)||null;
+    // Show a banner that this is a re-enrollment
+    const errEl=document.getElementById('enrError');
+    errEl.style.display='block';
+    errEl.style.background='rgba(0,220,130,.1)';
+    errEl.style.borderColor='rgba(0,220,130,.2)';
+    errEl.style.color='var(--g)';
+    errEl.textContent='✅ Welcome back! Your info has been pre-filled from your previous enrollment. Just review and submit.';
+    // Clean URL
+    window.history.replaceState({},document.title,window.location.pathname);
+    window._reenroll=null;
+  },600);
+}
+
 
 function buildLocalInsight(){
   const greenPlans=R.sorted.filter(p=>p.re===100);
