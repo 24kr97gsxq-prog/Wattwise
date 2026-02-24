@@ -1060,61 +1060,235 @@ function goProvider(){if(!sPlan||!R)return;stats.provClicks++;
 function goDirect(){if(!sPlan)return;const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';window.location.href=url}
 
 // === ENROLLMENT MANAGEMENT (Admin) ===
+let enrData=[];
 async function loadEnrollments(){
   if(!SUPABASE_URL||!SUPABASE_ANON_KEY)return;
   try{
-    const resp=await fetch(SUPABASE_URL+'/rest/v1/enrollments?select=*&order=created_at.desc&limit=50',{
+    const resp=await fetch(SUPABASE_URL+'/rest/v1/enrollments?select=*&order=created_at.desc&limit=100',{
       headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}});
     if(!resp.ok)return;
-    const enrs=await resp.json();
+    enrData=await resp.json();
     
     // Update stats
-    const pending=enrs.filter(e=>e.status==='pending').length;
-    const active=enrs.filter(e=>e.status==='active').length;
-    const expiring=enrs.filter(e=>e.status==='expiring'||
+    const pending=enrData.filter(e=>e.status==='pending').length;
+    const submitted=enrData.filter(e=>e.status==='submitted').length;
+    const active=enrData.filter(e=>e.status==='active'||e.status==='confirmed').length;
+    const expiring=enrData.filter(e=>e.status==='expiring'||
       (e.contract_end&&new Date(e.contract_end)<new Date(Date.now()+30*86400000)&&e.status==='active')).length;
     document.getElementById('adEnrPending').textContent=pending;
     document.getElementById('adEnrActive').textContent=active;
     document.getElementById('adEnrExpiring').textContent=expiring;
-    document.getElementById('adEnrTotal').textContent=enrs.length;
+    document.getElementById('adEnrTotal').textContent=enrData.length;
     
-    const totalSav=enrs.reduce((s,e)=>s+(e.annual_savings||0),0);
+    const totalSav=enrData.reduce((s,e)=>s+(e.annual_savings||0),0);
     if(totalSav>0){
       document.getElementById('adEnrSavings').style.display='block';
       document.getElementById('adEnrTotalSav').textContent='$'+totalSav.toFixed(0)+'/yr';
     }
     
-    // Render list
-    let h='';
-    const statusColors={pending:'var(--y)',submitted:'var(--b)',confirmed:'var(--g)',active:'var(--g)',expiring:'var(--r)',renewed:'var(--g)',churned:'#888'};
-    enrs.forEach(e=>{
-      const clr=statusColors[e.status]||'#888';
-      const dt=new Date(e.created_at).toLocaleDateString();
-      const expDt=e.contract_end?new Date(e.contract_end).toLocaleDateString():'—';
-      h+=`<div style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;margin-bottom:6px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div>
-            <div style="font-size:13px;color:#fff;font-weight:600;font-family:var(--fm)">${e.first_name} ${e.last_name}</div>
-            <div style="font-size:11px;color:#aaa;font-family:var(--fm)">${e.provider} · ${e.plan_name} · <strong style="color:var(--g)">${e.rate_kwh}¢</strong></div>
-            <div style="font-size:10px;color:#666;font-family:var(--fm);margin-top:2px">${e.service_address}, ${e.service_city} ${e.service_zip} · ${e.phone}</div>
-            <div style="font-size:10px;color:#555;font-family:var(--fm)">${e.email} · Submitted ${dt} · Expires ${expDt}</div>
-            ${e.annual_savings?`<div style="font-size:10px;color:var(--g);font-family:var(--fm)">Saves $${e.annual_savings.toFixed(0)}/yr</div>`:''}
-            ${e.notes?`<div style="font-size:10px;color:var(--y);font-family:var(--fm);margin-top:2px">📝 ${e.notes}</div>`:''}
-          </div>
-          <div style="text-align:right;flex-shrink:0">
-            <span style="font-size:9px;padding:2px 8px;border-radius:4px;background:${clr}20;color:${clr};font-family:var(--fm);text-transform:uppercase">${e.status}</span>
-            ${e.auto_track?'<div style="font-size:9px;color:var(--b);margin-top:4px">🔔 Tracked</div>':''}
-          </div>
-        </div>
-        <div style="display:flex;gap:6px;margin-top:8px">
-          <button onclick="updateEnrollment(${e.id},'submitted')" style="flex:1;padding:5px;font-size:10px;background:rgba(56,189,248,.1);color:var(--b);border:1px solid rgba(56,189,248,.2);border-radius:6px;font-family:var(--fm)">Mark Submitted</button>
-          <button onclick="updateEnrollment(${e.id},'active')" style="flex:1;padding:5px;font-size:10px;background:rgba(0,220,130,.1);color:var(--g);border:1px solid rgba(0,220,130,.2);border-radius:6px;font-family:var(--fm)">Mark Active</button>
-          <button onclick="promptCommission(${e.id},'${e.provider}','${e.first_name} ${e.last_name}')" style="flex:1;padding:5px;font-size:10px;background:rgba(250,204,21,.1);color:var(--y);border:1px solid rgba(250,204,21,.2);border-radius:6px;font-family:var(--fm)">💰 Commission</button>
-        </div>
-      </div>`;
-    });
-    document.getElementById('adEnrList').innerHTML=h||'<div style="color:#555;font-size:12px;text-align:center;padding:20px">No enrollments yet. When customers submit the switch form, they appear here.</div>';
+    renderEnrollmentQueue();
   }catch(e){console.error('Load enrollments error:',e)}
+}
+
+function renderEnrollmentQueue(filter){
+  let list=enrData;
+  if(filter)list=list.filter(e=>e.status===filter);
+  const statusColors={pending:'var(--y)',submitted:'var(--b)',confirmed:'#38bdf8',active:'var(--g)',expiring:'var(--r)',renewed:'var(--g)',churned:'#888'};
+  const statusIcons={pending:'⏳',submitted:'📤',confirmed:'✅',active:'🟢',expiring:'🔴',renewed:'🔄',churned:'💤'};
+  let h='';
+  
+  // Filter tabs
+  h+=`<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">
+    <button onclick="renderEnrollmentQueue()" style="padding:4px 10px;font-size:10px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(255,255,255,.1);background:${!filter?'rgba(0,220,130,.2)':'rgba(0,0,0,.2)'};color:${!filter?'var(--g)':'#888'}">All (${enrData.length})</button>
+    <button onclick="renderEnrollmentQueue('pending')" style="padding:4px 10px;font-size:10px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(250,204,21,.15);background:${filter==='pending'?'rgba(250,204,21,.2)':'rgba(0,0,0,.2)'};color:${filter==='pending'?'var(--y)':'#888'}">⏳ Pending (${enrData.filter(e=>e.status==='pending').length})</button>
+    <button onclick="renderEnrollmentQueue('active')" style="padding:4px 10px;font-size:10px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(0,220,130,.15);background:${filter==='active'?'rgba(0,220,130,.2)':'rgba(0,0,0,.2)'};color:${filter==='active'?'var(--g)':'#888'}">🟢 Active (${enrData.filter(e=>e.status==='active'||e.status==='confirmed').length})</button>
+    <button onclick="renderEnrollmentQueue('expiring')" style="padding:4px 10px;font-size:10px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(255,107,107,.15);background:${filter==='expiring'?'rgba(255,107,107,.2)':'rgba(0,0,0,.2)'};color:${filter==='expiring'?'var(--r)':'#888'}">🔴 Expiring (${enrData.filter(e=>e.status==='expiring').length})</button>
+  </div>`;
+  
+  // Auto-enroll toggle
+  const autoEnrollOn=localStorage.getItem('ww_auto_enroll')==='true';
+  h+=`<div style="background:rgba(0,220,130,.04);border:1px solid rgba(0,220,130,.15);border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+    <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0">
+      <input type="checkbox" id="autoEnrollToggle" ${autoEnrollOn?'checked':''} onchange="toggleAutoEnroll(this.checked)" style="opacity:0;width:0;height:0">
+      <span style="position:absolute;cursor:pointer;inset:0;background:${autoEnrollOn?'var(--g)':'rgba(255,255,255,.15)'};border-radius:22px;transition:.3s"></span>
+      <span style="position:absolute;left:${autoEnrollOn?'20px':'2px'};top:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.3s"></span>
+    </label>
+    <div><div style="font-size:12px;font-weight:600;color:${autoEnrollOn?'var(--g)':'#888'};font-family:var(--fm)">⚡ Auto-Process${autoEnrollOn?' ON':' OFF'}</div>
+    <div style="font-size:10px;color:#666;font-family:var(--fm)">When ON: new enrollments auto-advance to "submitted" and open provider portal</div></div>
+  </div>`;
+  
+  list.forEach(e=>{
+    const clr=statusColors[e.status]||'#888';
+    const icon=statusIcons[e.status]||'📋';
+    const dt=new Date(e.created_at).toLocaleDateString();
+    const expDt=e.contract_end?new Date(e.contract_end).toLocaleDateString():'—';
+    const daysLeft=e.contract_end?Math.ceil((new Date(e.contract_end)-Date.now())/86400000):null;
+    const commEst=e.estimated_commission||estimateCommFE(e.provider);
+    const isPending=e.status==='pending';
+    const isExpiring=e.status==='expiring';
+    const eid=e.id;
+    
+    // Escape strings for onclick
+    const eProv=escQ(e.provider);
+    const ePlan=escQ(e.plan_name);
+    const eName=escQ(e.first_name+' '+e.last_name);
+    
+    h+=`<div class="enr-card" onclick="toggleEnrDetail(${eid})" style="background:rgba(0,0,0,.2);border:1px solid ${isPending?'rgba(250,204,21,.2)':isExpiring?'rgba(255,107,107,.2)':'rgba(255,255,255,.06)'};border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all .2s;${isPending?'border-left:3px solid var(--y)':isExpiring?'border-left:3px solid var(--r)':''}">
+      <!-- Summary Row (always visible) -->
+      <div style="padding:10px 12px;display:flex;justify-content:space-between;align-items:center">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:12px">${icon}</span>
+            <span style="font-size:13px;color:#fff;font-weight:600;font-family:var(--fm)">${e.first_name} ${e.last_name}</span>
+            <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:${clr}18;color:${clr};font-family:var(--fm);text-transform:uppercase">${e.status}</span>
+          </div>
+          <div style="font-size:11px;color:#aaa;font-family:var(--fm);margin-top:2px">${e.provider} · ${e.rate_kwh}¢ · ${e.term_months||12}mo${e.annual_savings?' · <strong style="color:var(--g)">$'+e.annual_savings.toFixed(0)+'/yr saved</strong>':''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:16px;font-weight:700;color:var(--g);font-family:var(--fm)">${e.rate_kwh}¢</div>
+          ${daysLeft!==null&&daysLeft<60?`<div style="font-size:9px;color:${daysLeft<14?'var(--r)':daysLeft<30?'var(--y)':'#888'};font-family:var(--fm)">${daysLeft>0?daysLeft+'d left':'EXPIRED'}</div>`:''}
+        </div>
+      </div>
+      <!-- Detail Panel (hidden by default) -->
+      <div id="enrDetail${eid}" style="display:none;border-top:1px solid rgba(255,255,255,.06);padding:12px;background:rgba(0,0,0,.15);border-radius:0 0 10px 10px">
+        <!-- Customer Details -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:11px;font-family:var(--fm);margin-bottom:10px">
+          <div><span style="color:#666">📧 Email:</span> <span style="color:#ccc">${e.email}</span></div>
+          <div><span style="color:#666">📱 Phone:</span> <span style="color:#ccc">${e.phone}</span></div>
+          <div style="grid-column:1/-1"><span style="color:#666">🏠 Address:</span> <span style="color:#ccc">${e.service_address}, ${e.service_city}, TX ${e.service_zip}</span></div>
+          ${e.esid?`<div><span style="color:#666">⚡ ESID:</span> <span style="color:#ccc">${e.esid}</span></div>`:''}
+          <div><span style="color:#666">📅 Submitted:</span> <span style="color:#ccc">${dt}</span></div>
+          <div><span style="color:#666">📅 Expires:</span> <span style="color:#ccc">${expDt}</span></div>
+          <div><span style="color:#666">⚡ Plan:</span> <span style="color:#ccc">${e.plan_name}</span></div>
+          <div><span style="color:#666">💰 Est. Commission:</span> <span style="color:var(--y)">$${commEst}</span></div>
+          ${e.current_provider?`<div><span style="color:#666">🔄 Switching from:</span> <span style="color:#ccc">${e.current_provider}</span></div>`:''}
+          ${e.notes?`<div style="grid-column:1/-1"><span style="color:#666">📝 Notes:</span> <span style="color:var(--y)">${e.notes}</span></div>`:''}
+          ${e.start_preference?`<div><span style="color:#666">📆 Start:</span> <span style="color:#ccc">${e.start_preference==='asap'?'ASAP':e.start_preference==='next_cycle'?'Next cycle':e.start_date||e.start_preference}</span></div>`:''}
+          ${e.broker_confirmation?`<div><span style="color:#666">✅ Confirmation:</span> <span style="color:var(--g)">${e.broker_confirmation}</span></div>`:''}
+        </div>
+        
+        <!-- ACTION BUTTONS -->
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <!-- PRIMARY: Process / Go to Provider Portal -->
+          ${isPending?`
+          <button onclick="event.stopPropagation();processEnrollment(${eid},'${eProv}')" style="width:100%;padding:10px;font-size:13px;font-weight:700;background:linear-gradient(135deg,var(--g),var(--gd));color:#0a0a0a;border-radius:8px;font-family:var(--fm)">⚡ Process Enrollment — Open ${e.provider} Portal →</button>
+          `:`
+          <button onclick="event.stopPropagation();openProviderPortal('${eProv}')" style="width:100%;padding:8px;font-size:12px;background:rgba(56,189,248,.1);color:var(--b);border:1px solid rgba(56,189,248,.25);border-radius:8px;font-family:var(--fm)">🔗 Open ${e.provider} Portal</button>
+          `}
+          
+          <!-- Copy customer info for pasting into portal -->
+          <button onclick="event.stopPropagation();copyEnrollmentInfo(${eid})" style="width:100%;padding:8px;font-size:11px;background:rgba(255,255,255,.04);color:#aaa;border:1px solid rgba(255,255,255,.08);border-radius:8px;font-family:var(--fm)">📋 Copy Customer Info to Clipboard</button>
+          
+          <!-- Status pipeline -->
+          <div style="display:flex;gap:4px">
+            <button onclick="event.stopPropagation();updateEnrollment(${eid},'pending')" style="flex:1;padding:6px;font-size:9px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(250,204,21,.15);background:${e.status==='pending'?'rgba(250,204,21,.2)':'rgba(0,0,0,.2)'};color:var(--y)">⏳ Pending</button>
+            <button onclick="event.stopPropagation();updateEnrollment(${eid},'submitted')" style="flex:1;padding:6px;font-size:9px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(56,189,248,.15);background:${e.status==='submitted'?'rgba(56,189,248,.2)':'rgba(0,0,0,.2)'};color:var(--b)">📤 Submitted</button>
+            <button onclick="event.stopPropagation();updateEnrollment(${eid},'active')" style="flex:1;padding:6px;font-size:9px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(0,220,130,.15);background:${e.status==='active'?'rgba(0,220,130,.2)':'rgba(0,0,0,.2)'};color:var(--g)">🟢 Active</button>
+            <button onclick="event.stopPropagation();updateEnrollment(${eid},'renewed')" style="flex:1;padding:6px;font-size:9px;border-radius:6px;font-family:var(--fm);border:1px solid rgba(0,220,130,.15);background:${e.status==='renewed'?'rgba(0,220,130,.2)':'rgba(0,0,0,.2)'};color:var(--g)">🔄 Renewed</button>
+          </div>
+          
+          <!-- Commission + Confirmation -->
+          <div style="display:flex;gap:4px">
+            <button onclick="event.stopPropagation();promptCommission(${eid},'${eProv}','${eName}')" style="flex:1;padding:6px;font-size:10px;background:rgba(250,204,21,.08);color:var(--y);border:1px solid rgba(250,204,21,.15);border-radius:6px;font-family:var(--fm)">💰 Set Commission</button>
+            <button onclick="event.stopPropagation();promptConfirmation(${eid})" style="flex:1;padding:6px;font-size:10px;background:rgba(0,220,130,.08);color:var(--g);border:1px solid rgba(0,220,130,.15);border-radius:6px;font-family:var(--fm)">✅ Add Confirmation #</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  
+  if(!list.length)h+='<div style="color:#555;font-size:12px;text-align:center;padding:20px">No enrollments match this filter.</div>';
+  document.getElementById('adEnrList').innerHTML=h;
+}
+
+function escQ(s){return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+function estimateCommFE(provider){
+  const p=(provider||'').toLowerCase();
+  const t1=['txu','reliant','constellation','direct energy'];
+  const t2=['gexa','green mountain','frontier','chariot','rhythm','veteran'];
+  for(const n of t1)if(p.includes(n))return 75;
+  for(const n of t2)if(p.includes(n))return 50;
+  return 35;
+}
+
+function toggleEnrDetail(id){
+  const el=document.getElementById('enrDetail'+id);
+  if(!el)return;
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function processEnrollment(id,provider){
+  // 1. Auto-advance status to 'submitted'
+  updateEnrollment(id,'submitted');
+  // 2. Copy customer info to clipboard
+  copyEnrollmentInfo(id);
+  // 3. Open provider portal
+  setTimeout(()=>openProviderPortal(provider),300);
+}
+
+function openProviderPortal(provider){
+  // Check broker settings for portal URL first
+  const brokerFields=JSON.parse(localStorage.getItem('ww_broker')||'{}');
+  const portalMap={
+    'txu':brokerFields.adRepTXU||'https://www.txu.com/business-electricity/channel-partners',
+    'reliant':brokerFields.adRepReliant||'https://www.reliant.com',
+    'direct energy':brokerFields.adRepDirect||'https://www.directenergy.com/partner',
+    'gexa':brokerFields.adRepGexa||'https://www.gexaenergy.com',
+    'constellation':brokerFields.adRepConstellation||'https://www.constellation.com',
+    'frontier':brokerFields.adRepFrontier||'https://www.frontierutilities.com',
+    'rhythm':brokerFields.adRepRhythm||'https://www.gotrhythm.com',
+    'chariot':brokerFields.adRepChariot||'https://chariotenergy.com',
+  };
+  const p=(provider||'').toLowerCase();
+  let url=null;
+  for(const[key,val] of Object.entries(portalMap)){
+    if(p.includes(key)&&val&&!val.startsWith('undefined')){url=val;break}
+  }
+  if(!url)url=PURLS[provider]||'https://www.powertochoose.org';
+  window.open(url,'_blank');
+}
+
+function copyEnrollmentInfo(id){
+  const e=enrData.find(x=>x.id===id);
+  if(!e)return;
+  const info=`ENROLLMENT - ${e.first_name} ${e.last_name}
+Provider: ${e.provider}
+Plan: ${e.plan_name}
+Rate: ${e.rate_kwh}¢/kWh | Term: ${e.term_months||12} months
+Name: ${e.first_name} ${e.last_name}
+Email: ${e.email}
+Phone: ${e.phone}
+Address: ${e.service_address}, ${e.service_city}, TX ${e.service_zip}
+ESID: ${e.esid||'Not provided'}
+Start: ${e.start_preference==='asap'?'ASAP':e.start_preference==='next_cycle'?'Next billing cycle':e.start_date||'ASAP'}
+Current Provider: ${e.current_provider||'Not provided'}
+Notes: ${e.notes||'None'}`;
+  navigator.clipboard.writeText(info).then(()=>{
+    // Brief flash feedback
+    const card=document.getElementById('enrDetail'+id);
+    if(card){const orig=card.style.borderColor;card.style.borderColor='var(--g)';setTimeout(()=>card.style.borderColor=orig,800)}
+  }).catch(()=>{ /* fallback */ const ta=document.createElement('textarea');ta.value=info;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta)});
+}
+
+function promptConfirmation(id){
+  const conf=prompt('Enter broker confirmation number:');
+  if(!conf)return;
+  updateEnrollmentField(id,{broker_confirmation:conf,status:'confirmed',updated_at:new Date().toISOString()});
+}
+
+function toggleAutoEnroll(on){
+  localStorage.setItem('ww_auto_enroll',on?'true':'false');
+  renderEnrollmentQueue();
+}
+
+async function updateEnrollmentField(id,data){
+  if(!SUPABASE_URL||!SUPABASE_ANON_KEY)return;
+  try{
+    await fetch(SUPABASE_URL+'/rest/v1/enrollments?id=eq.'+id,{method:'PATCH',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify(data)});
+    loadEnrollments();
+  }catch(e){console.error('Update enrollment error:',e)}
 }
 
 async function updateEnrollment(id,status){
@@ -1128,21 +1302,13 @@ async function updateEnrollment(id,status){
 }
 
 function promptCommission(enrollId,provider,name){
-  const amt=prompt('Commission amount for '+name+' ('+provider+'):','75.00');
+  const e=enrData.find(x=>x.id===enrollId);
+  const est=estimateCommFE(provider);
+  const amt=prompt('Commission for '+name+' ('+provider+'):\nEstimated: $'+est,e&&e.estimated_commission?e.estimated_commission:est);
   if(!amt)return;
   const commission=parseFloat(amt);
   if(isNaN(commission)||commission<=0)return;
-  updateEnrollmentCommission(enrollId,commission);
-}
-
-async function updateEnrollmentCommission(id,amount){
-  if(!SUPABASE_URL||!SUPABASE_ANON_KEY)return;
-  try{
-    await fetch(SUPABASE_URL+'/rest/v1/enrollments?id=eq.'+id,{method:'PATCH',
-      headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
-      body:JSON.stringify({estimated_commission:amount,commission_status:'earned',updated_at:new Date().toISOString()})});
-    loadEnrollments();
-  }catch(e){console.error('Commission update error:',e)}
+  updateEnrollmentField(enrollId,{estimated_commission:commission,commission_status:'earned',updated_at:new Date().toISOString()});
 }
 
 // === MODALS ===
