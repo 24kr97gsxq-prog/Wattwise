@@ -717,9 +717,15 @@ async function loadFromSupabase() {
 
     const grouped = {};
     plans.forEach(p => {
+      const rate = parseFloat(p.rate_kwh);
+      // FILTER: Skip garbage rates — teasers below 3¢, errors above 50¢
+      // Plans under 3¢/kWh are always usage-credit gimmicks or data errors
+      if (rate < 3 || rate > 50 || isNaN(rate)) return;
+      // FILTER: Skip ultra-short terms (1-2 months = intro teasers)
+      if (p.term_months && p.term_months < 3) return;
       if (!grouped[p.tdu]) grouped[p.tdu] = [];
       grouped[p.tdu].push({
-        p: p.provider, n: p.plan_name, r: parseFloat(p.rate_kwh),
+        p: p.provider, n: p.plan_name, r: rate,
         t: p.term_months || 12, re: p.renewable_pct || 0, s: 3.5, cf: parseFloat(p.cancel_fee) || 0,
         url: p.signup_url || p.enroll_url || '',
         w: p.warnings || '', st: p.special_terms || '', ap: p.has_autopay_req || false
