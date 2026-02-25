@@ -407,7 +407,13 @@ def upload_to_supabase(plans):
         try:
             with urlopen(req, timeout=30) as resp:
                 if resp.status in (200,201,204): success += len(batch)
-        except Exception as e: print(f"  Batch error at {i}: {e}")
+        except Exception as e:
+            err_body = ''
+            if hasattr(e, 'read'):
+                try: err_body = e.read().decode('utf-8')[:500]
+                except: pass
+            print(f"  Batch error at {i}: {e}")
+            if err_body: print(f"    Detail: {err_body}")
 
     print(f"  Uploaded {success}/{len(plans)} plans")
     return success > 0
