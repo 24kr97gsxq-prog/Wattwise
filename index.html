@@ -625,7 +625,7 @@ button{font-family:inherit;border:none;cursor:pointer}
           <td style="padding:8px 4px"><a href="https://www.choosetexaspower.org/affiliates/" target="_blank" style="color:var(--g)">Choose Texas Power</a></td>
           <td style="padding:8px 4px"><span style="background:rgba(255,255,255,.08);color:#888;padding:2px 8px;border-radius:4px;font-size:10px">To Apply</span></td>
           <td style="padding:8px 4px">Per enrollment + tiers</td>
-          <td style="padding:8px 4px;font-size:10px;color:#666">Email: partnerships@saveonenergy.com</td>
+          <td style="padding:8px 4px;font-size:10px;color:#666">Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86f6e7f4f2e8e3f4f5eeeff6f5c6f5e7f0e3e9e8e3e8e3f4e1ffa8e5e9eb">[email&#160;protected]</a></td>
         </tr>
         <tr style="color:#ccc;border-bottom:1px solid rgba(0,220,130,.06)">
           <td style="padding:8px 4px"><a href="https://www.electricchoice.com/electricity-affiliate-program/" target="_blank" style="color:var(--g)">Electric Choice</a></td>
@@ -795,7 +795,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 
 <div id="confC"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================================
 // SUPABASE CONFIG
 // Replace with your Supabase project URL and anon (public) key
@@ -997,8 +997,8 @@ function rPlans(){const pl=sAll?R.sorted:R.sorted.slice(0,5);let s;
     if(p.fd&&p.fd.length>2){fpHTML=`<div style="font-size:10px;color:#999;margin-top:4px;padding:4px 6px;background:rgba(255,255,255,.03);border-radius:4px;border-left:2px solid rgba(250,204,21,.3)">📋 ${p.fd.substring(0,150)}${p.fd.length>150?'...':''}</div>`}
     else if(p.hbc&&p.bca){fpHTML=`<div style="font-size:10px;color:#999;margin-top:4px">📋 Base charge: $${p.bca}/mo</div>`}
     // EFL link
-    const eflHTML=p.efl?`<a href="${p.efl}" target="_blank" rel="noopener" style="font-size:10px;color:var(--b);text-decoration:none;margin-left:8px" title="View Electricity Facts Label">📄 Fact Sheet</a>`:'';
-    h+=`<div class="prow${ib?' best':''}${p.ig?' gotcha':''} fu" style="animation-delay:${i*.06}s"><div class="prow-top"><div class="pinf"><div><span class="pprov">${p.p}</span><span class="pbdg">${badges}</span></div><div class="pname">${p.n}${eflHTML}</div>${tierHTML}<div class="pmeta"><span title="Transparency Score: ${p.ts}/100" style="cursor:help"><span style="display:inline-block;width:40px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;vertical-align:middle;margin-right:4px"><span style="display:block;height:100%;width:${p.ts}%;background:${tCol};border-radius:2px"></span></span><span style="font-size:9px;color:${tCol}">${p.ts}</span></span><span>${p.rt||'Fixed'}</span><span>${p.t}mo</span><span>Cancel: ${p.cf===0?'<span style="color:var(--g)">None</span>':'$'+p.cf}</span>${p.re>0&&p.re<100?'<span>'+p.re+'% green</span>':''}</div>${fpHTML}</div><div class="pprc"><div class="prate${ib?' br':''}">${p.wr}¢</div><div style="font-size:9px;color:#666;margin-top:1px">weighted avg</div><div class="pmo">$${mc.toFixed(2)}/mo</div>${pos?`<div class="psav">Save $${sv.toFixed(0)}/mo</div>`:`<div class="psav" style="color:var(--r)">+$${Math.abs(sv).toFixed(0)}/mo</div>`}</div></div><div class="psel"><div class="psel-info">${pos?`<span class="amt">$${asv.toFixed(0)}</span>/yr savings (${pct.toFixed(0)}% less)`:`<span style="color:var(--r)">$${Math.abs(asv).toFixed(0)}</span>/yr more`}${uCR&&pos?` <span style="color:var(--y)">vs your ${cr}¢</span>`:''}</div><button class="btn-sel" onclick='openReg(${pj})'>${pos?'Choose This Plan →':'View Details →'}</button></div></div>`});
+    const eflHTML=p.efl?`<a href="${p.efl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#fff;background:rgba(0,220,130,.15);border:1px solid rgba(0,220,130,.3);padding:3px 10px;border-radius:20px;text-decoration:none;margin-top:6px;font-weight:500;transition:all .2s" onmouseover="this.style.background='rgba(0,220,130,.3)'" onmouseout="this.style.background='rgba(0,220,130,.15)'" title="View Electricity Facts Label PDF">📄 View Fact Sheet</a>`:'';
+    h+=`<div class="prow${ib?' best':''}${p.ig?' gotcha':''} fu" style="animation-delay:${i*.06}s"><div class="prow-top"><div class="pinf"><div><span class="pprov">${p.p}</span><span class="pbdg">${badges}</span></div><div class="pname">${p.n}</div>${eflHTML}${tierHTML}<div class="pmeta"><span title="Transparency Score: ${p.ts}/100" style="cursor:help"><span style="display:inline-block;width:40px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;vertical-align:middle;margin-right:4px"><span style="display:block;height:100%;width:${p.ts}%;background:${tCol};border-radius:2px"></span></span><span style="font-size:9px;color:${tCol}">${p.ts}</span></span><span>${p.rt||'Fixed'}</span><span>${p.t}mo</span><span>Cancel: ${p.cf===0?'<span style="color:var(--g)">None</span>':'$'+p.cf}</span>${p.re>0&&p.re<100?'<span>'+p.re+'% green</span>':''}</div>${fpHTML}</div><div class="pprc"><div class="prate${ib?' br':''}">${p.wr}¢</div><div style="font-size:9px;color:#666;margin-top:1px">weighted avg</div><div class="pmo">$${mc.toFixed(2)}/mo</div>${pos?`<div class="psav">Save $${sv.toFixed(0)}/mo</div>`:`<div class="psav" style="color:var(--r)">+$${Math.abs(sv).toFixed(0)}/mo</div>`}</div></div><div class="psel"><div class="psel-info">${pos?`<span class="amt">$${asv.toFixed(0)}</span>/yr savings (${pct.toFixed(0)}% less)`:`<span style="color:var(--r)">$${Math.abs(asv).toFixed(0)}</span>/yr more`}${uCR&&pos?` <span style="color:var(--y)">vs your ${cr}¢</span>`:''}</div><button class="btn-sel" onclick='openReg(${pj})'>${pos?'Choose This Plan →':'View Details →'}</button></div></div>`});
   document.getElementById('pList').innerHTML=h;
   const ab=document.getElementById('saBtn');if(!sAll&&R.sorted.length>5){ab.style.display='block';ab.textContent=`Show all ${R.sorted.length} plans ↓`}else ab.style.display='none'}
 
@@ -2114,12 +2114,4 @@ document.querySelector('.logo').addEventListener('click',()=>{
 });
 // URL hash access
 if(location.hash==='#admin')setTimeout(openAd,500);
-window.addEventListener('hashchange',()=>{if(location.hash==='#admin')openAd()});
-// Hidden URL access: ?settings=1
-if(new URLSearchParams(location.search).get('settings')==='1')setTimeout(openAd,500);
-
-// Init
-loadAdmin();
-</script>
-</body>
-</html>
+window.add
