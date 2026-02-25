@@ -210,10 +210,17 @@ def parse_csv(csv_text):
         is_promotion = parse_bool(row.get('Promotion') or row.get('promotion'))
 
         # === FEES / CREDITS / FINE PRINT ===
-        has_fees_credits = parse_bool(row.get('Fees_Credits') or row.get('fees_credits') or '')
-        fees_details = (row.get('MinUsageFeesCredits') or row.get('min_usage_fees') or row.get('Detail') or '').strip()
+        has_fees_credits = parse_bool(row.get('Fees/Credits') or row.get('Fees_Credits') or row.get('fees_credits') or '')
+        # MinUsageFeesCredits is a boolean flag in PTC CSV, not detail text
+        has_min_usage_fees_flag = parse_bool(row.get('MinUsageFeesCredits') or '')
+        fees_details_raw = (row.get('MinUsageFeesCredits') or '').strip()
+        # If it's just TRUE/FALSE, don't store as detail text
+        fees_details = '' if fees_details_raw.upper() in ('TRUE','FALSE','') else fees_details_raw
         special_terms = (row.get('SpecialTerms') or row.get('special_terms') or '').strip()
         promo_desc = (row.get('PromotionDesc') or row.get('promotion_desc') or row.get('PromotionDescription') or '').strip()
+        # Use special_terms as fees_details if we have no other detail text
+        if not fees_details and special_terms:
+            fees_details = special_terms
 
         # === DEEP SCAN FINE PRINT FOR REBATES/BASE CHARGES/PASS-THROUGHS ===
         fine_print = detect_rebate_flags(fees_details, special_terms, promo_desc)
@@ -263,11 +270,11 @@ def parse_csv(csv_text):
             warnings.append('has_rebate_credit')
         if fine_print['has_base_charge']:
             warnings.append('has_base_charge')
-        if fine_print['has_min_usage_fee']:
+        if fine_print['has_min_usage_fee'] or has_min_usage_fees_flag:
             warnings.append('has_min_usage_fee')
         if fine_print['has_pass_through']:
             warnings.append('has_pass_through')
-        if has_fees_credits and fees_details:
+        if has_fees_credits:
             warnings.append('has_usage_fees_credits')
         if is_new_customer:
             warnings.append('new_customers_only')
@@ -288,7 +295,7 @@ def parse_csv(csv_text):
         if is_gotcha: transparency -= 25           # big tier spread = gaming
         if has_rebate: transparency -= 20          # rebate inflates one tier
         if fine_print['has_base_charge']: transparency -= 10
-        if fine_print['has_min_usage_fee']: transparency -= 15
+        if fine_print['has_min_usage_fee'] or has_min_usage_fees_flag: transparency -= 15
         if is_promotion: transparency -= 10
         if is_tou: transparency -= 10             # TOU pricing is unpredictable
         if not is_fixed: transparency -= 15       # variable rate risk
@@ -330,7 +337,7 @@ def parse_csv(csv_text):
             'rebate_amount': fine_print['rebate_amount'],
             'has_base_charge': fine_print['has_base_charge'],
             'base_charge_amount': fine_print['base_charge_amount'],
-            'has_min_usage_fee': fine_print['has_min_usage_fee'],
+            'has_min_usage_fee': fine_print['has_min_usage_fee'] or has_min_usage_fees_flag,
             'min_usage_kwh': fine_print['min_usage_kwh'],
             'has_pass_through': fine_print['has_pass_through'],
 
