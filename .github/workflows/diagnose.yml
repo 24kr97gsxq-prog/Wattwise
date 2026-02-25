@@ -1,0 +1,29 @@
+name: Diagnose PTC Columns
+on:
+  workflow_dispatch:
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Fetch and dump PowerToChoose CSV headers
+        run: |
+          python3 -c "
+          import csv, io, sys
+          from urllib.request import urlopen, Request
+          req = Request('http://www.powertochoose.org/en-us/Plan/ExportToCsv', headers={'User-Agent': 'Test/1.0', 'Accept': '*/*'})
+          with urlopen(req, timeout=60) as r:
+              text = r.read().decode('utf-8', errors='replace')
+          reader = csv.DictReader(io.StringIO(text))
+          headers = reader.fieldnames
+          print(f'COLUMNS ({len(headers)}):')
+          for i, h in enumerate(headers):
+              print(f'  [{i}] {repr(h)}')
+          row = next(reader)
+          print(f'\nFIRST ROW:')
+          for h in headers:
+              v = row.get(h, '')
+              if v and v.strip():
+                  print(f'  {h} = {v.strip()[:100]}')
+          "
