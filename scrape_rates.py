@@ -148,7 +148,10 @@ def parse_csv(csv_text):
     print("Parsing plans — FULL DATA + GOTCHA DETECTION...")
     reader = csv.DictReader(io.StringIO(csv_text))
 
+    # PTC CSV wraps column headers in square brackets: [RepCompany], [kwh500], etc.
+    # Strip brackets so our row.get('RepCompany') lookups work
     if reader.fieldnames:
+        reader.fieldnames = [h.strip('[] ') for h in reader.fieldnames]
         print(f"  CSV columns ({len(reader.fieldnames)}): {', '.join(reader.fieldnames[:8])}...")
 
     plans = []
