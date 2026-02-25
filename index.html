@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WattWise Gratuity — Free Texas Electricity Savings</title>
+<title>Gratuity Energy — Free Texas Electricity Savings</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -21,6 +21,8 @@ button{font-family:inherit;border:none;cursor:pointer}
 @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(0,220,130,.1)}50%{box-shadow:0 0 40px rgba(0,220,130,.25)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes checkPop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes scanPulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes scanScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .fu{animation:fadeUp .6s ease-out both}
 .confetti-p{position:fixed;top:-20px;z-index:9999;pointer-events:none}
 
@@ -93,7 +95,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 
 /* Plan Rows */
 .prow{padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
-.prow:hover{background:rgba(255,255,255,.015)}.prow.best{background:rgba(0,220,130,.03)}
+.prow:hover{background:rgba(255,255,255,.015)}.prow.best{background:rgba(0,220,130,.03)}.prow.gotcha{border-left:3px solid rgba(250,204,21,.5)}
 .prow-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .pinf{flex:1;min-width:180px}
 .pprov{font-size:14px;font-weight:600;color:#fff}
@@ -170,6 +172,18 @@ button{font-family:inherit;border:none;cursor:pointer}
 .tpty h3{font-family:var(--fd);font-size:24px;color:#fff;margin:0 0 10px}
 .tpty p{color:#a0a0b0;font-size:14px;line-height:1.6;margin-bottom:22px}
 .tpty strong{color:var(--g)}
+
+/* === LIVE RATE SCANNER === */
+.scanner{background:rgba(0,0,0,.3);border:1px solid rgba(0,220,130,.15);border-radius:12px;padding:10px 14px;overflow:hidden}
+.scanner-hdr{display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,220,130,.6);font-family:var(--fm);font-weight:600;margin-bottom:8px}
+.scanner-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:scanPulse 1.5s ease infinite}
+.scanner-badge{background:rgba(0,220,130,.15);color:var(--g);padding:1px 6px;border-radius:4px;font-size:8px;margin-left:auto}
+.scanner-scroll{overflow:hidden;position:relative;height:32px}
+.scanner-scroll .ticker{display:flex;gap:16px;animation:scanScroll 30s linear infinite;white-space:nowrap}
+.scanner-scroll .tick{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:11px;color:#aaa;padding:6px 10px;background:rgba(255,255,255,.02);border-radius:6px;border:1px solid rgba(255,255,255,.04);flex-shrink:0}
+.tick .tprov{color:#ccc;font-weight:600;max-width:100px;overflow:hidden;text-overflow:ellipsis}.tick .trate{color:var(--g);font-weight:700}.tick .tterm{color:#666;font-size:9px}
+.tick.tbest{border-color:rgba(0,220,130,.3);background:rgba(0,220,130,.06)}
+.scanner-foot{display:flex;justify-content:space-between;font-size:10px;font-family:var(--fm);margin-top:6px}
 
 /* === REGISTRATION MODAL === */
 .rmdl{max-width:560px;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;height:100%}
@@ -334,7 +348,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 <body>
 
 <header class="hdr">
-  <div class="logo"><div class="logo-i">⚡</div><div><div class="logo-t">WattWise</div><div class="logo-s">GRATUITY</div></div></div>
+  <div class="logo"><svg width="38" height="38" viewBox="0 0 100 100" style="flex-shrink:0"><defs><linearGradient id="gLogo" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00DC82"/><stop offset="100%" stop-color="#00b368"/></linearGradient></defs><rect width="100" height="100" rx="20" fill="url(#gLogo)"/><path d="M55 12L30 52h18L35 88 70 45H52L68 12z" fill="#0a0a14" opacity=".85"/><path d="M53 15L29 53h17L34 86 68 47H51L66 15z" fill="#fff"/></svg><div><div class="logo-t">Gratuity Energy</div><div class="logo-s">FREE ELECTRICITY SAVINGS</div></div></div>
   <div class="hdr-b"><button class="btn-gh" onclick="openStory()">Andy's Story</button><button class="btn-tp" id="hTip" onclick="openTip()">☕ Tip Andy</button></div>
 </header>
 
@@ -353,6 +367,16 @@ button{font-family:inherit;border:none;cursor:pointer}
 <section class="res hid" id="resSec">
   <div class="tbar fu"><div><div class="lb">Your Service Territory</div><div class="nm" id="tduN"></div><div class="rg" id="tduR"></div></div><div style="text-align:right"><div class="lb">Default Rate (POLR)</div><div class="polr" id="polrR"></div></div></div>
 
+  <!-- LIVE RATE SCANNER -->
+  <div class="scanner fu" style="animation-delay:.03s" id="liveScanner">
+    <div class="scanner-hdr"><span class="scanner-dot"></span> LIVE RATE SCANNER <span class="scanner-badge" id="scanBadge">SCANNING</span></div>
+    <div class="scanner-scroll" id="scanTicker"></div>
+    <div class="scanner-foot">
+      <span id="scanBest" style="color:var(--g)"></span>
+      <span id="scanTime" style="color:#555"></span>
+    </div>
+  </div>
+
   <div class="crbar fu" style="animation-delay:.06s"><div><h4>What are you paying now?</h4><p>Enter your current rate for personalized savings on every plan</p></div><div class="cr-inp"><label>Your Rate:</label><input type="number" id="crInp" class="cr-sm" placeholder="14.5" step="0.1" min="1" max="50" oninput="updCR()"><span style="font-size:13px;color:#888;font-family:var(--fm)">¢/kWh</span></div></div>
 
   <div class="sgrid">
@@ -364,7 +388,7 @@ button{font-family:inherit;border:none;cursor:pointer}
   <div class="ccomp fu" style="animation-delay:.3s"><div class="lb" style="margin-bottom:14px">Monthly Cost at <span id="uLbl">1000</span> kWh</div><div id="cBars"></div></div>
 
   <div class="ptbl fu" style="animation-delay:.36s">
-    <div class="ptbl-h"><div><h3 id="ptTitle">Top 5 Plans</h3><div class="sub" id="ptSub">Sorted by rate · 1000 kWh/mo</div></div><div class="sortb"><button class="sbtn a" onclick="sSort('rate',this)">Rate</button><button class="sbtn" onclick="sSort('rating',this)">Rating</button><button class="sbtn" onclick="sSort('renewable',this)">Renewable</button><button class="sbtn" onclick="sSort('provider',this)">Provider</button></div></div>
+    <div class="ptbl-h"><div><h3 id="ptTitle">Top 5 Plans</h3><div class="sub" id="ptSub">Sorted by rate · 1000 kWh/mo</div></div><div class="sortb"><button class="sbtn a" onclick="sSort('rate',this)">Rate</button><button class="sbtn" onclick="sSort('rating',this)">Transparency</button><button class="sbtn" onclick="sSort('renewable',this)">Renewable</button><button class="sbtn" onclick="sSort('provider',this)">Provider</button></div></div>
     <div id="pList"></div>
     <button class="btn-all" id="saBtn" onclick="togAll()" style="display:none">Show all plans ↓</button>
   </div>
@@ -402,14 +426,14 @@ button{font-family:inherit;border:none;cursor:pointer}
 </section>
 
 <!-- AI CHAT BUBBLE -->
-<button class="ai-fab" id="aiFab" onclick="toggleAiChat()" title="Ask WattWise AI">⚡</button>
+<button class="ai-fab" id="aiFab" onclick="toggleAiChat()" title="Ask Gratuity Energy AI">⚡</button>
 <div class="ai-chat" id="aiChat">
   <div class="ai-chat-hdr">
-    <h4><span style="font-size:18px">⚡</span> WattWise AI</h4>
+    <h4><span style="font-size:18px">⚡</span> Gratuity Energy AI</h4>
     <button class="mdl-x" onclick="toggleAiChat()" style="width:28px;height:28px;font-size:14px">×</button>
   </div>
   <div class="ai-chat-msgs" id="aiMsgs">
-    <div class="ai-msg bot">Hey! I'm your WattWise AI advisor. Ask me anything about Texas electricity — rates, plans, when to lock in, how to read your bill, or tips to lower usage. 💡</div>
+    <div class="ai-msg bot">Hey! I'm your Gratuity Energy AI advisor. Ask me anything about Texas electricity — rates, plans, when to lock in, how to read your bill, or tips to lower usage. 💡</div>
   </div>
   <div class="ai-chat-quick" id="aiQuick">
     <button onclick="aiAsk('Should I lock in a fixed rate now or wait?')">Lock in or wait?</button>
@@ -440,7 +464,7 @@ button{font-family:inherit;border:none;cursor:pointer}
     <p>People kept asking: "Andy, can I pay you for this?" His answer — <em>"Nah, just buy me a coffee if you feel like it."</em></p>
     <div class="stph"><div class="tt">THE WATTSWISE PHILOSOPHY</div><p>Give value first. Give it freely. Give it publicly. A voluntary tip after a real savings reveal is worth more than any hard sell. Andy calls it <strong>"The Gratitude Economy."</strong></p></div>
     <p>Andy's mission: <strong style="color:var(--g)">help every Texan in a deregulated zone get the best possible electricity rate, for free.</strong></p>
-    <p style="color:#888;font-size:13px">— The WattWise Team, February 2026</p>
+    <p style="color:#888;font-size:13px">— The Gratuity Energy Team, February 2026</p>
   </div>
 </div></div></div>
 
@@ -457,9 +481,9 @@ button{font-family:inherit;border:none;cursor:pointer}
     <div class="tpdiv">or custom amount</div>
     <div style="display:flex;gap:10px"><div class="tpcw"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#666;font-size:16px">$</span><input type="number" id="cTpI" class="tpci" placeholder="5.00" oninput="sCTp()" onfocus="sCTp()"></div></div>
     <button class="btn-tps" id="tpSB" onclick="doTp()">Select an Amount</button>
-    <div class="tpf">100% goes to keeping WattWise free. No middlemen.</div>
+    <div class="tpf">100% goes to keeping Gratuity Energy free. No middlemen.</div>
   </div>
-  <div class="mdl tpty" id="tpTy" style="display:none"><div class="emo">💚</div><h3>You're Amazing!</h3><p>Your <span id="tpTA">$0</span> tip helps Andy keep WattWise free. You're saving <strong id="tpTS">$0/yr</strong> and paying it forward.</p><button class="btn-cta" onclick="xTp()">Close</button></div>
+  <div class="mdl tpty" id="tpTy" style="display:none"><div class="emo">💚</div><h3>You're Amazing!</h3><p>Your <span id="tpTA">$0</span> tip helps Andy keep Gratuity Energy free. You're saving <strong id="tpTS">$0/yr</strong> and paying it forward.</p><button class="btn-cta" onclick="xTp()">Close</button></div>
 </div>
 
 <!-- REGISTRATION MODAL -->
@@ -534,7 +558,7 @@ button{font-family:inherit;border:none;cursor:pointer}
       </div>
       <!-- Consent / Legal -->
       <div style="margin-top:14px;font-size:10px;color:#666;line-height:1.6;font-family:var(--fm)">
-        By submitting, you authorize WattWise to submit this enrollment on your behalf to <span id="rgProvLegal"></span>. This is a <strong>free service</strong> — you pay nothing extra. Your information is kept confidential and only used to process your switch. You can cancel anytime before your switch processes by contacting us.
+        By submitting, you authorize Gratuity Energy to submit this enrollment on your behalf to <span id="rgProvLegal"></span>. This is a <strong>free service</strong> — you pay nothing extra. Your information is kept confidential and only used to process your switch. You can cancel anytime before your switch processes by contacting us.
       </div>
       <!-- Error message area -->
       <div id="enrError" style="display:none;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--r);font-family:var(--fm)"></div>
@@ -565,7 +589,7 @@ button{font-family:inherit;border:none;cursor:pointer}
       <div class="rcr sav" style="border-radius:10px;border:1px solid rgba(0,220,130,.15)"><div class="rcl">Your Estimated Savings<small>Year 1</small></div><div class="rcv" id="cnfSav">$0/yr</div></div>
       <div class="tipnudge" style="margin-top:24px">
         <div class="tipnudge-line"></div>
-        <div class="tipnudge-inner"><span class="tipnudge-txt">WattWise is always free. Andy built this for you.</span>
+        <div class="tipnudge-inner"><span class="tipnudge-txt">Gratuity Energy is always free. Andy built this for you.</span>
           <button class="tipnudge-btn" onclick="xRg();openTip()">☕ Buy him a coffee?</button>
         </div>
       </div>
@@ -579,7 +603,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 <!-- ADMIN PANEL (access: 4× click logo or #admin in URL — PIN protected) -->
 <div class="ov" id="adOv" onclick="xOv(event,'adOv')"><div class="mdl admdl" id="adMdl" style="max-width:600px">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 24px 0;flex-shrink:0">
-    <div><div class="lb" style="color:var(--o);margin-bottom:6px">ADMIN PANEL</div><h3 style="font-family:var(--fd);font-size:22px;color:#fff;margin:0">WattWise Settings</h3></div>
+    <div><div class="lb" style="color:var(--o);margin-bottom:6px">ADMIN PANEL</div><h3 style="font-family:var(--fd);font-size:22px;color:#fff;margin:0">Gratuity Energy Settings</h3></div>
     <button class="mdl-x" onclick="xAd()">×</button>
   </div>
   <div style="padding:20px 24px 28px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0">
@@ -664,8 +688,8 @@ button{font-family:inherit;border:none;cursor:pointer}
         <div style="font-size:10px;color:var(--g);margin-bottom:10px;padding:10px 12px;background:rgba(0,220,130,.06);border:1px solid rgba(0,220,130,.15);border-radius:8px;line-height:1.5">💡 Andy contacts each REP's channel partner team with his PUCT broker license # to request portal access. Credentials go here once received.</div>
         <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(0,220,130,.55);font-family:var(--fm);margin:12px 0 6px;font-weight:700">PUCT Broker Registration</div>
         <div class="ad-field"><label>PUCT License Number</label><input class="rinp" id="adBrkLicense" placeholder="BR######" oninput="saveBroker()"></div>
-        <div class="ad-field"><label>Broker Business Name</label><input class="rinp" id="adBrkName" placeholder="e.g. WattWise Energy LLC" oninput="saveBroker()"></div>
-        <div class="ad-field"><label>Broker Contact Email</label><input class="rinp" id="adBrkEmail" placeholder="andy@wattwiseenergy.com" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Broker Business Name</label><input class="rinp" id="adBrkName" placeholder="e.g. Gratuity Energy Energy LLC" oninput="saveBroker()"></div>
+        <div class="ad-field"><label>Broker Contact Email</label><input class="rinp" id="adBrkEmail" placeholder="andy@gratuityenergyenergy.com" oninput="saveBroker()"></div>
         <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(0,220,130,.55);font-family:var(--fm);margin:16px 0 6px;font-weight:700">REP Broker Portals</div>
         <div class="ad-field"><label>TXU Energy — <a href="https://www.txu.com/business-electricity/channel-partners" target="_blank" style="color:var(--g)">Apply Here</a></label><input class="rinp" id="adRepTXU" placeholder="Portal URL / username" oninput="saveBroker()"></div>
         <div class="ad-field"><label>Reliant Energy — <a href="https://www.reliant.com" target="_blank" style="color:var(--g)">Contact Channel Team</a></label><input class="rinp" id="adRepReliant" placeholder="Portal URL / username" oninput="saveBroker()"></div>
@@ -712,7 +736,7 @@ button{font-family:inherit;border:none;cursor:pointer}
     <!-- Enrollment Lead Queue -->
     <div class="ad-sec" style="border-color:rgba(56,189,248,.2);background:rgba(56,189,248,.03)">
       <div class="ad-title">📋 Enrollment Queue</div>
-      <div class="ad-desc">Customer enrollments submitted through WattWise. Process these through your broker portal.</div>
+      <div class="ad-desc">Customer enrollments submitted through Gratuity Energy. Process these through your broker portal.</div>
       <div id="adEnrStats" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px">
         <div class="ad-stat"><span class="ad-stat-n" id="adEnrPending" style="color:var(--y)">0</span><span class="ad-stat-l">Pending</span></div>
         <div class="ad-stat"><span class="ad-stat-n" id="adEnrActive" style="color:var(--g)">0</span><span class="ad-stat-l">Active</span></div>
@@ -797,31 +821,62 @@ let dbUpdated = 'Feb 20, 2026';
 
 // Try to load live data from Supabase
 async function loadFromSupabase() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) { console.log('WattWise: No Supabase config'); return false; }
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) { console.log('Gratuity Energy: No Supabase config'); return false; }
   try {
     const resp = await fetch(`${SUPABASE_URL}/rest/v1/plans?select=*&order=rate_kwh.asc&limit=1000`, {
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
     });
-    console.log('WattWise: Supabase response status:', resp.status);
-    if (!resp.ok) { const err = await resp.text(); console.log('WattWise: Supabase error:', err); return false; }
+    console.log('Gratuity Energy: Supabase response status:', resp.status);
+    if (!resp.ok) { const err = await resp.text(); console.log('Gratuity Energy: Supabase error:', err); return false; }
     const plans = await resp.json();
-    console.log('WattWise: Got', plans.length, 'plans from Supabase');
+    console.log('Gratuity Energy: Got', plans.length, 'plans from Supabase');
     if (!plans.length) return false;
 
     const grouped = {};
     plans.forEach(p => {
       const rate = parseFloat(p.rate_kwh);
-      // FILTER: Skip garbage rates — teasers below 3¢, errors above 50¢
-      // Plans under 3¢/kWh are always usage-credit gimmicks or data errors
       if (rate < 3 || rate > 50 || isNaN(rate)) return;
-      // FILTER: Skip ultra-short terms (1-2 months = intro teasers)
       if (p.term_months && p.term_months < 3) return;
       if (!grouped[p.tdu]) grouped[p.tdu] = [];
+      
+      // Parse warnings (may be JSON string or array)
+      let warns = p.warnings || [];
+      if (typeof warns === 'string') { try { warns = JSON.parse(warns); } catch(e) { warns = []; } }
+      
       grouped[p.tdu].push({
         p: p.provider, n: p.plan_name, r: rate,
+        // ALL THREE PRICING TIERS
+        r5: parseFloat(p.rate_kwh500) || rate,     // 500 kWh rate
+        r2: parseFloat(p.rate_kwh2000) || rate,    // 2000 kWh rate
+        wr: parseFloat(p.weighted_rate) || rate,   // Weighted average (TRUE cost)
+        // PLAN DETAILS
         t: p.term_months || 12, re: p.renewable_pct || 0, s: 3.5, cf: parseFloat(p.cancel_fee) || 0,
-        url: p.signup_url || p.enroll_url || '',
-        w: p.warnings || '', st: p.special_terms || '', ap: p.has_autopay_req || false
+        rt: p.rate_type || 'Fixed',
+        // FINE PRINT / TRANSPARENCY
+        ts: parseInt(p.transparency_score) || 100,  // Transparency score 0-100
+        ig: p.is_gotcha || false,                   // Gotcha flag
+        rs: parseFloat(p.rate_spread) || 0,         // Rate spread between tiers
+        hr: p.has_rebate || false,                  // Has rebate/credit
+        ra: p.rebate_amount || null,                // Rebate $ amount
+        hbc: p.has_base_charge || false,            // Has base charge
+        bca: p.base_charge_amount || null,          // Base charge amount
+        hmf: p.has_min_usage_fee || false,          // Has minimum usage fee
+        muk: p.min_usage_kwh || null,               // Min usage kWh threshold
+        hpt: p.has_pass_through || false,           // Has pass-through charges
+        fd: p.fees_details || '',                   // Raw fee details text
+        st: p.special_terms || '',                  // Special terms text
+        pd: p.promo_desc || '',                     // Promotion description
+        ip: p.is_promotion || false,                // Is promotional
+        nc: p.is_new_customer || false,             // New customers only
+        pp: p.is_prepaid || false,                  // Prepaid plan
+        tou: p.is_tou || false,                     // Time of use
+        // WARNINGS
+        w: warns,
+        // URLS
+        url: p.enroll_url || '',
+        efl: p.efl_url || '',                      // Electricity Facts Label PDF
+        turl: p.terms_url || '',                    // Terms of Service URL
+        ap: false
       });
     });
 
@@ -834,11 +889,11 @@ async function loadFromSupabase() {
       document.getElementById('dbC').textContent = tP;
       document.getElementById('dbDate').textContent = dbUpdated;
       document.getElementById('dbSrc').textContent = '🟢 Live from PowerToChoose.org';
-      console.log('WattWise: Loaded ' + tP + ' live plans across ' + Object.keys(grouped).length + ' TDUs');
+      console.log('Gratuity Energy: Loaded ' + tP + ' live plans across ' + Object.keys(grouped).length + ' TDUs');
       return true;
     }
   } catch (e) {
-    console.log('WattWise: Supabase error:', e);
+    console.log('Gratuity Energy: Supabase error:', e);
   }
   return false;
 }
@@ -871,38 +926,79 @@ function doSearch(){const z=document.getElementById('zInp').value.trim(),u=parse
   if(!z||z.length!==5||!/^\d{5}$/.test(z)){e.textContent="Please enter a valid 5-digit Texas ZIP code";e.style.display='block';return}
   b.disabled=true;b.textContent="⚡ Scanning...";stats.searches++;
   setTimeout(()=>{const td=DB.z2t[z];if(!td){e.textContent="ZIP not in our Texas deregulated database. Try DFW (75xxx) or Houston (77xxx).";e.style.display='block';b.disabled=false;b.textContent="Find My Best Rate";return}
-    const pl=DB.p[td],po=DB.po[td],ti=DB.tdu[td],sr=[...pl].sort((a,b)=>a.r-b.r),bs=sr[0];
-    R={tdu:td,territory:ti,polr:po,best:bs,sorted:sr,usage:u,zip:z,mcB:(bs.r/100)*u,mcP:(po/100)*u,mcA:(DB.sa/100)*u,ms:((po-bs.r)/100)*u,as:((po-bs.r)/100)*u*12};
+    const pl=DB.p[td],po=DB.po[td],ti=DB.tdu[td],sr=[...pl].sort((a,b)=>a.wr-b.wr),bs=sr[0];
+    R={tdu:td,territory:ti,polr:po,best:bs,sorted:sr,usage:u,zip:z,mcB:(bs.wr/100)*u,mcP:(po/100)*u,mcA:(DB.sa/100)*u,ms:((po-bs.wr)/100)*u,as:((po-bs.wr)/100)*u*12};
     render();b.disabled=false;b.textContent="Find My Best Rate";document.getElementById('hTip').classList.add('vis');
     fire();setTimeout(()=>document.getElementById('resSec').scrollIntoView({behavior:'smooth',block:'start'}),100)},1100)}
 
 function render(){document.getElementById('resSec').classList.remove('hid');
   document.getElementById('tduN').textContent=R.territory.n;document.getElementById('tduR').textContent=R.territory.r;
-  document.getElementById('polrR').textContent=R.polr+'¢/kWh';document.getElementById('bRate').textContent=R.best.r+'¢';
+  document.getElementById('polrR').textContent=R.polr+'¢/kWh';document.getElementById('bRate').textContent=R.best.wr+'¢';
   document.getElementById('bProv').textContent='per kWh · '+R.best.p;document.getElementById('mSav').textContent='$'+R.ms.toFixed(0);
   document.getElementById('aSav').textContent='$'+R.as.toFixed(0);document.getElementById('uLbl').textContent=R.usage;
   document.getElementById('ctaS').textContent='$'+R.as.toFixed(0);document.getElementById('crInp').value='';
-  rBars();rPlans();generateAiInsights();
+  rBars();rPlans();generateAiInsights();buildScanner();
   // Check if this is a re-enrollment from expiry email
   setTimeout(handleReenroll,300);
-  document.getElementById('shTxt').innerHTML=`<button class="btn-cp" onclick="cpSh()">Copy</button>Hey! I used WattWise to compare TX electricity rates and found I could save $${R.as.toFixed(0)}/year. It's free — check it out!`}
+  document.getElementById('shTxt').innerHTML=`<button class="btn-cp" onclick="cpSh()">Copy</button>Hey! I used Gratuity Energy to compare TX electricity rates and found I could save $${R.as.toFixed(0)}/year. It's free — check it out!`}
+
+function buildScanner(){
+  if(!R||!R.sorted||!R.sorted.length)return;
+  const plans=R.sorted.slice(0,20);
+  // Duplicate for seamless loop
+  const items=plans.concat(plans);
+  let h='<div class="ticker">';
+  items.forEach(p=>{
+    const isBest=p.wr===R.best.wr;
+    h+=`<div class="tick${isBest?' tbest':''}"><span class="tprov">${p.p}</span><span class="trate">${p.r}¢</span><span class="tterm">${p.t}mo</span>${isBest?'<span style="color:var(--g);font-size:8px">★ BEST</span>':''}</div>`;
+  });
+  h+='</div>';
+  document.getElementById('scanTicker').innerHTML=h;
+  document.getElementById('scanBest').textContent='🏆 Best: '+R.best.p+' @ '+R.best.wr+'¢/kWh';
+  document.getElementById('scanTime').textContent='Updated '+dbUpdated;
+  document.getElementById('scanBadge').textContent=R.sorted.length+' PLANS';
+  // Adjust animation speed based on plan count
+  const ticker=document.querySelector('.scanner-scroll .ticker');
+  if(ticker)ticker.style.animationDuration=Math.max(15,plans.length*2)+'s';
+}
 
 function rBars(){const cr=gCR(),u=R.usage,cc=(cr/100)*u,ca=(DB.sa/100)*u,cb=R.mcB,mx=Math.max(cc,ca,cb);
   document.getElementById('cBars').innerHTML=[
     {l:uCR?'Your Current':'TDU Default',rt:cr,c:cc,cl:'var(--r)'},
     {l:'Texas Average',rt:DB.sa,c:ca,cl:'var(--y)'},
-    {l:'Best ('+R.best.p+')',rt:R.best.r,c:cb,cl:'var(--g)'}
+    {l:'Best ('+R.best.p+')',rt:R.best.wr,c:cb,cl:'var(--g)'}
   ].map(b=>`<div class="brow"><div class="bhdr"><span>${b.l} (${b.rt}¢)</span><span class="v" style="color:${b.cl}">$${b.c.toFixed(2)}/mo</span></div><div class="btrk"><div class="bfil" style="width:${b.c/mx*100}%;background:${b.cl}"></div></div></div>`).join('')}
 
 function rPlans(){const pl=sAll?R.sorted:R.sorted.slice(0,5);let s;
-  if(cSort==='rate')s=[...pl].sort((a,b)=>a.r-b.r);else if(cSort==='rating')s=[...pl].sort((a,b)=>b.s-a.s);
+  if(cSort==='rate')s=[...pl].sort((a,b)=>a.wr-b.wr);else if(cSort==='rating')s=[...pl].sort((a,b)=>b.ts-a.ts);
   else if(cSort==='renewable')s=[...pl].sort((a,b)=>b.re-a.re);else s=[...pl].sort((a,b)=>a.p.localeCompare(b.p));
   document.getElementById('ptTitle').textContent=sAll?`All ${R.sorted.length} Plans`:'Top 5 Plans';
-  document.getElementById('ptSub').textContent=`Sorted by ${cSort} · ${R.usage} kWh/mo`;
+  document.getElementById('ptSub').textContent=`Sorted by ${cSort==='rating'?'transparency':cSort} · ${R.usage} kWh/mo`;
   const cr=gCR(),cc=(cr/100)*R.usage;let h='';
-  s.forEach((p,i)=>{const mc=(p.r/100)*R.usage,sv=cc-mc,asv=sv*12,ib=p.r===R.best.r,pct=cr>0?((cr-p.r)/cr*100):0,pos=sv>=0;
-    const pj=JSON.stringify(p).replace(/"/g,'&quot;');
-    h+=`<div class="prow${ib?' best':''} fu" style="animation-delay:${i*.06}s"><div class="prow-top"><div class="pinf"><div><span class="pprov">${p.p}</span><span class="pbdg">${ib?'<span class="bdg bdg-b">BEST RATE</span>':''}${p.re===100?'<span class="bdg bdg-g">100% GREEN</span>':''}${p.ap?'<span class="bdg" style="background:rgba(250,204,21,.15);color:var(--y)">AUTOPAY REQ</span>':''}${p.w&&p.w.includes('new_customers')?'<span class="bdg" style="background:rgba(56,189,248,.1);color:var(--b)">NEW CUSTOMERS</span>':''}</span></div><div class="pname">${p.n}</div><div class="pmeta">${rSt(p.s)}<span>${p.t}mo</span><span>Cancel: ${p.cf===0?'<span style="color:var(--g)">None</span>':'$'+p.cf}</span>${p.re>0&&p.re<100?'<span>'+p.re+'% green</span>':''}</div></div><div class="pprc"><div class="prate${ib?' br':''}">${p.r}¢</div><div class="pmo">$${mc.toFixed(2)}/mo</div>${pos?`<div class="psav">Save $${sv.toFixed(0)}/mo</div>`:`<div class="psav" style="color:var(--r)">+$${Math.abs(sv).toFixed(0)}/mo</div>`}</div></div><div class="psel"><div class="psel-info">${pos?`<span class="amt">$${asv.toFixed(0)}</span>/yr savings (${pct.toFixed(0)}% less)`:`<span style="color:var(--r)">$${Math.abs(asv).toFixed(0)}</span>/yr more`}${uCR&&pos?` <span style="color:var(--y)">vs your ${cr}¢</span>`:''}</div><button class="btn-sel" onclick='openReg(${pj})'>${pos?'Choose This Plan →':'View Details →'}</button></div></div>`});
+  s.forEach((p,i)=>{const mc=(p.wr/100)*R.usage,sv=cc-mc,asv=sv*12,ib=p.wr===R.best.wr,pct=cr>0?((cr-p.wr)/cr*100):0,pos=sv>=0;
+    const pj=JSON.stringify(p).replace(/\"/g,'&quot;');
+    // Build warning badges
+    let badges=ib?'<span class="bdg bdg-b">BEST RATE</span>':'';
+    if(p.re===100)badges+='<span class="bdg bdg-g">100% GREEN</span>';
+    if(p.ig)badges+='<span class="bdg" style="background:rgba(250,204,21,.15);color:var(--y)">⚠️ PRICE VARIES</span>';
+    if(p.hr)badges+='<span class="bdg" style="background:rgba(250,130,50,.15);color:#fa8232">💰 HAS REBATE</span>';
+    if(p.hbc)badges+='<span class="bdg" style="background:rgba(250,130,50,.12);color:#fa8232">📋 BASE CHARGE</span>';
+    if(p.hmf)badges+='<span class="bdg" style="background:rgba(239,68,68,.12);color:var(--r)">⚡ MIN USAGE FEE</span>';
+    if(p.nc)badges+='<span class="bdg" style="background:rgba(56,189,248,.1);color:var(--b)">NEW CUSTOMERS</span>';
+    if(p.ip)badges+='<span class="bdg" style="background:rgba(168,85,247,.12);color:#a855f7">PROMO</span>';
+    if(p.pp)badges+='<span class="bdg" style="background:rgba(239,68,68,.1);color:var(--r)">PREPAID</span>';
+    if(p.tou)badges+='<span class="bdg" style="background:rgba(56,189,248,.1);color:var(--b)">TIME-OF-USE</span>';
+    // Transparency bar color
+    const tCol=p.ts>=80?'var(--g)':p.ts>=50?'var(--y)':'var(--r)';
+    // Rate tier display - show all 3 tiers if they differ
+    const tierHTML=(p.r5!==p.r||p.r2!==p.r)?`<div style="font-size:10px;color:#777;margin:2px 0">500kWh: ${p.r5}¢ · 1000kWh: ${p.r}¢ · 2000kWh: ${p.r2}¢${p.rs>3?' <span style="color:var(--y)">('+p.rs+'¢ spread)</span>':''}</div>`:'';
+    // Fine print summary
+    let fpHTML='';
+    if(p.fd&&p.fd.length>2){fpHTML=`<div style="font-size:10px;color:#999;margin-top:4px;padding:4px 6px;background:rgba(255,255,255,.03);border-radius:4px;border-left:2px solid rgba(250,204,21,.3)">📋 ${p.fd.substring(0,150)}${p.fd.length>150?'...':''}</div>`}
+    else if(p.hbc&&p.bca){fpHTML=`<div style="font-size:10px;color:#999;margin-top:4px">📋 Base charge: $${p.bca}/mo</div>`}
+    // EFL link
+    const eflHTML=p.efl?`<a href="${p.efl}" target="_blank" rel="noopener" style="font-size:10px;color:var(--b);text-decoration:none;margin-left:8px" title="View Electricity Facts Label">📄 Fact Sheet</a>`:'';
+    h+=`<div class="prow${ib?' best':''}${p.ig?' gotcha':''} fu" style="animation-delay:${i*.06}s"><div class="prow-top"><div class="pinf"><div><span class="pprov">${p.p}</span><span class="pbdg">${badges}</span></div><div class="pname">${p.n}${eflHTML}</div>${tierHTML}<div class="pmeta"><span title="Transparency Score: ${p.ts}/100" style="cursor:help"><span style="display:inline-block;width:40px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;vertical-align:middle;margin-right:4px"><span style="display:block;height:100%;width:${p.ts}%;background:${tCol};border-radius:2px"></span></span><span style="font-size:9px;color:${tCol}">${p.ts}</span></span><span>${p.rt||'Fixed'}</span><span>${p.t}mo</span><span>Cancel: ${p.cf===0?'<span style="color:var(--g)">None</span>':'$'+p.cf}</span>${p.re>0&&p.re<100?'<span>'+p.re+'% green</span>':''}</div>${fpHTML}</div><div class="pprc"><div class="prate${ib?' br':''}">${p.wr}¢</div><div style="font-size:9px;color:#666;margin-top:1px">weighted avg</div><div class="pmo">$${mc.toFixed(2)}/mo</div>${pos?`<div class="psav">Save $${sv.toFixed(0)}/mo</div>`:`<div class="psav" style="color:var(--r)">+$${Math.abs(sv).toFixed(0)}/mo</div>`}</div></div><div class="psel"><div class="psel-info">${pos?`<span class="amt">$${asv.toFixed(0)}</span>/yr savings (${pct.toFixed(0)}% less)`:`<span style="color:var(--r)">$${Math.abs(asv).toFixed(0)}</span>/yr more`}${uCR&&pos?` <span style="color:var(--y)">vs your ${cr}¢</span>`:''}</div><button class="btn-sel" onclick='openReg(${pj})'>${pos?'Choose This Plan →':'View Details →'}</button></div></div>`});
   document.getElementById('pList').innerHTML=h;
   const ab=document.getElementById('saBtn');if(!sAll&&R.sorted.length>5){ab.style.display='block';ab.textContent=`Show all ${R.sorted.length} plans ↓`}else ab.style.display='none'}
 
@@ -911,9 +1007,9 @@ function sSort(s,b){cSort=s;document.querySelectorAll('.sbtn').forEach(x=>x.clas
 function togAll(){sAll=true;rPlans()}
 
 // === REGISTRATION ===
-function openReg(plan){sPlan=plan;stats.planClicks++;const cr=gCR(),u=R.usage,oc=(cr/100)*u,nc=(plan.r/100)*u,ms=oc-nc,as=ms*12,pct=cr>0?((cr-plan.r)/cr*100):0,y5=as*5;
-  document.getElementById('rpBdg').textContent=`${plan.p} · ${plan.n} · ${plan.r}¢/kWh`;
-  document.getElementById('rCmp').innerHTML=`<div class="rcr old"><div class="rcl">${uCR?'Your Current Rate':'TDU Default Rate'}<small>${cr}¢/kWh</small></div><div class="rcv">$${oc.toFixed(2)}/mo</div></div><div class="rcr new"><div class="rcl">${plan.p}<small>${plan.r}¢/kWh · ${plan.n}</small></div><div class="rcv">$${nc.toFixed(2)}/mo</div></div><div class="rcr sav"><div class="rcl">Your Savings<small>${pct.toFixed(1)}% reduction</small></div><div class="rcv">${ms>=0?'−':'+'} $${Math.abs(ms).toFixed(2)}/mo</div></div>`;
+function openReg(plan){sPlan=plan;stats.planClicks++;const cr=gCR(),u=R.usage,oc=(cr/100)*u,nc=(plan.wr/100)*u,ms=oc-nc,as=ms*12,pct=cr>0?((cr-plan.wr)/cr*100):0,y5=as*5;
+  document.getElementById('rpBdg').textContent=`${plan.p} · ${plan.n} · ${plan.wr}¢/kWh`;
+  document.getElementById('rCmp').innerHTML=`<div class="rcr old"><div class="rcl">${uCR?'Your Current Rate':'TDU Default Rate'}<small>${cr}¢/kWh</small></div><div class="rcv">$${oc.toFixed(2)}/mo</div></div><div class="rcr new"><div class="rcl">${plan.p}<small>${plan.wr}¢/kWh · ${plan.n}</small></div><div class="rcv">$${nc.toFixed(2)}/mo</div></div><div class="rcr sav"><div class="rcl">Your Savings<small>${pct.toFixed(1)}% reduction</small></div><div class="rcv">${ms>=0?'−':'+'} $${Math.abs(ms).toFixed(2)}/mo</div></div>`;
   document.getElementById('rBkd').innerHTML=`<div class="rbk grn"><div class="l">MONTHLY</div><div class="n">$${Math.abs(ms).toFixed(0)}</div><div class="l">${ms>=0?'SAVED':'MORE'}</div></div><div class="rbk ylw"><div class="l">ANNUAL</div><div class="n">$${Math.abs(as).toFixed(0)}</div><div class="l">${as>=0?'SAVED':'MORE'}</div></div><div class="rbk blu"><div class="l">5-YEAR</div><div class="n">$${Math.abs(y5).toFixed(0)}</div><div class="l">${y5>=0?'SAVED':'MORE'}</div></div>`;
   rgStep(1);document.getElementById('rgOv').classList.add('open');document.body.style.overflow='hidden'}
 
@@ -922,10 +1018,10 @@ function xRg(){document.getElementById('rgOv').classList.remove('open');document
 // Provider signup URLs
 const PURLS={"TXU Energy":"https://www.txu.com/enrollment","Reliant Energy":"https://www.reliant.com/en/public/residential/electricity-plans.jsp","Gexa Energy":"https://www.gexaenergy.com/electricity-plans","Green Mountain":"https://www.greenmountainenergy.com/plans","Green Mountain Energy":"https://www.greenmountainenergy.com/plans","Constellation":"https://www.constellation.com/solutions/for-your-home/electricity-plans.html","4Change Energy":"https://www.4changeenergy.com/plans","Frontier Utilities":"https://www.frontierutilities.com/plans","Chariot Energy":"https://chariotenergy.com/plans","Pulse Power":"https://pulsepower.com/plans","Rhythm Energy":"https://www.gotrhythm.com/electricity-plans","Express Energy":"https://www.myexpressenergy.com","Discount Power":"https://www.discountpowertx.com","Veteran Energy":"https://www.veteranenergy.us/plans","TriEagle Energy":"https://www.trieagleenergy.com/plans","Cirro Energy":"https://www.cirroenergy.com/plans","Direct Energy":"https://www.directenergy.com/texas/electricity-plans","Payless Power":"https://www.paylesspower.com/signup","Amigo Energy":"https://www.amigoenergy.com/texas-electricity-plans","Champion Energy":"https://www.championenergyservices.com/Plans","Champion Energy Services":"https://www.championenergyservices.com/Plans","AP Gas & Electric":"https://www.apge.com/residential","Tara Energy":"https://www.taraenergy.com/Plans","Flagship Power":"https://www.flagshippower.com/plans","Indexo Energy":"https://www.indexoenergy.com","Eligo Energy":"https://www.eligoenergy.com","New Power Texas":"https://www.newpowertexas.com/electricity-plans","Spark Energy":"https://www.sparkenergy.com/texas","Value Power":"https://www.valuepower.com","Engie":"https://www.engie.com/en/offers","Just Energy":"https://www.justenergy.com/texas/electricity-plans","Pennywise Power":"https://www.pennywisepower.com"};
 
-function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.r)/100)*R.usage*12;
+function subReg(){if(!sPlan)return;const pl=sPlan,cr=gCR(),as=((cr-pl.wr)/100)*R.usage*12;
   // Populate enrollment form fields
   document.getElementById('rgPlanBar').textContent=pl.p+' · '+pl.n;
-  document.getElementById('rgRateBar').textContent=pl.r+'¢';
+  document.getElementById('rgRateBar').textContent=pl.wr+'¢';
   document.getElementById('rgSavBar').textContent='Save $'+Math.max(0,as).toFixed(0)+'/yr vs '+(uCR?'your current rate':'TDU default');
   document.getElementById('rgProvEnr').textContent=pl.p;
   document.getElementById('rgProvLegal').textContent=pl.p;
@@ -977,7 +1073,7 @@ async function submitEnrollment(){
     service_address:addr, service_city:city, service_zip:zip, service_state:'TX',
     esid:esid||null,
     // Plan info
-    provider:sPlan.p, plan_name:sPlan.n, rate_kwh:sPlan.r,
+    provider:sPlan.p, plan_name:sPlan.n, rate_kwh:sPlan.wr,
     term_months:sPlan.t||12, renewable_pct:sPlan.re||0, cancel_fee:sPlan.cf||0,
     tdu:R.tdu, usage_kwh:usage,
     // Switch preferences
@@ -996,7 +1092,7 @@ async function submitEnrollment(){
     commission_status:'pending',  // pending → earned → paid
     estimated_commission:null,  // Andy fills in from broker portal
     // Metadata
-    source:'wattswise_web', session_id:sessionStorage.getItem('ww_sid')||'',
+    source:'gratuityenergy_web', session_id:sessionStorage.getItem('ge_sid')||'',
     renewal_of: window._reenrollPrevId||null,
     created_at:new Date().toISOString()
   };
@@ -1014,15 +1110,15 @@ async function submitEnrollment(){
       if(resp.ok){
         saved=true;
         const result=await resp.json();
-        console.log('WattWise: Enrollment saved',result);
+        console.log('Gratuity Energy: Enrollment saved',result);
       }else{const err=await resp.text();console.error('Enrollment save error:',err)}
     }catch(e){console.error('Enrollment error:',e)}
   }
   
   // Also save to localStorage as backup
-  const local=JSON.parse(localStorage.getItem('ww_enrollments')||'[]');
+  const local=JSON.parse(localStorage.getItem('ge_enrollments')||'[]');
   local.push(enrollment);
-  localStorage.setItem('ww_enrollments',JSON.stringify(local));
+  localStorage.setItem('ge_enrollments',JSON.stringify(local));
   
   // Track click for analytics
   if(SUPABASE_URL&&SUPABASE_ANON_KEY){
@@ -1049,8 +1145,8 @@ function goProvider(){if(!sPlan||!R)return;stats.provClicks++;
   const url=sPlan.url||PURLS[sPlan.p]||'https://www.powertochoose.org';
   // Track click in Supabase (fire and forget, don't block navigation)
   if(SUPABASE_URL&&SUPABASE_ANON_KEY){
-    const sid=sessionStorage.getItem('ww_sid')||Math.random().toString(36).substr(2,9);
-    sessionStorage.setItem('ww_sid',sid);
+    const sid=sessionStorage.getItem('ge_sid')||Math.random().toString(36).substr(2,9);
+    sessionStorage.setItem('ge_sid',sid);
     fetch(SUPABASE_URL+'/rest/v1/click_tracking',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify({zip:R.zip,tdu:R.tdu,provider:sPlan.p,plan_name:sPlan.n,rate_kwh:sPlan.r,destination:url,affiliate_partner:'direct',session_id:sid,user_agent:navigator.userAgent.substr(0,200)})
     }).catch(()=>{});
@@ -1106,7 +1202,7 @@ function renderEnrollmentQueue(filter){
   </div>`;
   
   // Auto-enroll toggle
-  const autoEnrollOn=localStorage.getItem('ww_auto_enroll')==='true';
+  const autoEnrollOn=localStorage.getItem('ge_auto_enroll')==='true';
   h+=`<div style="background:rgba(0,220,130,.04);border:1px solid rgba(0,220,130,.15);border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
     <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0">
       <input type="checkbox" id="autoEnrollToggle" ${autoEnrollOn?'checked':''} onchange="toggleAutoEnroll(this.checked)" style="opacity:0;width:0;height:0">
@@ -1228,7 +1324,7 @@ function processEnrollment(id,provider){
 
 function openProviderPortal(provider){
   // Check broker settings for portal URL first
-  const brokerFields=JSON.parse(localStorage.getItem('ww_broker')||'{}');
+  const brokerFields=JSON.parse(localStorage.getItem('ge_broker')||'{}');
   const portalMap={
     'txu':brokerFields.adRepTXU||'https://www.txu.com/business-electricity/channel-partners',
     'reliant':brokerFields.adRepReliant||'https://www.reliant.com',
@@ -1277,7 +1373,7 @@ function promptConfirmation(id){
 }
 
 function toggleAutoEnroll(on){
-  localStorage.setItem('ww_auto_enroll',on?'true':'false');
+  localStorage.setItem('ge_auto_enroll',on?'true':'false');
   renderEnrollmentQueue();
 }
 
@@ -1356,7 +1452,7 @@ function doTp(){
     document.getElementById('tpTS').textContent=R?'$'+R.as.toFixed(0)+'/yr':'big money';
   } else {
     // Demo mode — show setup instructions in console, show thank you to user
-    console.log('⚡ WattWise Tip: $'+tpAmt.toFixed(2));
+    console.log('⚡ Gratuity Energy Tip: $'+tpAmt.toFixed(2));
     console.log('To accept real payments, replace STRIPE_LINKS in the code with your Stripe Payment Link URLs.');
     console.log('Create them at: https://dashboard.stripe.com/payment-links');
     document.getElementById('tpSel').style.display='none';
@@ -1374,7 +1470,7 @@ function fire(){const c=document.getElementById('confC');c.innerHTML='';const cl
 // ADMIN PANEL & ANALYTICS
 // ============================================================
 let stats={searches:0,planClicks:0,provClicks:0,tipClicks:0};
-const ADMIN_PIN_HASH='ww_admin_pin';
+const ADMIN_PIN_HASH='ge_admin_pin';
 
 function hashPin(pin){let h=0;for(let i=0;i<pin.length;i++){h=((h<<5)-h)+pin.charCodeAt(i);h|=0}return h.toString(36)}
 
@@ -1409,7 +1505,7 @@ function resetPin(){
 // Load Stripe links from localStorage
 function loadAdmin(){
   try{
-    const s=localStorage.getItem('ww_stripe');
+    const s=localStorage.getItem('ge_stripe');
     if(s){const d=JSON.parse(s);
       if(d.s3)STRIPE_LINKS[3]=d.s3;if(d.s7)STRIPE_LINKS[7]=d.s7;
       if(d.s15)STRIPE_LINKS[15]=d.s15;if(d.sc)STRIPE_LINKS.custom=d.sc;
@@ -1420,7 +1516,7 @@ function loadAdmin(){
 function saveAdmin(){
   const d={s3:document.getElementById('adS3').value.trim(),s7:document.getElementById('adS7').value.trim(),
     s15:document.getElementById('adS15').value.trim(),sc:document.getElementById('adSC').value.trim()};
-  try{localStorage.setItem('ww_stripe',JSON.stringify(d))}catch(e){}
+  try{localStorage.setItem('ge_stripe',JSON.stringify(d))}catch(e){}
   if(d.s3)STRIPE_LINKS[3]=d.s3;if(d.s7)STRIPE_LINKS[7]=d.s7;
   if(d.s15)STRIPE_LINKS[15]=d.s15;if(d.sc)STRIPE_LINKS.custom=d.sc;
   updStripeStatus();
@@ -1441,7 +1537,7 @@ function openAd(){
   if(!checkPin())return;
   document.getElementById('adOv').classList.add('open');document.body.style.overflow='hidden';
   // Populate fields from localStorage
-  try{const s=localStorage.getItem('ww_stripe');if(s){const d=JSON.parse(s);
+  try{const s=localStorage.getItem('ge_stripe');if(s){const d=JSON.parse(s);
     document.getElementById('adS3').value=d.s3||'';document.getElementById('adS7').value=d.s7||'';
     document.getElementById('adS15').value=d.s15||'';document.getElementById('adSC').value=d.sc||'';
   }}catch(e){}
@@ -1454,7 +1550,7 @@ const BROKER_FIELDS=['adBrkLicense','adBrkName','adBrkEmail','adRepTXU','adRepRe
 let brokerSaveTimer=null;
 function saveBroker(){
   const d={};BROKER_FIELDS.forEach(f=>{const el=document.getElementById(f);if(el)d[f]=el.value});
-  try{localStorage.setItem('ww_broker',JSON.stringify(d))}catch(e){}
+  try{localStorage.setItem('ge_broker',JSON.stringify(d))}catch(e){}
   clearTimeout(brokerSaveTimer);
   brokerSaveTimer=setTimeout(()=>saveBrokerDB(d),1500);
   document.getElementById('adBrkSaveStatus').textContent='Saving...';
@@ -1497,14 +1593,14 @@ async function loadBroker(){
         if(rows.length&&rows[0].settings){
           const d=rows[0].settings;
           BROKER_FIELDS.forEach(f=>{const el=document.getElementById(f);if(el&&d[f])el.value=d[f]});
-          try{localStorage.setItem('ww_broker',JSON.stringify(d))}catch(e){}
+          try{localStorage.setItem('ge_broker',JSON.stringify(d))}catch(e){}
           return;
         }
       }
     }catch(e){console.warn('DB load failed, using localStorage:',e)}
   }
   // Fallback: localStorage
-  try{const s=localStorage.getItem('ww_broker');if(s){const d=JSON.parse(s);
+  try{const s=localStorage.getItem('ge_broker');if(s){const d=JSON.parse(s);
     BROKER_FIELDS.forEach(f=>{const el=document.getElementById(f);if(el&&d[f])el.value=d[f]});
   }}catch(e){}
 }
@@ -1512,10 +1608,10 @@ function saveSplit(){
   const pct=parseInt(document.getElementById('adSplitPct').value)||50;
   document.getElementById('adSplitA').textContent=pct;
   document.getElementById('adSplitR').textContent=100-pct;
-  try{localStorage.setItem('ww_split',pct)}catch(e){}
+  try{localStorage.setItem('ge_split',pct)}catch(e){}
 }
 function loadSplit(){
-  try{const s=localStorage.getItem('ww_split');if(s){const p=parseInt(s);
+  try{const s=localStorage.getItem('ge_split');if(s){const p=parseInt(s);
     document.getElementById('adSplitPct').value=p;
     document.getElementById('adSplitA').textContent=p;
     document.getElementById('adSplitR').textContent=100-p;
@@ -1608,7 +1704,7 @@ async function aiAsk(question){
   document.getElementById('aiQuick').style.display='none';
 
   // Build context about the user's search
-  let context='You are WattWise AI, a friendly Texas electricity advisor. Be concise (2-4 sentences max). Use specific numbers when you have them.';
+  let context='You are Gratuity Energy AI, a friendly Texas electricity advisor. Be concise (2-4 sentences max). Use specific numbers when you have them.';
   if(R){
     context+=` The user searched ZIP ${R.zip} in ${R.territory.n} territory. Best available rate: ${R.best.r}¢/kWh from ${R.best.p} (${R.best.n}). TDU default rate: ${R.polr}¢/kWh. Their usage: ${R.usage}kWh/mo. Estimated annual savings: $${R.as.toFixed(0)}. There are ${R.sorted.length} plans available.`;
     if(uCR)context+=` They currently pay ${uCR}¢/kWh.`;
@@ -1694,7 +1790,7 @@ function getOfflineResponse(q){
   if(R){
     return `Based on your search: the best rate in ZIP ${R.zip} is <strong>${R.best.r}¢/kWh</strong> from ${R.best.p}. That could save you <strong>$${R.as.toFixed(0)}/year</strong> compared to ${uCR?'your current rate':'the default rate'}. Want to know more about a specific plan or topic?`;
   }
-  return 'I\'m your WattWise AI advisor! Try searching for your ZIP code first, then I can give you personalized insights about the best plans in your area. You can also ask me about reading your bill, when to lock in a rate, or how to reduce usage.';
+  return 'I\'m your Gratuity Energy AI advisor! Try searching for your ZIP code first, then I can give you personalized insights about the best plans in your area. You can also ask me about reading your bill, when to lock in a rate, or how to reduce usage.';
 }
 
 // INLINE AI INSIGHTS — generated after each search
@@ -1760,7 +1856,7 @@ async function fetchAiInsight(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:200,
-        system:'You are WattWise AI. Give a 2-3 sentence personalized insight about the user\'s electricity market. Mention the best plan by name, how much they\'d save, and one actionable tip. Use <strong> tags for key numbers. Be warm and direct.',
+        system:'You are Gratuity Energy AI. Give a 2-3 sentence personalized insight about the user\'s electricity market. Mention the best plan by name, how much they\'d save, and one actionable tip. Use <strong> tags for key numbers. Be warm and direct.',
         messages:[{role:'user',content:`ZIP: ${R.zip}, TDU: ${R.territory.n}, Usage: ${R.usage}kWh/mo, Current rate: ${uCR||R.polr}¢, Best rate: ${R.best.r}¢ from ${R.best.p}, Annual savings: $${R.as.toFixed(0)}, Total plans: ${R.sorted.length}. Top 5: ${top5}`}]
       })
     });
@@ -1780,7 +1876,7 @@ async function loadMarketData(){
     if(res.ok){
       const rows=await res.json();
       if(rows.length)MARKET=rows[0];
-      console.log('WattWise: Market data loaded',MARKET?'✅':'❌');
+      console.log('Gratuity Energy: Market data loaded',MARKET?'✅':'❌');
     }
   }catch(e){console.warn('Market data load failed:',e)}
 }
